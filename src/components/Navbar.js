@@ -15,6 +15,8 @@ import {
 } from "./icons";
 
 import { useSocialLinkData } from "../context/DataProvider";
+import Trynow from "./Trynow";
+import AuthModal from "./AuthModal";
 const CustomLink = ({ href, title, className = "" }) => {
   const router = useRouter();
 
@@ -139,6 +141,7 @@ const Navbar = () => {
               <MoonIcon className={"fill-dark"} />
             )}
           </button>
+          <Trynow />
         </nav>
       </div>
 
@@ -215,10 +218,12 @@ const Navbar = () => {
                 <MoonIcon className={"fill-dark"} />
               )}
             </button>
+            <Trynow />
           </nav>
         </motion.div>
       )}
 
+      <AuthModal />
       <div className='absolute left-[50%] top-2 translate-x-[-50%]'>
         <Logo />
       </div>
