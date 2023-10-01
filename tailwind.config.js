@@ -19,6 +19,30 @@ module.exports = {
         light: "#c7d8eb",
         primary: "#f02e65", // 240,86,199
         primaryDark: "#02e4cf", // 80,230,217#02e4cf
+        pink: {
+          50: "#ffe5ee",
+          100: "#fabacc",
+          200: "#f18fab",
+          300: "#e96289",
+          400: "#e23667",
+          500: "#c91d4e",
+          600: "#9d153c",
+          700: "#710c2b",
+          800: "#460519",
+          900: "#1d0009",
+        },
+        blgr: {
+          50: "#d9fdff",
+          100: "#adf1ff",
+          200: "#7fe7fb",
+          300: "#50dcf8",
+          400: "#24d2f5",
+          500: "#0ab9db",
+          600: "#0090ab",
+          700: "#00677c",
+          800: "#003f4c",
+          900: "#00171c",
+        },
       },
       animation: {
         "spin-slow": "spin 15s linear infinite",

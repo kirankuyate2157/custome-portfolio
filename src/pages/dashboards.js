@@ -37,7 +37,6 @@ const dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
       <EditProject
         projects={projectsData}
         addProject={addProject}
