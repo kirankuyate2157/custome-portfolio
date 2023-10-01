@@ -74,7 +74,7 @@ const About = () => {
             <div className='col-span-3 relative h-max rounded-2xl border-2 border-solid border-dark bg-light p-8 dark:bg-dark dark:border-light xl:col-span-4  md:order-1 md:col-span-8'>
               <div className='absolute top-0 -right-3 -z-10 w-[102%] h-[103%] rounded-[2rem] bg-dark dark:bg-light' />
               <Image
-                src='https://cdn.hashnode.com/res/hashnode/image/upload/v1672215410039/3nuAd5mLE.jpg'
+                src={aboutPageData.aboutData.profileImg}
                 alt='Kiran Kuyate'
                 className='w-full h-auto rounded-2xl'
                 priority

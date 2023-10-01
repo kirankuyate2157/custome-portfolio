@@ -5,10 +5,6 @@ import Image from "next/image";
 import Layout from "@/components/Layout";
 import AnimatedText from "@/components/AnimatedText";
 import { motion, useMotionValue } from "framer-motion";
-import a1 from "../../public/images/articles/a1.png";
-import a2 from "../../public/images/articles/a2.png";
-// import a3 from "../../public/images/articles/a3.avif";
-import a4 from "../../public/images/articles/a4.png";
 import TransitionEffect from "../components/TransitionEffect";
 
 import { useArticleData } from "./../context/DataProvider";

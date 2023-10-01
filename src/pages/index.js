@@ -117,7 +117,7 @@ export default function Home() {
                 />
               ))}
               <Image
-                src='https://cdn.hashnode.com/res/hashnode/image/upload/v1672215410039/3nuAd5mLE.jpg'
+                src={homeData.profileImg}
                 alt='kiran kuyate'
                 className='w-full h-auto lg:hidden md:inline-block md:w-full md:h-auto'
                 priority
