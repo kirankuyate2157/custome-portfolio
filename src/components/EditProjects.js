@@ -1,6 +1,7 @@
 // components/EditProjects.js
 import React, { useState } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
+import Modal from "react-modal";
 import {
   FiSave,
   FiEdit,
@@ -96,6 +97,120 @@ const ProjectDetailsDropdown = ({ project }) => {
   );
 };
 
+const ProjectFormModal = ({
+  isOpen,
+  closeModal,
+  formData,
+  setFormData,
+  handleSave,
+  editing,
+  projectTypes,
+}) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={closeModal}
+      className='modal fixed inset-0 flex items-center justify-center z-50'
+      overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
+    >
+      <div className='bg-white w-full sm:w-96 p-4 rounded-lg shadow-lg'>
+        <h2 className='text-2xl font-semibold mb-4'>
+          {editing ? "Edit Project" : "Add New Project"}
+        </h2>
+        <div className='space-y-4'>
+          <div>
+            <label className='text-gray-600'>Type</label>
+            <input
+              type='text'
+              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              placeholder='Type'
+              value={formData.type}
+              onChange={(e) =>
+                setFormData({ ...formData, type: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label className='text-gray-600'>Title</label>
+            <input
+              type='text'
+              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              placeholder='Title'
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label className='text-gray-600'>Image URL</label>
+            <input
+              type='text'
+              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              placeholder='Image URL'
+              value={formData.img}
+              onChange={(e) =>
+                setFormData({ ...formData, img: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label className='text-gray-600'>Link</label>
+            <input
+              type='text'
+              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              placeholder='Link'
+              value={formData.link}
+              onChange={(e) =>
+                setFormData({ ...formData, link: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label className='text-gray-600'>GitHub URL</label>
+            <input
+              type='text'
+              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              placeholder='GitHub URL'
+              value={formData.github}
+              onChange={(e) =>
+                setFormData({ ...formData, github: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label className='text-gray-600'>Summary</label>
+            <textarea
+              className='block w-full h-24 py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              placeholder='Summary'
+              value={formData.summary}
+              onChange={(e) =>
+                setFormData({ ...formData, summary: e.target.value })
+              }
+            />
+          </div>
+          <div className='flex justify-between'>
+            <button
+              className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
+              onClick={() => {
+                handleSave(); closeModal();
+              }}
+            >
+              <span>{editing ? "Save" : "Add"}</span>
+            </button>
+            <button
+              className='flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition'
+              onClick={closeModal}
+            >
+              <span>Cancel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 const EditProject = ({
   projects,
   addProject,
@@ -143,6 +258,17 @@ const EditProject = ({
       summary: "",
     });
   };
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+
+  // Function to open the form modal
+  const openFormModal = () => {
+    setIsFormModalOpen(true);
+  };
+
+  // Function to close the form modal
+  const closeFormModal = () => {
+    setIsFormModalOpen(false);
+  };
 
   const handleDelete = (projectTitle) => {
     // Delete project
@@ -158,11 +284,16 @@ const EditProject = ({
     <div className='w-screen h-screen font-mono flex  flex-col '>
       <div className='w-full flex justify-between items-center  text-white p-4'>
         <h2 className='text-xl sm:text-base px-3 py-1 flex  items-center gap-1 rounded-full bg-pink-800 border border-primary font-semibold'>
-          <span>Data</span>
+          <span class=' cursor-pointer'>Data</span>
           <span className='w-[2px] h-[80%] bg-gray-500 mx-1' />| Edit Projects
           <FiChevronRight />
         </h2>
-        <h2 className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-pink-500  font-semibold'>
+        <h2
+          className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-pink-500  font-semibold'
+          onClick={() => {
+            setIsFormModalOpen(!isFormModalOpen);
+          }}
+        >
           <BiAddToQueue />
         </h2>
       </div>
@@ -209,88 +340,15 @@ const EditProject = ({
           ))}
         </ul>
       </div>
-      <div className='bg-white p-4'>
-        <h3 className='text-2xl font-semibold mb-4'>
-          {editing ? "Edit Project" : "Add New Project"}
-        </h3>
-      </div>
-
-      {/* <div className='space-y-4'>
-        <div className='relative'>
-          <label className='text-gray-600'>Type</label>
-          <select
-            className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-            value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-          >
-            <option value=''>Select Type</option>
-            <option value='MERN Project'>MERN Project</option>
-            <option value='Python Project'>Python Project</option>
-         
-          </select>
-        </div>
-        <div>
-          <label className='text-gray-600'>Title</label>
-          <input
-            type='text'
-            className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-            placeholder='Title'
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-          />
-        </div>
-        <div>
-          <label className='text-gray-600'>Image URL</label>
-          <input
-            type='text'
-            className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-            placeholder='Image URL'
-            value={formData.img}
-            onChange={(e) => setFormData({ ...formData, img: e.target.value })}
-          />
-        </div>
-        <div>
-          <label className='text-gray-600'>Link</label>
-          <input
-            type='text'
-            className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-            placeholder='Link'
-            value={formData.link}
-            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-          />
-        </div>
-        <div>
-          <label className='text-gray-600'>GitHub URL</label>
-          <input
-            type='text'
-            className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-            placeholder='GitHub URL'
-            value={formData.github}
-            onChange={(e) =>
-              setFormData({ ...formData, github: e.target.value })
-            }
-          />
-        </div>
-        <div>
-          <label className='text-gray-600'>Summary</label>
-          <textarea
-            className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-            placeholder='Summary'
-            value={formData.summary}
-            onChange={(e) =>
-              setFormData({ ...formData, summary: e.target.value })
-            }
-          />
-        </div>
-        <button
-          className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
-          onClick={handleSave}
-        >
-          <FiSave /> <span>{editing ? "Save" : "Add"}</span>
-        </button>
-      </div> */}
+      
+      <ProjectFormModal
+        isOpen={isFormModalOpen}
+        closeModal={closeFormModal}
+        formData={formData}
+        setFormData={setFormData}
+        handleSave={handleSave}
+        editing={editing}
+      />
     </div>
   );
 };

@@ -177,6 +177,12 @@ const Navbar = () => {
               className='mx-4'
               toggle={handleClick}
             />
+            <CustomLink
+              href='/dashboards'
+              title='Dashboards'
+              className='mx-4'
+              toggle={handleClick}
+            />
           </nav>
           <nav className='flex items-center gap-2 justify-center flex-wrap mt-3'>
             <motion.a
