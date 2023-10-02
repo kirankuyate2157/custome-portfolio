@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import EditSkills from "./EditSkills";
 import EditStatistics from "./EditStatistics";
 import EditExperience from "./EditExperience";
+import EditEducation from "./EditEducation";
+
 import KiranPortfolioData from "../assets/portfolioData";
 const AboutDetailsDropdown = ({ aboutData }) => {
   const [close, setClose] = useState(false);
@@ -178,6 +180,8 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
   const [statistics, setStatistics] = useState([...aboutData.statistics]);
   const [experienceClose, setExperienceClose] = useState(false);
   const [experience, setExperience] =  useState([...KiranPortfolioData.About.aboutPageData.experienceData]);
+  const [educationClose, setEducationClose] = useState(false);
+  const [education, setEducation] =  useState([...KiranPortfolioData.About.aboutPageData.educationData]);
 
   
   const handleOpenFormModal = () => {
@@ -250,6 +254,28 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
     const updatedData = experience.filter((item) => item.position !== position);
     setExperience(updatedData);
   };
+
+
+
+// Function to update education data
+const handleSaveEducation = (updatedEducation) => {
+  // Find the index of the education to be updated
+  const indexToUpdate = educationData.findIndex(edu => edu.type === updatedEducation.type);
+
+  if (indexToUpdate !== -1) {
+    // Create a copy of the education data and update the specific education
+    const updatedEducationData = [...educationData];
+    updatedEducationData[indexToUpdate] = updatedEducation;
+    setEducationData(updatedEducationData);
+  }
+};
+
+// Function to delete education data
+const handleDeleteEducation = (type) => {
+  // Filter out the education to be deleted
+  const updatedEducationData = educationData.filter(edu => edu.type !== type);
+  setEducationData(updatedEducationData);
+};
 
   return (
     <div className="w-screen h-screen font-mono flex flex-col">
@@ -404,6 +430,41 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
                     <EditExperience
                       key={index}
                       experienceData={experience}
+                      onSave={saveExperience}
+                      onDelete={deleteExperience}
+                    />
+                  ))}
+                    </div>
+                  )}
+             </li>
+
+             <li
+            className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
+           
+          >
+            <div className="flex items-center justify-between cursor-pointer"
+             onClick={() => setEducationClose(!educationClose)}
+            >
+              <strong className="cursor-pointer ml-1 font-extrabold">
+              Education
+              </strong>
+              <div className="flex gap-2 ">
+              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                    { educationClose ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    )}
+                  </button>
+              </div>
+            </div>
+            {education && educationClose && (
+              <div>
+                <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
+                {education.map((education, index) => (
+                    <EditEducation
+                      key={index}
+                      educationData={education}
                       onSave={saveExperience}
                       onDelete={deleteExperience}
                     />
