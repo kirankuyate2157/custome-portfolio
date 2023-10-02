@@ -6,7 +6,9 @@ import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BiAddToQueue } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
 import EditSkills from "./EditSkills";
-
+import EditStatistics from "./EditStatistics";
+import EditExperience from "./EditExperience";
+import KiranPortfolioData from "../assets/portfolioData";
 const AboutDetailsDropdown = ({ aboutData }) => {
   const [close, setClose] = useState(false);
 
@@ -170,9 +172,14 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedAbout, setSelectedAbout] = useState(null);
   const [close, setClose] = useState(false);
-  const [skillsClose, setSkillsCloseClose] = useState(false);
+  const [skillsClose, setSkillsClose] = useState(false);
   const [skills, setSkills] = useState([...aboutData.skills]);
+  const [statisticsClose, setStatisticsClose] = useState(false);
+  const [statistics, setStatistics] = useState([...aboutData.statistics]);
+  const [experienceClose, setExperienceClose] = useState(false);
+  const [experience, setExperience] =  useState([...KiranPortfolioData.About.aboutPageData.experienceData]);
 
+  
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
   };
@@ -205,6 +212,43 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
     // You can remove the skill from the 'skills' state
     const updatedSkills = skills.filter((skill) => skill.name !== skillName);
     setSkills(updatedSkills);
+  };
+   const handleSaveStatistics = (updatedSkill) => {
+    // Implement the logic to save the skill
+    // You can update the 'skills' state with the new skill data
+    const updatedSkills = skills.map((skill) =>
+      skill.name === updatedSkill.name ? updatedSkill : skill
+    );
+    setSkills(updatedSkills);
+  };
+
+  const handleDeleteStatistics = (skillName) => {
+    // Implement the logic to delete the skill
+    // You can remove the skill from the 'skills' state
+    const updatedSkills = skills.filter((skill) => skill.name !== skillName);
+    setSkills(updatedSkills);
+  };
+
+
+  const saveExperience = (data) => {
+    // Check if the experience already exists
+    const index = experience.findIndex((item) => item.position === data.position);
+    if (index !== -1) {
+      // Update existing experience
+      const updatedData = [...experience];
+      updatedData[index] = data;
+      setExperience(updatedData);
+    } else {
+      // Add new experience
+      setExperience([...experience, data]);
+    }
+  };
+
+  // Function to delete an experience
+  const deleteExperience = (position) => {
+    // Filter out the experience to delete
+    const updatedData = experience.filter((item) => item.position !== position);
+    setExperience(updatedData);
   };
 
   return (
@@ -260,13 +304,12 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
             
           </li>
 
-
           <li
             className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
            
           >
             <div className="flex items-center justify-between cursor-pointer"
-             onClick={() => setSkillsCloseClose(!skillsClose)}
+             onClick={() => setSkillsClose(!skillsClose)}
             >
               <strong className="cursor-pointer ml-1 font-extrabold">
                 Skills
@@ -296,6 +339,78 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
             )}
             
           </li>
+
+          <li
+            className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
+           
+          >
+            <div className="flex items-center justify-between cursor-pointer"
+             onClick={() => setStatisticsClose(!statisticsClose)}
+            >
+              <strong className="cursor-pointer ml-1 font-extrabold">
+              Statistics
+              </strong>
+              <div className="flex gap-2 ">
+              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                    { statisticsClose ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    )}
+                  </button>
+              </div>
+            </div>
+            {aboutData && statisticsClose && (
+              <div>
+                <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
+                {statistics.map((state, index) => (
+                  <EditStatistics
+                    key={index}
+                    statisticsData={state}
+                    onSave={handleSaveStatistics}
+                    onDelete={handleDeleteStatistics}
+                  />
+      ))}
+              </div>
+            )}
+            
+          </li>
+
+
+          <li
+            className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
+           
+          >
+            <div className="flex items-center justify-between cursor-pointer"
+             onClick={() => setExperienceClose(!experienceClose)}
+            >
+              <strong className="cursor-pointer ml-1 font-extrabold">
+              Experience
+              </strong>
+              <div className="flex gap-2 ">
+              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                    { experienceClose ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    )}
+                  </button>
+              </div>
+            </div>
+            {experience && experienceClose && (
+              <div>
+                <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
+                {experience.map((experience, index) => (
+                    <EditExperience
+                      key={index}
+                      experienceData={experience}
+                      onSave={saveExperience}
+                      onDelete={deleteExperience}
+                    />
+                  ))}
+                    </div>
+                  )}
+             </li>
         </ul>
       </div>
       
