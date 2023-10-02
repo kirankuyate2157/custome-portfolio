@@ -5,6 +5,7 @@ import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BiAddToQueue } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
+import EditSkills from "./EditSkills";
 
 const AboutDetailsDropdown = ({ aboutData }) => {
   const [close, setClose] = useState(false);
@@ -169,6 +170,8 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedAbout, setSelectedAbout] = useState(null);
   const [close, setClose] = useState(false);
+  const [skillsClose, setSkillsCloseClose] = useState(false);
+  const [skills, setSkills] = useState([...aboutData.skills]);
 
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
@@ -186,6 +189,22 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
   const handleSaveAbout = (updatedAboutData) => {
     onSave(updatedAboutData);
     handleCloseFormModal();
+  };
+
+  const handleSaveSkill = (updatedSkill) => {
+    // Implement the logic to save the skill
+    // You can update the 'skills' state with the new skill data
+    const updatedSkills = skills.map((skill) =>
+      skill.name === updatedSkill.name ? updatedSkill : skill
+    );
+    setSkills(updatedSkills);
+  };
+
+  const handleDeleteSkill = (skillName) => {
+    // Implement the logic to delete the skill
+    // You can remove the skill from the 'skills' state
+    const updatedSkills = skills.filter((skill) => skill.name !== skillName);
+    setSkills(updatedSkills);
   };
 
   return (
@@ -223,6 +242,13 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
                 <button onClick={() => handleEditAbout(aboutData)}>
                   <BsPencilSquare />
                 </button>
+                <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                    { close ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    )}
+                  </button>
               </div>
             </div>
             {aboutData == selectedAbout && close && (
@@ -231,6 +257,44 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
                 <AboutDetailsDropdown aboutData={aboutData} />
               </div>
             )}
+            
+          </li>
+
+
+          <li
+            className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
+           
+          >
+            <div className="flex items-center justify-between cursor-pointer"
+             onClick={() => setSkillsCloseClose(!skillsClose)}
+            >
+              <strong className="cursor-pointer ml-1 font-extrabold">
+                Skills
+              </strong>
+              <div className="flex gap-2 ">
+              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                    { skillsClose ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    )}
+                  </button>
+              </div>
+            </div>
+            {aboutData && skillsClose && (
+              <div>
+                <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
+                {skills.map((skill, index) => (
+                  <EditSkills
+                    key={index}
+                    skillsData={skill}
+                    onSave={handleSaveSkill}
+                    onDelete={handleDeleteSkill}
+                  />
+      ))}
+              </div>
+            )}
+            
           </li>
         </ul>
       </div>

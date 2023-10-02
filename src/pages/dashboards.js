@@ -44,21 +44,7 @@ const Dashboard = () => {
   const cancelEditAbout = () => {
     setIsEditingAbout(false);
   }
-  const handleSaveSkill = (updatedSkill) => {
-    // Implement the logic to save the skill
-    // You can update the 'skills' state with the new skill data
-    const updatedSkills = skills.map((skill) =>
-      skill.name === updatedSkill.name ? updatedSkill : skill
-    );
-    setSkills(updatedSkills);
-  };
-
-  const handleDeleteSkill = (skillName) => {
-    // Implement the logic to delete the skill
-    // You can remove the skill from the 'skills' state
-    const updatedSkills = skills.filter((skill) => skill.name !== skillName);
-    setSkills(updatedSkills);
-  };
+  
   return (
     <div>
       <EditAbout
@@ -67,14 +53,7 @@ const Dashboard = () => {
         onCancel={cancelEditAbout}
         isEditing={isEditingAbout}
       />
-       {skills.map((skill, index) => (
-        <EditSkills
-          key={index}
-          skillsData={skill}
-          onSave={handleSaveSkill}
-          onDelete={handleDeleteSkill}
-        />
-      ))}
+       
       <EditProject
         projects={projectsData}
         addProject={addProject}
