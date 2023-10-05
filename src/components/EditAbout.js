@@ -278,7 +278,7 @@ const handleDeleteEducation = (type) => {
 };
 
   return (
-    <div className="w-screen h-screen font-mono flex flex-col">
+    <div className="w-screen mb-5 font-mono flex flex-col">
       <div className="w-full flex justify-between items-center text-white p-4">
         <h2 className="text-xl sm:text-base px-3 py-1 flex items-center gap-1 rounded-full bg-pink-800 border border-primary font-semibold">
           <span class=" cursor-pointer">Data</span>

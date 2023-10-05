@@ -4,6 +4,7 @@ import EditProject from '../components/EditProjects';
 import KiranPortfolioData from '../assets/portfolioData.js';
 import EditAbout from '../components/EditAbout';
 import EditSkills from '../components/EditSkills';
+import EditArticles from '../components/EditArticles';
 const Dashboard = () => {
   const [projectsData, setProjectsData] = useState(KiranPortfolioData.Projects.projectData);
   const [aboutData, setAboutData] = useState(KiranPortfolioData.About.aboutPageData.aboutData);
@@ -46,7 +47,7 @@ const Dashboard = () => {
   }
   
   return (
-    <div>
+    <div className='mb-20'>
       <EditAbout
         aboutData={aboutData}
         onSave={saveAboutMe}
@@ -60,6 +61,9 @@ const Dashboard = () => {
         updateProject={updateProject}
         deleteProject={deleteProject}
       />
+      <EditArticles/>
+
+      
     </div>
   );
 }
