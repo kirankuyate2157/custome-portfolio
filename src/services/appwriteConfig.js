@@ -26,6 +26,7 @@ export const getUserData = async () => {
   }
 };
 
+
 //login
 export const login = async (email: string, password: string) => {
   try {

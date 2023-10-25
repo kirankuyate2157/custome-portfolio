@@ -1,16 +1,16 @@
 // pages/dashboard.js
 import React, { useState, useEffect } from 'react';
-import EditProject from '../components/EditProjects';
-import KiranPortfolioData from '../assets/portfolioData.js';
-import EditAbout from '../components/EditAbout';
+import EditProject from '../../components/EditProjects';
+import KiranPortfolioData from '../../assets/portfolioData.js';
+import EditAbout from '../../components/EditAbout';
 // import EditSkills from '../components/EditSkills';
-import EditHome from '../components/EditHome';
-import EditArticles from '../components/EditArticles';
-import EditSocial from "../components/EditSocial";
-import { addDataToFirebase } from "../services/useFirebase.js";
-import { auth, getUserData, getCurrentUserId } from '../services/firebaseConfig'; // Replace with your Firebase configuration import
+import EditHome from '../../components/EditHome';
+import EditArticles from '../../components/EditArticles';
+import EditSocial from "../../components/EditSocial";
+import { addDataToFirebase } from "../../services/useFirebase.js";
+import { auth, getUserData, getCurrentUserId } from '../../services/firebaseConfig'; // Replace with your Firebase configuration import
 import { useRouter } from 'next/router';
-import { getUserPortfolioData } from '../services/dataCRUD.js';
+import { getUserPortfolioData } from '../../services/dataCRUD.js';
 
 const Dashboard = () => {
   const [projectsData, setProjectsData] = useState({});

@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { Montserrat } from "next/font/google";
@@ -8,13 +9,32 @@ import { HomeDataProvider } from "./../context/DataProvider";
 import KiranPortfolioData from "./../assets/portfolioData";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "framer-motion";
-
+import { Component } from "react";
+import { getUserPortfolioData } from "./../services/dataCRUD.js";
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-mont",
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [PortfolioData, setPortfolioData] = useState(KiranPortfolioData);
+  useEffect(() => {
+    // Fetch user data when the component mounts
+    const fetchData = async () => {
+      // Get the user's UID
+      // const user = getUserData();
+      // if (user)
+      const userId = "IewXRnC69XRTnbgRf41EmKuU9cu2";
+      const userPortfolioData = await getUserPortfolioData(userId);
+      console.log("user data home  ", userPortfolioData);
+      if (userPortfolioData) {
+        setPortfolioData(userPortfolioData);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const router = useRouter();
   return (
     <>
@@ -41,7 +61,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <main
         className={`${montserrat.variable} font-mont bg-light dark:bg-dark w-full min-h-screen`}
       >
-        <HomeDataProvider data={KiranPortfolioData}>
+        <HomeDataProvider data={PortfolioData}>
           <Navbar />
           <AnimatePresence mode='wait'>
             <Component key={router.asPath} {...pageProps} />

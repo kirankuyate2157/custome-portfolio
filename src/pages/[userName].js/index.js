@@ -1,16 +1,16 @@
 import Head from "next/head";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 import Image from "next/image";
 import Link from "next/link";
 import lightBulb from "../../public/images/svgs/miscellaneous_icons_1.svg";
 import ProfilePic from "../../public/images/profile/pa3.png";
-import AnimatedText from "../components/AnimatedText";
-import Hireme from "../components/Hireme";
-import { LinkArrow } from "../components/icons";
-import TransitionEffect from "../components/TransitionEffect";
+import AnimatedText from "../../components/AnimatedText";
+import Hireme from "../../components/Hireme";
+import { LinkArrow } from "../../components/icons";
+import TransitionEffect from "../../components/TransitionEffect";
 import { motion } from "framer-motion";
 
-import { useHomeData } from "../context/DataProvider";
+import { useHomeData } from "../../context/DataProvider";
 const Star = ({ top, left, color, size }) => {
   return (
     <motion.div

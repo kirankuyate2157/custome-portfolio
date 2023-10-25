@@ -56,6 +56,12 @@ const getUserData = () => {
   }
 };
 const usr = getUserData();
+
+const getCurrentUserId=()=>{
+  const usr = getUserData();
+  return usr.uid;
+};
+
 console.log("user data : ", usr);
 const login = async (email, password) => {
   try {
@@ -70,11 +76,14 @@ const login = async (email, password) => {
   }
 };
 
+
 const logout = async () => {
   try {
     await signOut();
   } catch (error) {
-    throw new Error(error.message);
+    // throw new Error(error.message);
+    console.log("logout error : ",error.message);
+
   }
 };
 const GoogleAuth = () => {
@@ -82,4 +91,4 @@ const GoogleAuth = () => {
   return signInWithPopup(auth, provider);
 };
 
-export { auth, db, getUserData, register, login, logout, GoogleAuth };
+export { auth, db, getUserData, getCurrentUserId,register, login, logout, GoogleAuth };

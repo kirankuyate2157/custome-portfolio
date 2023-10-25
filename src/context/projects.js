@@ -8,7 +8,7 @@ import { GithubIcon } from "@/components/icons";
 import { motion } from "framer-motion";
 import TransitionEffect from "../components/TransitionEffect";
 const FramerImage = motion(Image);
-import { useProjectData } from "../context/DataProvider";
+import { useProjectData } from "./DataProvider";
 
 const FeaturedPrject = ({ type, title, summary, img, link, github }) => {
   return (

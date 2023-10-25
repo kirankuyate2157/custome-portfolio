@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import Head from "next/head";
-import AnimatedText from "../components/AnimatedText";
-import Layout from "../components/Layout";
+import AnimatedText from "../../components/AnimatedText";
+import Layout from "../../components/Layout";
 import Image from "next/image";
 import profilePic from "../../public/images/profile/rp1.jpg";
 import { useMotionValue, useSpring, useInView } from "framer-motion";
-import Skills from "../components/Skills";
-import Experience from "../components/Experience";
-import Education from "../components/Education";
-import TransitionEffect from "../components/TransitionEffect";
+import Skills from "../../components/Skills";
+import Experience from "../../components/Experience";
+import Education from "../../components/Education";
+import TransitionEffect from "../../components/TransitionEffect";
 
-import { useAboutData } from "../context/DataProvider";
+import { useAboutData } from "../../context/DataProvider";
 
 const AnimatedNumber = ({ value }) => {
   const ref = useRef(null);
