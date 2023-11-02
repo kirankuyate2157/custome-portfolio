@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { BiAddToQueue } from "react-icons/bi";
+import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
-import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSocialLinkData, useData } from "../context/DashboardDataProvider";
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getCurrentUserId } from "../services/firebaseConfig.js";
 
 const SocialLinksFormModal = ({ isOpen, closeModal, initialSocialLinks, onSave }) => {
   const [formData, setFormData] = useState({ ...initialSocialLinks });
@@ -22,18 +24,18 @@ const SocialLinksFormModal = ({ isOpen, closeModal, initialSocialLinks, onSave }
     <Modal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      className="modal fixed inset-0 flex items-center justify-center z-50"
+      className="modal fixed inset-0 mx-4 font-mono   flex items-center justify-center z-50"
       overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className="bg-white w-full sm:w-96 p-4 rounded-lg shadow-lg">
+      <div className="bg-[#1b1f30]  text-gray-300  w-full sm:w-96 p-4 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Edit Social Links</h2>
         <div className="space-y-4">
           {Object.entries(formData).map(([key, value]) => (
             <div key={key}>
-              <label className="text-gray-600">{key}</label>
+              <label className="text-gray-300">{key}</label>
               <input
                 type="text"
-                className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="block w-full py-2 px-3 border border-[#8f0c4344] rounded-full  bg-[#1b2034] text-gray-400 focus:outline-none focus:border-2 "
                 name={key}
                 value={value}
                 onChange={handleChange}
@@ -60,7 +62,7 @@ const SocialLinksFormModal = ({ isOpen, closeModal, initialSocialLinks, onSave }
   );
 };
 
-const SocialLinksDropdown = ({ socialLinks, onEdit, onDelete }) => {
+const SocialLinksDropdown = ({ socialLinks }) => {
   const [close, setClose] = useState(false);
   const [selectedSocial, setSelectedSocial] = useState(null);
 
@@ -72,7 +74,7 @@ const SocialLinksDropdown = ({ socialLinks, onEdit, onDelete }) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className="grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden"
+          className="grid sm:text-sm font-mono  text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden"
         >
           <div className="col-span-8 sm:col-span-12">
             {Object.entries(socialLinks).map(([key, value]) => (
@@ -86,24 +88,71 @@ const SocialLinksDropdown = ({ socialLinks, onEdit, onDelete }) => {
               </div>
             ))}
           </div>
-          <div className="col-span-4 sm:hidden">
-            <div className="mb-2">
-              <h4 className="font-semibold">Actions</h4>
-              <div className="flex gap-2">
-                <button onClick={onEdit}>Edit</button>
-                <button onClick={onDelete}>Delete</button>
-              </div>
-            </div>
-          </div>
+
         </motion.div>
       )}
     </AnimatePresence>
   );
 };
 
-const EditSocial = ({ socialLinks, onSave }) => {
+const EditSocial = () => {
+  const initialSocialLinks = useSocialLinkData()
+  const data = useData();
+  const documentId = getCurrentUserId();
+
+  const [socialLinks, setSocialLinks] = useState({ ...initialSocialLinks });
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [selectedSocial, setSelectedSocial] = useState(null);
+  const [portfolioData, setPortfolioData] = useState({ ...data });
+  const [selectedSocial, setSelectedSocial] = useState(false);
+
+  // const documentId = 'IewXRnC69XRTnbgRf41EmKuU9cu2';
+
+  // console.log("cuurent user is : ", documentId);
+  // Replace with your document ID
+  const db = getFirestore();
+  if (documentId) {
+    var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
+  }
+  else {
+    console.log(" current user id not found !")
+  }
+
+
+  const updateSocialLinks = (newSocialLinks) => {
+    setSocialLinks({ ...newSocialLinks });
+    // console.log("new link from form : ", newSocialLinks);
+
+    if (portfolioData) {
+      console.log("started data updating ....")
+
+      // Update the SocialLinks field within portfolioData
+      const updatedData = { ...portfolioData, SocialLinks: newSocialLinks };
+
+      // Update the document in Firestore
+      updateDoc(userPortfolioRef, updatedData)
+        .then(() => {
+          console.log('SocialLinks updated successfully.');
+        })
+        .catch((error) => {
+          console.error('Error updating SocialLinks:', error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    getDoc(userPortfolioRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setPortfolioData(snapshot.data());
+        } else {
+          console.error('Portfolio data not found for document ID:', documentId);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading portfolio data:', error);
+      });
+  }, [documentId, userPortfolioRef]);
+
 
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
@@ -113,58 +162,43 @@ const EditSocial = ({ socialLinks, onSave }) => {
     setIsFormModalOpen(false);
   };
 
-  const handleSaveSocialData = (updatedSocialLinks) => {
-    onSave(updatedSocialLinks);
-    handleCloseFormModal();
-  };
+
 
   return (
     <div className="w-screen mb-5 font-mono flex flex-col">
       <div className="w-full flex justify-between items-center text-white p-4">
         <h2 className="text-xl sm:text-base px-3 py-1 flex items-center gap-1 rounded-full bg-pink-800 border border-primary font-semibold">
-          <span class="cursor-pointer">Social Links</span>
+          <span className="cursor-pointer">Data</span>
           <span className="w-[2px] h-[80%] bg-gray-500 mx-1" />
           | Edit Social Links
           <FiChevronRight />
         </h2>
-        <h2
-          className="text-4xl mr-10 sm:mr-0 sm:text-2xl p-2 items-center gap-1 rounded-full text-pink-500 font-semibold"
-          onClick={handleOpenFormModal}
-        >
-          <BiAddToQueue />
+        <h2 className="text-3xl mr-10 sm:mr-0 sm:text-2xl p-2 items-center gap-1 rounded-full text-pink-500 font-semibold">
+          <BiAddToQueue onClick={() => setIsFormModalOpen(true)} />
         </h2>
       </div>
       <div className="flex-grow p-4 overflow-y-auto text-black dark:text-white">
         <ul className="space-y-4">
           <li
             className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
-            onClick={() => setSelectedSocial(socialLinks)}
+            onClick={() => setSelectedSocial(!selectedSocial)}
           >
             <div className="flex items-center justify-between cursor-pointer">
               <strong className="cursor-pointer ml-1 font-extrabold">Social Links</strong>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <button onClick={handleOpenFormModal}>
-                  <BsPencilSquare />
+                  <BiEdit />
                 </button>
-                <button onClick={() => handleSaveSocialData(socialLinks)}>
-                  Save
-                </button>
-                <button onClick={() => handleCloseFormModal()}>
-                  Cancel
-                </button>
+
                 <button className="text-pink-600 flex text-3xl font-bold hover:text-indigo-800">
-                  <FiChevronDown />
+                  {!selectedSocial ? (<FiChevronDown />) : (<FiChevronUp />)}
                 </button>
               </div>
             </div>
-            {socialLinks === selectedSocial && (
+            {selectedSocial && (
               <div>
                 <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
-                <SocialLinksDropdown
-                  socialLinks={socialLinks}
-                  onEdit={handleOpenFormModal}
-                  onDelete={() => handleSaveSocialData({})}
-                />
+                <SocialLinksDropdown socialLinks={socialLinks} onEdit={() => setIsFormModalOpen(true)} />
               </div>
             )}
           </li>
@@ -173,12 +207,14 @@ const EditSocial = ({ socialLinks, onSave }) => {
 
       <SocialLinksFormModal
         isOpen={isFormModalOpen}
-        closeModal={handleCloseFormModal}
+        closeModal={() => setIsFormModalOpen(false)}
         initialSocialLinks={socialLinks}
-        onSave={handleSaveSocialData}
+        onSave={(newSocialLinks) => {
+          updateSocialLinks(newSocialLinks);
+          setIsFormModalOpen(false);
+        }}
       />
     </div>
   );
 };
-
 export default EditSocial;

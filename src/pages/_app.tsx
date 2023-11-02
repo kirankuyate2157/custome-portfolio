@@ -9,8 +9,8 @@ import { HomeDataProvider } from "./../context/DataProvider";
 import KiranPortfolioData from "./../assets/portfolioData";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "framer-motion";
-import { Component } from "react";
 import { getUserPortfolioData } from "./../services/dataCRUD.js";
+import { getCurrentUserId } from "./../services/firebaseConfig";
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-mont",
@@ -23,10 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
     const fetchData = async () => {
       // Get the user's UID
       // const user = getUserData();
-      // if (user)
       const userId = "IewXRnC69XRTnbgRf41EmKuU9cu2";
-      const userPortfolioData = await getUserPortfolioData(userId);
-      console.log("user data home  ", userPortfolioData);
+
+      var userPortfolioData = await getUserPortfolioData(userId);
+      if (userPortfolioData) console.log("user data fetched ✅ ");
+
       if (userPortfolioData) {
         setPortfolioData(userPortfolioData);
       }

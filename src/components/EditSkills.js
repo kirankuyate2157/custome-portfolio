@@ -3,10 +3,9 @@ import Modal from 'react-modal';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const EditSkills = ({ skillsData, onSave, onDelete }) => {
+const EditSkills = ({ id, skillsData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ ...skillsData });
-
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -16,19 +15,21 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
   };
 
   const handleSave = () => {
-    onSave(formData);
+    onSave(formData, id);
+    console.log("skill key ss : ", id);
     closeModal();
   };
 
   const handleDelete = () => {
-    onDelete(formData.name);
+    // Pass the key (or unique identifier) to the onDelete function
+    onDelete(skillsData.name);
     closeModal();
   };
 
   return (
     <div className="font-mono">
-       <AnimatePresence>
-      
+      <AnimatePresence>
+
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
@@ -36,29 +37,29 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
           transition={{ duration: 0.7 }}
           className=" m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg  text-white shadow-lg  flex items-center justify-between  overflow-hidden"
         >
-      {/* <div className=" m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg  text-white shadow-lg  flex items-center justify-between"> */}
-        <div className="w-full grid grid-flow-row grid-cols-12 sm:text-xs ">
-          <h3 className="font-semibold col-span-5">{skillsData.name}</h3>
-          <p className=" col-span-3">{`X: ${skillsData.x}`}</p>
-          <p className=" col-span-3">{`Y: ${skillsData.y}`}</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={openModal}
-            className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
-          >
-            <FiEdit2 />
-          </button>
-          <button
-            onClick={handleDelete}
-            className="text-red-600 hover:text-red-800 focus:outline-none"
-          >
-            <FiTrash2 />
-          </button>
-        </div>
-      {/* </div> */}
-      </motion.div>
-    </AnimatePresence>
+          {/* <div className=" m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg  text-white shadow-lg  flex items-center justify-between"> */}
+          <div className="w-full grid grid-flow-row grid-cols-12 sm:text-xs ">
+            <h3 className="font-semibold col-span-5">{skillsData.name}</h3>
+            <p className=" col-span-3">{`X: ${skillsData.x}`}</p>
+            <p className=" col-span-3">{`Y: ${skillsData.y}`}</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={openModal}
+              className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+            >
+              <FiEdit2 />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-red-600 hover:text-red-800 focus:outline-none"
+            >
+              <FiTrash2 />
+            </button>
+          </div>
+          {/* </div> */}
+        </motion.div>
+      </AnimatePresence>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}

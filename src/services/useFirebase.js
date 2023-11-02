@@ -1,6 +1,6 @@
 
 
-import { auth ,db } from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, setDoc, getFirestore } from 'firebase/firestore';
 
@@ -31,18 +31,9 @@ const addDataToFirebase = async (data) => {
       } catch (error) {
         console.error('Error adding/updating data: ', error);
       }
-    }else{
+    } else {
       console.log('user not loging !')
     }
   });
 };
-
-const UseFirebase = () => {
-  getCitiesData();
-  return (
-    <>
-      <div>this is use firebase </div>
-    </>
-  );
-};
-export {UseFirebase,addDataToFirebase};
+export { addDataToFirebase };

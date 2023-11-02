@@ -9,8 +9,8 @@ import EditSkills from "./EditSkills";
 import EditStatistics from "./EditStatistics";
 import EditExperience from "./EditExperience";
 import EditEducation from "./EditEducation";
-
-import KiranPortfolioData from "../assets/portfolioData";
+import { useAboutData, useData } from "../context/DashboardDataProvider";
+import { getCurrentUserId } from "./../services/firebaseConfig.js"
 const AboutDetailsDropdown = ({ aboutData }) => {
   const [close, setClose] = useState(false);
 
@@ -46,7 +46,7 @@ const AboutDetailsDropdown = ({ aboutData }) => {
                   trimRight
                   basedOn='letters'
                   className='text-indigo-600 hover:underline'
-                  // onClick={() => setShowFullText(!showFullText)}
+                // onClick={() => setShowFullText(!showFullText)}
                 />
               </a>
             </div>
@@ -68,7 +68,7 @@ const AboutDetailsDropdown = ({ aboutData }) => {
               ))}
             </div>
           </div>
-          <div className='col-span-1 sm:hidden'/>
+          <div className='col-span-1 sm:hidden' />
           <div className='col-span-3 sm:hidden sm:col-span-12 flex flex-col items-center justify-center w-full h-auto'>
             {/* <h4 className='font-semibold'>preview</h4> */}
             {/* <hr className='my-1' /> */}
@@ -87,13 +87,13 @@ const AboutDetailsDropdown = ({ aboutData }) => {
   );
 };
 
-const AboutFormModal = ({
-  isOpen,
-  closeModal,
-  aboutData,
-  handleSave,
-}) => {
+const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave, }) => {
   const [formData, setFormData] = useState({ ...aboutData });
+
+  const handleSaveClick = () => {
+    onSave(formData);
+    closeModal();
+  };
 
   return (
     <Modal
@@ -152,7 +152,7 @@ const AboutFormModal = ({
           <button
             className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
             onClick={() => {
-              handleSave(formData);
+              handleSaveClick();
               closeModal();
             }}
           >
@@ -170,20 +170,26 @@ const AboutFormModal = ({
   );
 };
 
-const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
+const EditAbout = () => {
+  const about = useAboutData();
+  const data = useData();
+  const documentId = getCurrentUserId();
+  console.log("about data dash .. : ", about);
+  const [allAboutData, setAllAboutData] = useState({ ...about });
+  const [aboutData, setAboutData] = useState({ ...about.aboutData });
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedAbout, setSelectedAbout] = useState(null);
   const [close, setClose] = useState(false);
   const [skillsClose, setSkillsClose] = useState(false);
-  const [skills, setSkills] = useState([...aboutData.skills]);
+  const [skills, setSkills] = useState([...allAboutData.aboutData.skills]);
   const [statisticsClose, setStatisticsClose] = useState(false);
-  const [statistics, setStatistics] = useState([...aboutData.statistics]);
+  const [statistics, setStatistics] = useState([...allAboutData.aboutData.statistics]);
   const [experienceClose, setExperienceClose] = useState(false);
-  const [experience, setExperience] =  useState([...KiranPortfolioData.About.aboutPageData.experienceData]);
+  const [experience, setExperience] = useState([...allAboutData.experienceData]);
   const [educationClose, setEducationClose] = useState(false);
-  const [education, setEducation] =  useState([...KiranPortfolioData.About.aboutPageData.educationData]);
+  const [education, setEducation] = useState([...allAboutData.educationData]);
 
-  
+
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
   };
@@ -205,19 +211,14 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
   const handleSaveSkill = (updatedSkill) => {
     // Implement the logic to save the skill
     // You can update the 'skills' state with the new skill data
-    const updatedSkills = skills.map((skill) =>
+    const updatedSkills = skills.map((skill, index) =>
       skill.name === updatedSkill.name ? updatedSkill : skill
     );
     setSkills(updatedSkills);
   };
 
-  const handleDeleteSkill = (skillName) => {
-    // Implement the logic to delete the skill
-    // You can remove the skill from the 'skills' state
-    const updatedSkills = skills.filter((skill) => skill.name !== skillName);
-    setSkills(updatedSkills);
-  };
-   const handleSaveStatistics = (updatedSkill) => {
+
+  const handleSaveStatistics = (updatedSkill) => {
     // Implement the logic to save the skill
     // You can update the 'skills' state with the new skill data
     const updatedSkills = skills.map((skill) =>
@@ -257,25 +258,46 @@ const EditAbout = ({ aboutData, onSave, onCancel, isEditing }) => {
 
 
 
-// Function to update education data
-const handleSaveEducation = (updatedEducation) => {
-  // Find the index of the education to be updated
-  const indexToUpdate = educationData.findIndex(edu => edu.type === updatedEducation.type);
+  // Function to update education data
+  const handleSaveEducation = (updatedEducation) => {
+    // Find the index of the education to be updated
+    const indexToUpdate = educationData.findIndex(edu => edu.type === updatedEducation.type);
 
-  if (indexToUpdate !== -1) {
-    // Create a copy of the education data and update the specific education
-    const updatedEducationData = [...educationData];
-    updatedEducationData[indexToUpdate] = updatedEducation;
+    if (indexToUpdate !== -1) {
+      // Create a copy of the education data and update the specific education
+      const updatedEducationData = [...educationData];
+      updatedEducationData[indexToUpdate] = updatedEducation;
+      setEducationData(updatedEducationData);
+    }
+  };
+
+  // Function to delete education data
+  const handleDeleteEducation = (type) => {
+    // Filter out the education to be deleted
+    const updatedEducationData = educationData.filter(edu => edu.type !== type);
     setEducationData(updatedEducationData);
-  }
-};
+  };
 
-// Function to delete education data
-const handleDeleteEducation = (type) => {
-  // Filter out the education to be deleted
-  const updatedEducationData = educationData.filter(edu => edu.type !== type);
-  setEducationData(updatedEducationData);
-};
+  // -------------------------------------------------------
+  const updateAboutData = (newAboutData) => {
+    setAboutData({ ...newAboutData });
+    console.log("about data is updating LC .. 👍🏻");
+  }
+  // Function to update a skill
+  const updateSkill = (updatedSkill, id) => {
+    console.log("skill key : ", id, " : ", updatedSkill);
+
+    const updatedSkills = skills.map((skill, index) =>
+      index === id ? updatedSkill : skill
+    );
+    setSkills(updatedSkills);
+  };
+  const handleDeleteSkill = (skillName) => {
+    const updatedSkills = skills.filter((skill) => skill.name !== skillName);
+    setSkills(updatedSkills);
+  };
+
+
 
   return (
     <div className="w-screen mb-5 font-mono flex flex-col">
@@ -313,12 +335,12 @@ const handleDeleteEducation = (type) => {
                   <BsPencilSquare />
                 </button>
                 <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
-                    { close ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )}
-                  </button>
+                  {close ? (
+                    <FiChevronUp />
+                  ) : (
+                    <FiChevronDown />
+                  )}
+                </button>
               </div>
             </div>
             {aboutData == selectedAbout && close && (
@@ -327,27 +349,27 @@ const handleDeleteEducation = (type) => {
                 <AboutDetailsDropdown aboutData={aboutData} />
               </div>
             )}
-            
+
           </li>
 
           <li
             className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
-           
+
           >
             <div className="flex items-center justify-between cursor-pointer"
-             onClick={() => setSkillsClose(!skillsClose)}
+              onClick={() => setSkillsClose(!skillsClose)}
             >
               <strong className="cursor-pointer ml-1 font-extrabold">
                 Skills
               </strong>
               <div className="flex gap-2 ">
-              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
-                    { skillsClose ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )}
-                  </button>
+                <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                  {skillsClose ? (
+                    <FiChevronUp />
+                  ) : (
+                    <FiChevronDown />
+                  )}
+                </button>
               </div>
             </div>
             {aboutData && skillsClose && (
@@ -356,34 +378,39 @@ const handleDeleteEducation = (type) => {
                 {skills.map((skill, index) => (
                   <EditSkills
                     key={index}
+                    id={index + 1}
                     skillsData={skill}
-                    onSave={handleSaveSkill}
-                    onDelete={handleDeleteSkill}
+                    onSave={(newSkill, id) => {
+                      updateSkill(newSkill, id);
+                    }}
+                    onDelete={(skillName) => {
+                      handleDeleteSkill(skillName);
+                    }}
                   />
-      ))}
+                ))}
               </div>
             )}
-            
+
           </li>
 
           <li
             className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
-           
+
           >
             <div className="flex items-center justify-between cursor-pointer"
-             onClick={() => setStatisticsClose(!statisticsClose)}
+              onClick={() => setStatisticsClose(!statisticsClose)}
             >
               <strong className="cursor-pointer ml-1 font-extrabold">
-              Statistics
+                Statistics
               </strong>
               <div className="flex gap-2 ">
-              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
-                    { statisticsClose ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )}
-                  </button>
+                <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                  {statisticsClose ? (
+                    <FiChevronUp />
+                  ) : (
+                    <FiChevronDown />
+                  )}
+                </button>
               </div>
             </div>
             {aboutData && statisticsClose && (
@@ -396,92 +423,94 @@ const handleDeleteEducation = (type) => {
                     onSave={handleSaveStatistics}
                     onDelete={handleDeleteStatistics}
                   />
-      ))}
+                ))}
               </div>
             )}
-            
+
           </li>
 
 
           <li
             className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
-           
+
           >
             <div className="flex items-center justify-between cursor-pointer"
-             onClick={() => setExperienceClose(!experienceClose)}
+              onClick={() => setExperienceClose(!experienceClose)}
             >
               <strong className="cursor-pointer ml-1 font-extrabold">
-              Experience
+                Experience
               </strong>
               <div className="flex gap-2 ">
-              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
-                    { experienceClose ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )}
-                  </button>
+                <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                  {experienceClose ? (
+                    <FiChevronUp />
+                  ) : (
+                    <FiChevronDown />
+                  )}
+                </button>
               </div>
             </div>
             {experience && experienceClose && (
               <div>
                 <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
                 {experience.map((experience, index) => (
-                    <EditExperience
-                      key={index}
-                      experienceData={experience}
-                      onSave={saveExperience}
-                      onDelete={deleteExperience}
-                    />
-                  ))}
-                    </div>
-                  )}
-             </li>
+                  <EditExperience
+                    key={index}
+                    experienceData={experience}
+                    onSave={saveExperience}
+                    onDelete={deleteExperience}
+                  />
+                ))}
+              </div>
+            )}
+          </li>
 
-             <li
+          <li
             className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
-           
+
           >
             <div className="flex items-center justify-between cursor-pointer"
-             onClick={() => setEducationClose(!educationClose)}
+              onClick={() => setEducationClose(!educationClose)}
             >
               <strong className="cursor-pointer ml-1 font-extrabold">
-              Education
+                Education
               </strong>
               <div className="flex gap-2 ">
-              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
-                    { educationClose ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )}
-                  </button>
+                <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+                  {educationClose ? (
+                    <FiChevronUp />
+                  ) : (
+                    <FiChevronDown />
+                  )}
+                </button>
               </div>
             </div>
             {education && educationClose && (
               <div>
                 <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
                 {education.map((education, index) => (
-                    <EditEducation
-                      key={index}
-                      educationData={education}
-                      onSave={saveExperience}
-                      onDelete={deleteExperience}
-                    />
-                  ))}
-                    </div>
-                  )}
-             </li>
+                  <EditEducation
+                    key={index}
+                    educationData={education}
+                    onSave={saveExperience}
+                    onDelete={deleteExperience}
+                  />
+                ))}
+              </div>
+            )}
+          </li>
         </ul>
       </div>
-      
 
-      
+
+
       <AboutFormModal
         isOpen={isFormModalOpen}
         closeModal={handleCloseFormModal}
-        aboutData={selectedAbout || aboutData}
-        handleSave={handleSaveAbout}
+        aboutData={aboutData}
+        onSave={(newAboutData) => {
+          updateAboutData(newAboutData);
+        }}
       />
     </div>
   );
