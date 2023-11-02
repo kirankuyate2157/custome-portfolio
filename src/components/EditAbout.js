@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
 import Modal from "react-modal";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BiAddToQueue } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
-import EditSkills from "./EditSkills";
+import { EditSkills, AddSkill } from "./EditSkills";
 import EditStatistics from "./EditStatistics";
 import EditExperience from "./EditExperience";
 import EditEducation from "./EditEducation";
@@ -279,24 +279,47 @@ const EditAbout = () => {
   };
 
   // -------------------------------------------------------
+  // -----------  about data  ---------
   const updateAboutData = (newAboutData) => {
     setAboutData({ ...newAboutData });
     console.log("about data is updating LC .. 👍🏻");
   }
-  // Function to update a skill
-  const updateSkill = (updatedSkill, id) => {
-    console.log("skill key : ", id, " : ", updatedSkill);
+  // --------- update skills ---------
+  const updateSkill = (updatedSkill, name) => {
+    // Clone the current skills array to avoid mutation
+    const updatedSkills = [...skills];
+    const index = updatedSkills.findIndex((skill) => skill.name === name);
 
-    const updatedSkills = skills.map((skill, index) =>
-      index === id ? updatedSkill : skill
-    );
-    setSkills(updatedSkills);
+    if (index !== -1) {
+      updatedSkills[index] = { ...updatedSkill };
+      setSkills(updatedSkills); // Update the skills array
+    }
   };
+
   const handleDeleteSkill = (skillName) => {
     const updatedSkills = skills.filter((skill) => skill.name !== skillName);
     setSkills(updatedSkills);
+    console.log("skill deleted  🌸 : ", skillName);
+  };
+  // Function to update the skills array when a new skill is added
+  const addNewSkill = (newSkill) => {
+    if (newSkill.name && newSkill.x && newSkill.y) {
+      setSkills([...skills, newSkill]);
+    }
+  };
+  const [openAddSkillModal, setOpenAddSkillModal] = useState(false);
+  const openAddSkill = () => {
+    setOpenAddSkillModal(true);
   };
 
+  const closeAddSkill = () => {
+    setOpenAddSkillModal(false);
+  };
+
+  // ------------------- statistics -----------
+  useEffect(() => {
+    console.log("skills updates : ", skills);
+  }, [skills])
 
 
   return (
@@ -330,7 +353,7 @@ const EditAbout = () => {
               <strong className="cursor-pointer ml-1 font-extrabold">
                 {aboutData.title}
               </strong>
-              <div className="flex gap-2 ">
+              <div className="flex gap-3  text-xl">
                 <button onClick={() => handleEditAbout(aboutData)}>
                   <BsPencilSquare />
                 </button>
@@ -362,7 +385,10 @@ const EditAbout = () => {
               <strong className="cursor-pointer ml-1 font-extrabold">
                 Skills
               </strong>
-              <div className="flex gap-2 ">
+              <div className="flex gap-3 text-2xl">
+                <button onClick={openAddSkill}>
+                  <BiAddToQueue />
+                </button>
                 <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
                   {skillsClose ? (
                     <FiChevronUp />
@@ -378,19 +404,26 @@ const EditAbout = () => {
                 {skills.map((skill, index) => (
                   <EditSkills
                     key={index}
-                    id={index + 1}
                     skillsData={skill}
-                    onSave={(newSkill, id) => {
-                      updateSkill(newSkill, id);
+                    onSave={(newSkill, name) => {
+                      updateSkill(newSkill, name);
                     }}
                     onDelete={(skillName) => {
                       handleDeleteSkill(skillName);
                     }}
                   />
                 ))}
+                {openAddSkillModal && (
+                  <AddSkill />)}
               </div>
             )}
-
+            {openAddSkillModal && (
+              <AddSkill
+                isOpen={openAddSkill}
+                closeModal={closeAddSkill}
+                addNewSkill={(newSkill) => addNewSkill(newSkill)}
+              />
+            )}
           </li>
 
           <li

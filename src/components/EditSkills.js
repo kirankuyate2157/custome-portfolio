@@ -2,12 +2,91 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
+  // State for the new skill being added
+  const [newSkill, setNewSkill] = useState({
+    name: '',
+    x: '',
+    y: '',
+  });
 
-const EditSkills = ({ id, skillsData, onSave, onDelete }) => {
+  const handleAddSkill = () => {
+    if (newSkill.name && newSkill.x && newSkill.y) {
+      addNewSkill(newSkill);
+      closeModal();
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={closeModal}
+      className="modal fixed inset-0 p-2 w-full flex items-center justify-center z-50"
+      overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
+    >
+      <div className="bg-white w-full max-w-[530px] p-4 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold mb-4">Add Skill</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="text-gray-600">Skill Name</label>
+            <input
+              type="text"
+              className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Skill Name"
+              value={newSkill.name}
+              onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="text-gray-600">X Position</label>
+            <input
+              type="text"
+              className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="X Position"
+              value={newSkill.x}
+              onChange={(e) => setNewSkill({ ...newSkill, x: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="text-gray-600">Y Position</label>
+            <input
+              type="text"
+              className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Y Position"
+              value={newSkill.y}
+              onChange={(e) => setNewSkill({ ...newSkill, y: e.target.value })}
+            />
+          </div>
+        </div>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={handleAddSkill}
+            className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+          >
+            <span>Save</span>
+          </button>
+          <button
+            onClick={closeModal}
+            className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover-bg-gray-300 transition"
+          >
+            <span>Cancel</span>
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+
+const EditSkills = ({ skillsData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [name, setName] = useState(skillsData.name);
   const [formData, setFormData] = useState({ ...skillsData });
   const openModal = () => {
     setIsModalOpen(true);
+    // Set the formData to the skill you want to edit
+    setFormData({ ...skillsData });
+    setName(skillsData.name);
   };
 
   const closeModal = () => {
@@ -15,8 +94,8 @@ const EditSkills = ({ id, skillsData, onSave, onDelete }) => {
   };
 
   const handleSave = () => {
-    onSave(formData, id);
-    console.log("skill key ss : ", id);
+    onSave(formData, name);
+    console.log("skill key ss : ", name);
     closeModal();
   };
 
@@ -120,4 +199,4 @@ const EditSkills = ({ id, skillsData, onSave, onDelete }) => {
   );
 };
 
-export default EditSkills;
+export { EditSkills, AddSkill };
