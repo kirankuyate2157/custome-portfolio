@@ -135,9 +135,8 @@ const projects = () => {
               return (
                 <div
                   key={index}
-                  className={`sm:col-span-12 ${
-                    (index + 1) % 3 === 0 ? "col-span-12" : "col-span-6"
-                  }`}
+                  className={`sm:col-span-12 ${(index + 1) % 3 === 0 ? "col-span-12" : "col-span-6"
+                    }`}
                 >
                   {(index + 1) % 3 === 0 ? (
                     <FeaturedPrject {...project} />

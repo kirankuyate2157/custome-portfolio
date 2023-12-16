@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const EditEducation = ({ educationData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [type,setType] = useState(educationData.type);
   const [formData, setFormData] = useState({ ...educationData });
 
   const openModal = () => {
@@ -21,12 +22,13 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
   };
 
   const handleSave = () => {
-    onSave(formData);
+    onSave(formData,type);
     closeModal();
   };
 
   const handleDelete = () => {
-    onDelete(formData.type);
+    onDelete(type);
+    console.log(`deleting...  ${type}`)
     closeModal();
   };
 

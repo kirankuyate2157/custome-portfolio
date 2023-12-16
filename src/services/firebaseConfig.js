@@ -57,9 +57,16 @@ const getUserData = () => {
 };
 const usr = getUserData();
 
-const getCurrentUserId=()=>{
+const getCurrentUserId = () => {
   const usr = getUserData();
-  return usr.uid;
+
+  if (usr && usr.uid) {
+    return usr.uid;
+  } else {
+    // Handle the case when there is no authenticated user
+    console.error("User is not authenticated");
+    return null; // or throw an error, depending on your application logic
+  }
 };
 
 console.log("user data : ", usr);
@@ -76,14 +83,12 @@ const login = async (email, password) => {
   }
 };
 
-
 const logout = async () => {
   try {
     await signOut();
   } catch (error) {
     // throw new Error(error.message);
-    console.log("logout error : ",error.message);
-
+    console.log("logout error : ", error.message);
   }
 };
 const GoogleAuth = () => {
@@ -91,4 +96,13 @@ const GoogleAuth = () => {
   return signInWithPopup(auth, provider);
 };
 
-export { auth, db, getUserData, getCurrentUserId,register, login, logout, GoogleAuth };
+export {
+  auth,
+  db,
+  getUserData,
+  getCurrentUserId,
+  register,
+  login,
+  logout,
+  GoogleAuth,
+};

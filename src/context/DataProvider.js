@@ -8,7 +8,6 @@ export const HomeDataProvider = ({ children, data }) => {
     <HomeDataContext.Provider value={data}>{children}</HomeDataContext.Provider>
   );
 };
-
 export const useSocialLinkData = () => {
   return useContext(HomeDataContext).SocialLinks;
 };

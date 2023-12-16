@@ -231,6 +231,8 @@ const EditHome = () => {
     }
   };
 
+
+
   useEffect(() => {
     getDoc(userPortfolioRef)
       .then((snapshot) => {
