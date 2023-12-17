@@ -14,33 +14,47 @@ import { BiAddToQueue } from "react-icons/bi";
 import classNames from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
-import { useProjectData,useData } from "../context/DashboardDataProvider";
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  useProjectData,
+  useData
+} from "../context/DashboardDataProvider";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc
+} from 'firebase/firestore';
 import { getCurrentUserId } from "../services/firebaseConfig.js";
+
+// Dropdown component to display project details
 const ProjectDetailsDropdown = ({ project }) => {
   const [close, setClose] = useState(false);
+
   return (
     <AnimatePresence>
       {project && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
+        <motion.div initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className='grid sm:text-sm text-black  dark:text-white grid-cols-12  mt-1 rounded p-2 ml-4  overflow-hidden'
+          className='grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden'
         >
           <div className='col-span-9 sm:col-span-12'>
+            {/* Project Type */}
             <div className='mb-2'>
               <h4 className='font-semibold'>Type</h4>
-              <p className='text-black  dark:text-gray-300'>{project.type}</p>
+              <p className='text-black dark:text-gray-300'>{project.type}</p>
             </div>
 
+            {/* Project Summary */}
             <div>
-              <h4 className='font-semibold '>Summary</h4>
-              <p className='text-black  dark:text-gray-300'>
+              <h4 className='font-semibold'>Summary</h4>
+              <p className='text-black dark:text-gray-300'>
                 {project.summary}
               </p>
             </div>
+
+            {/* Preview (Hidden in small screens) */}
             <div className='hidden sm:flex flex-col'>
               <h4 className='font-semibold'>Preview</h4>
               <a
@@ -56,10 +70,11 @@ const ProjectDetailsDropdown = ({ project }) => {
                   trimRight
                   basedOn='letters'
                   className='text-indigo-600 hover:underline'
-                // onClick={() => setShowFullText(!showFullText)}
                 />
               </a>
             </div>
+
+            {/* Link */}
             <div className='mb-2'>
               <h4 className='font-semibold'>Link</h4>
               <a
@@ -71,6 +86,8 @@ const ProjectDetailsDropdown = ({ project }) => {
                 {project.link}
               </a>
             </div>
+
+            {/* GitHub Link */}
             <div className='mb-2'>
               <h4 className='font-semibold'>GitHub</h4>
               <a
@@ -83,9 +100,9 @@ const ProjectDetailsDropdown = ({ project }) => {
               </a>
             </div>
           </div>
+
+          {/* Project Image (Hidden in larger screens) */}
           <div className='col-span-3 sm:hidden sm:col-span-12 flex flex-col items-center justify-center w-full h-auto'>
-            {/* <h4 className='font-semibold'>preview</h4> */}
-            {/* <hr className='my-1' /> */}
             <div className='p-1 sm:p-[2px] xs:border border-[0.5px] w-full border-primary rounded '>
               <img
                 src={project.img}
@@ -100,6 +117,7 @@ const ProjectDetailsDropdown = ({ project }) => {
   );
 };
 
+// Modal component for editing/add new project
 const ProjectFormModal = ({
   isOpen,
   closeModal,
@@ -109,14 +127,14 @@ const ProjectFormModal = ({
 }) => {
   const [formData, setFormData] = useState({ ...project });
   const [title, setTitle] = useState(project.title);
- 
-  console.log(" add neeew :: ",formData);
+
+  console.log("add new: ", formData);
+
   const handleSave = () => {
-    console.log(` modal save pj : " + ${JSON.stringify(formData)}`);
+    console.log(`modal save project: ${JSON.stringify(formData)}`);
     onSave(formData, title);
     closeModal();
   };
-
 
   return (
     <Modal
@@ -130,6 +148,7 @@ const ProjectFormModal = ({
           {editing ? "Edit Project" : "Add New Project"}
         </h2>
         <div className='space-y-4'>
+          {/* Project Type */}
           <div>
             <label className='text-gray-600'>Type</label>
             <input
@@ -142,6 +161,8 @@ const ProjectFormModal = ({
               }
             />
           </div>
+
+          {/* Project Title */}
           <div>
             <label className='text-gray-600'>Title</label>
             <input
@@ -154,6 +175,8 @@ const ProjectFormModal = ({
               }
             />
           </div>
+
+          {/* Image URL */}
           <div>
             <label className='text-gray-600'>Image URL</label>
             <input
@@ -166,6 +189,8 @@ const ProjectFormModal = ({
               }
             />
           </div>
+
+          {/* Link */}
           <div>
             <label className='text-gray-600'>Link</label>
             <input
@@ -178,6 +203,8 @@ const ProjectFormModal = ({
               }
             />
           </div>
+
+          {/* GitHub URL */}
           <div>
             <label className='text-gray-600'>GitHub URL</label>
             <input
@@ -190,6 +217,8 @@ const ProjectFormModal = ({
               }
             />
           </div>
+
+          {/* Summary */}
           <div>
             <label className='text-gray-600'>Summary</label>
             <textarea
@@ -201,6 +230,8 @@ const ProjectFormModal = ({
               }
             />
           </div>
+
+          {/* Buttons */}
           <div className='flex justify-between'>
             <button
               className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
@@ -210,6 +241,7 @@ const ProjectFormModal = ({
             >
               <span>{editing ? "Save" : "Add"}</span>
             </button>
+
             <button
               className='flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition'
               onClick={closeModal}
@@ -223,14 +255,15 @@ const ProjectFormModal = ({
   );
 };
 
+// Main EditProject component
 const EditProject = () => {
   const projects = useProjectData();
   const data = useData();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [addModal, setAddModal] = useState(false)
+  const [addModal, setAddModal] = useState(false);
   const [editing, setEditing] = useState(false);
   const [close, setClose] = useState(false);
-  const [portfolio,setPortfolio] = useState({...data,})
+  const [portfolio, setPortfolio] = useState({ ...data });
   const [formData, setFormData] = useState([...projects]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [projectTemp, setProjectTemp] = useState({
@@ -241,50 +274,51 @@ const EditProject = () => {
     type: "Project techStack",
     summary: "A brief summary of your project."
   });
-const updateData=()=>{
-  setPortfolio({ ...portfolio, Projects: { projectData:[...formData] } });
-  console.log("portfolio updated data 🪠🪠 : ", portfolio);
-}
+
+  const updateData = () => {
+    setPortfolio({ ...portfolio, Projects: { projectData: [...formData] } });
+    console.log("portfolio updated data 🪠🪠 : ", portfolio);
+  };
+
   // ------------------ binary modes --------------------------------
   const openModal = () => {
     setIsModalOpen(true);
-    console.log("pj : ", selectedProject)
+    console.log("selected project : ", selectedProject);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
   const openAddModal = () => {
     setAddModal(true);
-  }
+  };
+
   const closeAddModal = () => {
     setAddModal(false);
   };
 
-
   //  ---------------- handlers -------------------------
   const handleSave = (updatedProj, title) => {
-    console.log("title : ", title, updatedProj)
+    console.log("title : ", title, updatedProj);
     const updatedProjects = [...formData];
     const index = updatedProjects.findIndex((project) => project.title === title);
-
 
     if (index !== -1) {
       updatedProjects[index] = { ...updatedProj };
       setFormData([...updatedProjects]);
     }
-    console.log(` updated Edit : ` + updatedProjects);
+    console.log(`updated Edit : ` + updatedProjects);
     setEditing(false);
     updateData();
   };
 
-  const handleEdit=(project) => {
+  const handleEdit = (project) => {
     setSelectedProject(project);
-    console.log("selected edit prj : ",selectedProject)
+    console.log("selected edit project : ", selectedProject);
     setEditing(true);
     openModal();
-  }
-
+  };
 
   const handleDeleteProject = (title) => {
     const updatedProjects = formData.filter(
@@ -299,37 +333,31 @@ const updateData=()=>{
     updateData();
     console.log("new project is added : " + newProj);
   };
-// ------------------------- firebase data updating ------------------------------
 
-
-const documentId = getCurrentUserId();
-
-  console.log("cuurent Project Id ⭕⭕⭕ user is : ", documentId);
+  // ------------------------- firebase data updating ------------------------------
+  const documentId = getCurrentUserId();
+  console.log("current Project Id ⭕⭕⭕ user is : ", documentId);
   const db = getFirestore();
   if (documentId) {
     var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
+  } else {
+    console.log("current user id not found!")
   }
-  else {
-    console.log(" current user id not found !")
-  }
-useEffect(() =>{
-updateData();
-setPortfolio({ ...portfolio, Projects: { projectData:[...formData] } });
-console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
 
-  // Update the document in Firestore
-  updateDoc(userPortfolioRef, portfolio)
-    .then(() => {
-      console.log('Project data updated successfully 🌨️🌨️🌨️.');
-    })
-    .catch((error) => {
-      console.error('Error updating Project data :', error);
-    });
-},[formData,documentId]);
+  useEffect(() => {
+    updateData();
+    setPortfolio({ ...portfolio, Projects: { projectData: [...formData] } });
+    console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
 
- 
-
-
+    // Update the document in Firestore
+    updateDoc(userPortfolioRef, portfolio)
+      .then(() => {
+        console.log('Project data updated successfully 🌨️🌨️🌨️.');
+      })
+      .catch((error) => {
+        console.error('Error updating Project data:', error);
+      });
+  }, [formData, documentId]);
 
   useEffect(() => {
     getDoc(userPortfolioRef)
@@ -355,21 +383,20 @@ console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
         </h2>
         <h2
           className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-yellow-500  font-semibold'
-          onClick={
-            openAddModal}
+          onClick={openAddModal}
         >
           <BiAddToQueue />
         </h2>
         {addModal && (
-        <ProjectFormModal
-        key={projectTemp.title}
-        isOpen={addModal}
-        closeModal={closeAddModal}
-        project={projectTemp}
-        editing={editing}
-        onSave={(data, title) => addNewProject(data, title)}
-      />
-      )}
+          <ProjectFormModal
+            key={projectTemp.title}
+            isOpen={addModal}
+            closeModal={closeAddModal}
+            project={projectTemp}
+            editing={editing}
+            onSave={(data, title) => addNewProject(data, title)}
+          />
+        )}
       </div>
       <div className='flex-grow p-4 overflow-y-auto text-black  dark:text-white'>
         <ul className='space-y-4'>
@@ -423,9 +450,6 @@ console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
           ))}
         </ul>
       </div>
-
-
-    
     </div>
   );
 };
