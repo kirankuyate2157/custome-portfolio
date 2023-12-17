@@ -128,10 +128,10 @@ const ProjectFormModal = ({
   const [formData, setFormData] = useState({ ...project });
   const [title, setTitle] = useState(project.title);
 
-  console.log("add new: ", formData);
+  // console.log("add new: ", formData);
 
   const handleSave = () => {
-    console.log(`modal save project: ${JSON.stringify(formData)}`);
+    // console.log(`modal save project: ${JSON.stringify(formData)}`);
     onSave(formData, title);
     closeModal();
   };
@@ -277,13 +277,13 @@ const EditProject = () => {
 
   const updateData = () => {
     setPortfolio({ ...portfolio, Projects: { projectData: [...formData] } });
-    console.log("portfolio updated data 🪠🪠 : ", portfolio);
+    // console.log("portfolio updated data 🪠🪠 : ", portfolio);
   };
 
   // ------------------ binary modes --------------------------------
   const openModal = () => {
     setIsModalOpen(true);
-    console.log("selected project : ", selectedProject);
+    // console.log("selected project : ", selectedProject);
   };
 
   const closeModal = () => {
@@ -300,7 +300,7 @@ const EditProject = () => {
 
   //  ---------------- handlers -------------------------
   const handleSave = (updatedProj, title) => {
-    console.log("title : ", title, updatedProj);
+    // console.log("title : ", title, updatedProj);
     const updatedProjects = [...formData];
     const index = updatedProjects.findIndex((project) => project.title === title);
 
@@ -308,14 +308,14 @@ const EditProject = () => {
       updatedProjects[index] = { ...updatedProj };
       setFormData([...updatedProjects]);
     }
-    console.log(`updated Edit : ` + updatedProjects);
+    // console.log(`updated Edit : ` + updatedProjects);
     setEditing(false);
     updateData();
   };
 
   const handleEdit = (project) => {
     setSelectedProject(project);
-    console.log("selected edit project : ", selectedProject);
+    // console.log("selected edit project : ", selectedProject);
     setEditing(true);
     openModal();
   };
@@ -331,12 +331,12 @@ const EditProject = () => {
   const addNewProject = (newProj) => {
     setFormData([...formData, newProj]);
     updateData();
-    console.log("new project is added : " + newProj);
+    // console.log("new project is added : " + newProj);
   };
 
   // ------------------------- firebase data updating ------------------------------
   const documentId = getCurrentUserId();
-  console.log("current Project Id ⭕⭕⭕ user is : ", documentId);
+  // console.log("current Project Id ⭕⭕⭕ user is : ", documentId);
   const db = getFirestore();
   if (documentId) {
     var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
@@ -347,7 +347,7 @@ const EditProject = () => {
   useEffect(() => {
     updateData();
     setPortfolio({ ...portfolio, Projects: { projectData: [...formData] } });
-    console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
+    // console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
 
     // Update the document in Firestore
     updateDoc(userPortfolioRef, portfolio)

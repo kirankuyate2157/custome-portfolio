@@ -72,7 +72,7 @@ const Dashboard = () => {
             <EditAbout />
 
             <EditProject/>
-            {/* <EditArticles /> */}
+            <EditArticles />
           </>
         )}
       </div>
