@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const EditArticle = ({ articleData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [title, setTitle] = useState(articleData.title)
   const [formData, setFormData] = useState({ ...articleData });
 
   const openModal = () => {
@@ -18,7 +19,7 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
   };
 
   const handleSave = () => {
-    onSave(formData);
+    onSave(formData,title);
     closeModal();
   };
 

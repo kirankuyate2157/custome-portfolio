@@ -1,24 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BiAddToQueue } from 'react-icons/bi'
 import { FiChevronUp, FiChevronDown, FiChevronRight } from 'react-icons/fi'
 import KiranPortfolioData from '../assets/portfolioData'
 import EditArticle from './EditArticle'
+import articles from './../pages/[userName].js/articles';
+import { useArticleData } from '../context/DashboardDataProvider'
 
 const EditArticles = () => {
+
+  const articles=useArticleData();
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
   const [allClose, setAllClose] = useState(false)
   const [recentClose, setRecentAllClose] = useState(false)
-  const [articlesData, setArticlesData] = useState(KiranPortfolioData.Articles.articlesData || [])
-  const [allArticlesData, setAllArticlesData] = useState(KiranPortfolioData.Articles.allArticlesData || [])
+  const [articlesData, setArticlesData] = useState(articles.articlesData || [])
+  const [allArticlesData, setAllArticlesData] = useState(articles.allArticlesData || [])
 
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true)
   }
 
   // Function to update article data
-  const handleSaveArticle = (updatedArticle) => {
+  const handleSaveArticle = (updatedArticle,title) => {
     // Find the index of the article to be updated
-    const indexToUpdate = articlesData.findIndex(article => article.title === updatedArticle.title)
+    const indexToUpdate = articlesData.findIndex((article) => article.title === title)
 
     if (indexToUpdate !== -1) {
       // Create a copy of the article data and update the specific article
@@ -28,14 +32,37 @@ const EditArticles = () => {
     }
   }
 
+   // Function to update All article data
+   const handleSaveAllArticle = (updatedArticle,title) => {
+    // Find the index of the article to be updated
+    const indexToUpdate = allArticlesData.findIndex((article) => article.title === title)
+
+    if (indexToUpdate !== -1) {
+      // Create a copy of the article data and update the specific article
+      const updatedArticlesData = [...allArticlesData]
+      updatedArticlesData[indexToUpdate] = updatedArticle
+      setAllArticlesData(updatedArticlesData)
+    }
+  }
+
   // Function to delete article data
   const handleDeleteArticle = (title) => {
     // Filter out the article to be deleted
-    const updatedArticlesData = articlesData.filter(article => article.title !== title)
+    const updatedArticlesData = articlesData.filter((article )=> article.title !== title)
     setArticlesData(updatedArticlesData)
   }
 
+    // Function to delete article data
+    const handleDeleteAllArticle = (title) => {
+      // Filter out the article to be deleted
+      const updatedArticlesData = allArticlesData.filter((article )=> article.title !== title)
+      setAllArticlesData(updatedArticlesData)
+    }
 
+    useEffect(()=>{
+        console.log("All article : ",allArticlesData);
+        console.log("Articles : ",articlesData)
+    },[allArticlesData,articlesData])
   return (
     <>
     <div className='w-screen   mb-5  font-mono text-black dark:text-white flex flex-col'>
@@ -63,7 +90,7 @@ const EditArticles = () => {
                <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
                {articlesData.map((article, index) => (
                   <EditArticle
-                    key={index}
+                    key={ `${article.title}-${index}`}
                     articleData={article}
                     onSave={handleSaveArticle}
                     onDelete={handleDeleteArticle} />
@@ -87,12 +114,12 @@ const EditArticles = () => {
             {allArticlesData && allClose && (
              <div>
                <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
-               {allArticlesData.map((article, index) => (
+               {allArticlesData.map((article,index) => (
                   <EditArticle
-                    key={index}
+                  key={ `${article.title}-${index}`}
                     articleData={article}
-                    onSave={handleSaveArticle}
-                    onDelete={handleDeleteArticle} />
+                    onSave={handleSaveAllArticle}
+                    onDelete={handleDeleteAllArticle} />
                 ))}
              </div>
              )}
