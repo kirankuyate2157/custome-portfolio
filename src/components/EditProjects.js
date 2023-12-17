@@ -1,5 +1,5 @@
 // components/EditProjects.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
 import Modal from "react-modal";
 import {
@@ -14,6 +14,9 @@ import { BiAddToQueue } from "react-icons/bi";
 import classNames from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
+import { useProjectData,useData } from "../context/DashboardDataProvider";
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getCurrentUserId } from "../services/firebaseConfig.js";
 const ProjectDetailsDropdown = ({ project }) => {
   const [close, setClose] = useState(false);
   return (
@@ -53,7 +56,7 @@ const ProjectDetailsDropdown = ({ project }) => {
                   trimRight
                   basedOn='letters'
                   className='text-indigo-600 hover:underline'
-                  // onClick={() => setShowFullText(!showFullText)}
+                // onClick={() => setShowFullText(!showFullText)}
                 />
               </a>
             </div>
@@ -100,12 +103,21 @@ const ProjectDetailsDropdown = ({ project }) => {
 const ProjectFormModal = ({
   isOpen,
   closeModal,
-  formData,
-  setFormData,
-  handleSave,
+  project,
+  onSave,
   editing,
-  projectTypes,
 }) => {
+  const [formData, setFormData] = useState({ ...project });
+  const [title, setTitle] = useState(project.title);
+ 
+  console.log(" add neeew :: ",formData);
+  const handleSave = () => {
+    console.log(` modal save pj : " + ${JSON.stringify(formData)}`);
+    onSave(formData, title);
+    closeModal();
+  };
+
+
   return (
     <Modal
       isOpen={isOpen}
@@ -113,7 +125,7 @@ const ProjectFormModal = ({
       className='modal fixed inset-0 flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className='bg-white w-full sm:w-96 p-4 rounded-lg shadow-lg'>
+      <div className='bg-white text-gray-600 w-full max-w-[1080px] mx-10 sm:w-96 p-4 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>
           {editing ? "Edit Project" : "Add New Project"}
         </h2>
@@ -193,7 +205,7 @@ const ProjectFormModal = ({
             <button
               className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
               onClick={() => {
-                handleSave(); closeModal();
+                handleSave(), closeModal();
               }}
             >
               <span>{editing ? "Save" : "Add"}</span>
@@ -211,74 +223,127 @@ const ProjectFormModal = ({
   );
 };
 
-const EditProject = ({
-  projects,
-  addProject,
-  updateProject,
-  deleteProject,
-}) => {
+const EditProject = () => {
+  const projects = useProjectData();
+  const data = useData();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addModal, setAddModal] = useState(false)
   const [editing, setEditing] = useState(false);
   const [close, setClose] = useState(false);
-  const [formData, setFormData] = useState({
-    type: "",
-    title: "",
-    img: "",
-    link: "",
-    github: "",
-    summary: "",
-  });
-
-  const handleEdit = (project) => {
-    setEditing(true);
-    setFormData({
-      type: project.type,
-      title: project.title,
-      img: project.img,
-      link: project.link,
-      github: project.github,
-      summary: project.summary,
-    });
-  };
-
-  const handleSave = () => {
-    if (editing) {
-      // Update project
-      updateProject(formData);
-    } else {
-      // Add new project
-      addProject(formData);
-    }
-    setEditing(false);
-    setFormData({
-      type: "",
-      title: "",
-      img: "",
-      link: "",
-      github: "",
-      summary: "",
-    });
-  };
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-
-  // Function to open the form modal
-  const openFormModal = () => {
-    setIsFormModalOpen(true);
-  };
-
-  // Function to close the form modal
-  const closeFormModal = () => {
-    setIsFormModalOpen(false);
-  };
-
-  const handleDelete = (projectTitle) => {
-    // Delete project
-    deleteProject(projectTitle);
-  };
+  const [portfolio,setPortfolio] = useState({...data,})
+  const [formData, setFormData] = useState([...projects]);
   const [selectedProject, setSelectedProject] = useState(null);
-
-  const handleTitleClick = (project) => {
-    setSelectedProject(project === selectedProject ? null : project);
+  const [projectTemp, setProjectTemp] = useState({
+    img: "https://example.com/your-image.jpg",
+    github: "https://github.com/yourusername/your-repo",
+    title: "Your Project Title",
+    link: "https://your-deployed-project-link.com",
+    type: "Project techStack",
+    summary: "A brief summary of your project."
+  });
+const updateData=()=>{
+  setPortfolio({ ...portfolio, Projects: { projectData:[...formData] } });
+  console.log("portfolio updated data 🪠🪠 : ", portfolio);
+}
+  // ------------------ binary modes --------------------------------
+  const openModal = () => {
+    setIsModalOpen(true);
+    console.log("pj : ", selectedProject)
   };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  const openAddModal = () => {
+    setAddModal(true);
+  }
+  const closeAddModal = () => {
+    setAddModal(false);
+  };
+
+
+  //  ---------------- handlers -------------------------
+  const handleSave = (updatedProj, title) => {
+    console.log("title : ", title, updatedProj)
+    const updatedProjects = [...formData];
+    const index = updatedProjects.findIndex((project) => project.title === title);
+
+
+    if (index !== -1) {
+      updatedProjects[index] = { ...updatedProj };
+      setFormData([...updatedProjects]);
+    }
+    console.log(` updated Edit : ` + updatedProjects);
+    setEditing(false);
+    updateData();
+  };
+
+  const handleEdit=(project) => {
+    setSelectedProject(project);
+    console.log("selected edit prj : ",selectedProject)
+    setEditing(true);
+    openModal();
+  }
+
+
+  const handleDeleteProject = (title) => {
+    const updatedProjects = formData.filter(
+      (prj) => prj.title !== title
+    );
+    setFormData(updatedProjects);
+    updateData();
+  };
+
+  const addNewProject = (newProj) => {
+    setFormData([...formData, newProj]);
+    updateData();
+    console.log("new project is added : " + newProj);
+  };
+// ------------------------- firebase data updating ------------------------------
+
+
+const documentId = getCurrentUserId();
+
+  console.log("cuurent Project Id ⭕⭕⭕ user is : ", documentId);
+  const db = getFirestore();
+  if (documentId) {
+    var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
+  }
+  else {
+    console.log(" current user id not found !")
+  }
+useEffect(() =>{
+updateData();
+setPortfolio({ ...portfolio, Projects: { projectData:[...formData] } });
+console.log("portfolio updated for Firebase 🌨️🌨️ :", portfolio);
+
+  // Update the document in Firestore
+  updateDoc(userPortfolioRef, portfolio)
+    .then(() => {
+      console.log('Project data updated successfully 🌨️🌨️🌨️.');
+    })
+    .catch((error) => {
+      console.error('Error updating Project data :', error);
+    });
+},[formData,documentId]);
+
+ 
+
+
+
+  useEffect(() => {
+    getDoc(userPortfolioRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setPortfolioData(snapshot.data());
+        } else {
+          console.error('Portfolio data not found for document ID:', documentId);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading portfolio data:', error);
+      });
+  }, [documentId, userPortfolioRef]);
 
   return (
     <div className='w-screen mb-5 font-mono flex  flex-col '>
@@ -289,19 +354,28 @@ const EditProject = ({
           <FiChevronRight />
         </h2>
         <h2
-          className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-pink-500  font-semibold'
-          onClick={() => {
-            setIsFormModalOpen(!isFormModalOpen);
-          }}
+          className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-yellow-500  font-semibold'
+          onClick={
+            openAddModal}
         >
           <BiAddToQueue />
         </h2>
+        {addModal && (
+        <ProjectFormModal
+        key={projectTemp.title}
+        isOpen={addModal}
+        closeModal={closeAddModal}
+        project={projectTemp}
+        editing={editing}
+        onSave={(data, title) => addNewProject(data, title)}
+      />
+      )}
       </div>
       <div className='flex-grow p-4 overflow-y-auto text-black  dark:text-white'>
         <ul className='space-y-4'>
-          {projects.map((project, index) => (
+          {formData.map((project) => (
             <li
-              key={index}
+              key={project.title}
               className='bg-transparent border-2 border-gray-600 p-2 rounded-lg'
             >
               <div
@@ -317,7 +391,7 @@ const EditProject = ({
                   <button onClick={() => handleEdit(project)}>
                     <BsPencilSquare />
                   </button>
-                  <button onClick={() => handleDelete(project.title)}>
+                  <button onClick={() => handleDeleteProject(project.title)}>
                     <BsTrash />
                   </button>
                   <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
@@ -329,6 +403,15 @@ const EditProject = ({
                   </button>
                 </div>
               </div>
+              {project == selectedProject ? (
+                <ProjectFormModal
+                  key={selectedProject.title}
+                  isOpen={isModalOpen}
+                  closeModal={closeModal}
+                  project={selectedProject}
+                  editing={editing}
+                  onSave={(data, title) => handleSave(data, title)}
+                />) : ""}
               {project == selectedProject && close && (
                 <div>
                   <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
@@ -340,17 +423,13 @@ const EditProject = ({
           ))}
         </ul>
       </div>
-      
-      <ProjectFormModal
-        isOpen={isFormModalOpen}
-        closeModal={closeFormModal}
-        formData={formData}
-        setFormData={setFormData}
-        handleSave={handleSave}
-        editing={editing}
-      />
+
+
+    
     </div>
   );
 };
 
 export default EditProject;
+
+

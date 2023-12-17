@@ -45,7 +45,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel='icon' href='/favicon.ico' />
 
         <script
-          async
+          type='next/script'
           src='https://www.googletagmanager.com/gtag/js?id=G-NLKDG5322T'
         ></script>
         <script

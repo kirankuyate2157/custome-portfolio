@@ -71,12 +71,7 @@ const Dashboard = () => {
 
             <EditAbout />
 
-            {/* <EditProject
-            projects={projectsData}
-            addProject={addProject}
-            updateProject={updateProject}
-            deleteProject={deleteProject}
-          /> */}
+            <EditProject/>
             {/* <EditArticles /> */}
           </>
         )}
