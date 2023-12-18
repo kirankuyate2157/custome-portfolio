@@ -143,7 +143,7 @@ const ProjectFormModal = ({
       className='modal fixed inset-0 flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className='bg-white text-gray-600 w-full max-w-[1080px] mx-10 sm:w-96 p-4 rounded-lg shadow-lg'>
+      <div className='bg-white text-gray-600 w-full max-w-[800px] mx-10 sm:w-96 p-4 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>
           {editing ? "Edit Project" : "Add New Project"}
         </h2>

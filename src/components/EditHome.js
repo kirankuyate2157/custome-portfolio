@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useHomeData, useData } from "../context/DashboardDataProvider.js";
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getCurrentUserId } from "../services/firebaseConfig.js";
+import { FiUpload, FiFolder } from 'react-icons/fi';
+import { uploadFile } from '@/services/firebaseConfig.js';
 
 const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
   const [formData, setFormData] = useState({ ...homeData });
@@ -21,15 +23,77 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
     onSave(formData);
     closeModal();
   };
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [resume, setResume] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState(null);
+
+  const handleResumeChange = (e) => {
+    if (e.target.files[0]) {
+      console.log("updating..resume  data ")
+      setResume(e.target.files[0]);
+    }
+  };
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      console.log("updating..img data ")
+      setImage(e.target.files[0]);
+    }
+  };
+
+
+  const handleImgUpload = async () => {
+    if (!image) return;
+
+    const path = 'test';
+    const imageName = image.name;
+
+    try {
+      const url = await uploadFile(image, path, imageName);
+      setImageUrl(url);
+      alert("Uploaded image..", url);
+      setFormData((prevData) => ({ ...prevData, profileImg: url })); // Update using previous state
+      setUploadError(null);
+    } catch (error) {
+      console.log("Error uploading ", error);
+      setUploadError('File upload failed. Please try again.');
+    }
+  };
+
+  const handleResumeUpload = async () => {
+    if (!resume) return;
+
+    const path = 'test';
+    const resumeName = resume.name;
+
+    try {
+      const url = await uploadFile(image, path, resumeName);
+      setResumeUrl(url);
+      alert("Uploaded resu.... ⭕ ", url);
+      setFormData((prevData) => ({ ...prevData, resumeLink: url })); // Update using previous state
+      setUploadError(null);
+    } catch (error) {
+      console.log("Error uploading ", error);
+      setUploadError('File upload failed. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    console.log("Upload img 🌨️: ", imageUrl);
+    console.log("upload resume 🌨️ : ", resumeUrl)
+
+  }, [image, imageUrl, resumeUrl])
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      className="modal fixed inset-0 flex items-center justify-center z-50 "
+      className="modal fixed inset-0 flex  items-center justify-center z-50 "
       overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className="bg-white w-full sm:w-96 p-4 rounded-lg shadow-lg">
+      <div className="bg-white w-full sm:w-96 p-6 text-black px-8 max-w-[800px] mx-10 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Edit Home Data</h2>
         <div className="space-y-4">
           <div>
@@ -42,15 +106,32 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
+          <div className="relative">
             <label className="text-gray-600">Profile Image</label>
-            <input
-              type="text"
-              className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              name="profileImg"
-              value={formData.profileImg}
-              onChange={handleChange}
-            />
+            <div className="flex items-center border  border-gray-300 rounded-md bg-gray-100">
+              <input
+                type="text"
+                className="block flex-grow py-2 px-3 border  border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 overflow-hidden"
+                name="profileImg"
+                value={formData.profileImg}
+                onChange={handleChange}
+              />
+              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
+                <label htmlFor="fileInput" className="cursor-pointer" onClick={handleImgUpload}>
+                  <FiUpload className="text-blue-500 hover:bg-blue-200 rounded" />
+                </label>
+
+                <label htmlFor="fileInput" className=" cursor-pointer">
+                  <FiFolder className="text-green-500 hover:bg-green-200 rounded" />
+                  <input
+                    id="fileInput"
+                    type="file"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
           <div>
             <label className="text-gray-600">Title</label>
@@ -71,15 +152,32 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
+          <div className="relative">
             <label className="text-gray-600">Resume Link</label>
-            <input
-              type="text"
-              className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              name="resumeLink"
-              value={formData.resumeLink}
-              onChange={handleChange}
-            />
+            <div className="flex items-center border  border-gray-300 rounded-md bg-gray-100">
+              <input
+                type="text"
+                className="block flex-grow py-2 px-3 border  border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 overflow-hidden"
+                name="resumeLink"
+                value={formData.resumeLink}
+                onChange={handleChange}
+              />
+              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
+                <label htmlFor="fileInput" className="cursor-pointer" onClick={handleResumeUpload}>
+                  <FiUpload className="text-blue-500 hover:bg-blue-200 rounded" />
+                </label>
+
+                <label htmlFor="fileInput" className="cursor-pointer">
+                  <FiFolder className="text-green-500 hover:bg-green-200 rounded" />
+                  <input
+                    id="fileInput"
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => handleResumeChange(e)}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
           <div>
             <label className="text-gray-600">Email</label>
