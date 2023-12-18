@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 import {
   getAuth,
   GoogleAuthProvider,
@@ -23,7 +25,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
+const storage = getStorage(app);
 // const analytics = getAnalytics(app);
 const register = async (email, password, displayName) => {
   try {
@@ -68,8 +70,16 @@ const getCurrentUserId = () => {
     return null; // or throw an error, depending on your application logic
   }
 };
+//uplode files 
+const uploadFile = async (file, path, imageName) => {
+  const storageRef = ref(storage, `${path}/${imageName}`);
+  await uploadBytes(storageRef, file);
+  console.log(`Upload ...$`)
+  const url = await getDownloadURL(storageRef);
+  return url;
+};
 
-console.log("user data : ", usr);
+// console.log("user data : ", usr);
 const login = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
@@ -99,6 +109,8 @@ const GoogleAuth = () => {
 export {
   auth,
   db,
+  storage,
+  uploadFile,
   getUserData,
   getCurrentUserId,
   register,

@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { Montserrat } from "next/font/google";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { HomeDataProvider } from "./../context/DataProvider";
-import KiranPortfolioData from "./../assets/portfolioData";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { HomeDataProvider } from "@/context/DataProvider";
+import KiranPortfolioData from "@/assets/portfolioData";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "framer-motion";
-import { getUserPortfolioData } from "./../services/dataCRUD.js";
-import { getCurrentUserId } from "./../services/firebaseConfig.js";
+import { getUserPortfolioData } from "@/services/dataCRUD.js";
+import { getCurrentUserId } from "@/services/firebaseConfig.js";
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-mont",

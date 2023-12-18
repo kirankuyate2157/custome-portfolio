@@ -46,7 +46,7 @@ const AboutDetailsDropdown = ({ aboutData }) => {
                   trimRight
                   basedOn='letters'
                   className='text-indigo-600 hover:underline'
-                  // onClick={() => setShowFullText(!showFullText)}
+                // onClick={() => setShowFullText(!showFullText)}
                 />
               </a>
             </div>
@@ -97,10 +97,10 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
 
   // function splitTextIntoParagraphs(text, numParagraphs) {
   //   const paragraphs = [];
-  
+
   //   // Split the text into sentences
   //   const sentences = text.split('. ');
-  
+
   //   // Combine sentences into paragraphs with a roughly equal number of characters
   //   let currentParagraph = '';
   //   sentences.forEach((sentence) => {
@@ -111,25 +111,25 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
   //       currentParagraph = sentence + '. ';
   //     }
   //   });
-  
+
   //   // Add the last paragraph
   //   paragraphs.push(currentParagraph.trim());
-  
+
   //   // If the number of paragraphs is less than the desired number, pad with empty paragraphs
   //   while (paragraphs.length < numParagraphs) {
   //     paragraphs.push('');
   //   }
-  
+
   //   return paragraphs;
   // }
-  
+
   // // Example usage:
   // const userInputText = "I'm Kiran Kuyate, an enthusiastic software lover with an unquenchable thirst for learning. I'm all about coding and solving problems, on an ongoing journey to untangle the complexities of technology. As a student and eager learner, I'm drawn to the realm of software engineering, where every line of code takes us a step closer to innovation. With an ever-curious mindset, I wholeheartedly welcome new challenges and absorb knowledge like a sponge. I'm thrilled to connect with fellow enthusiasts, learn, and collaborate. Together, we have the power to shape the future of software development. Speaking of involvement and inspiration, I've taken part in leadership roles and engaged in hackathons and meetups, where I've had the opportunity to share my technical understanding and learn from others.";
-  
+
   // const resultParagraphs = splitTextIntoParagraphs(userInputText, 3);
   // console.log(resultParagraphs);
 
-  
+
   return (
     <Modal
       isOpen={isOpen}
@@ -223,71 +223,72 @@ const EditAbout = () => {
   ]);
   const [educationClose, setEducationClose] = useState(false);
   const [education, setEducation] = useState([...allAboutData.educationData]);
-// ------------------------  data updating -------------------------------
+  // ------------------------  data updating -------------------------------
 
-const db = getFirestore();
-if (documentId) {
-  var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
-}
-else {
-  console.log(" current user id not found !")
-}
-useEffect(() => {
-  const About ={
-    aboutPageData: {
-      aboutData: {...aboutData,
-        skills: [...skills],
-        statistics: [...statistics ] 
-      },
-      experienceData: [...experience],
-      educationData:[...education]
-    }
+  const db = getFirestore();
+  if (documentId) {
+    var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
   }
-  const updatedData = { ...data, About: { ...About } };
-  console.log("updated portfolio : ",updatedData)
-
-
-// ---------------- update to firebase -----------------------
-
-if(userPortfolioRef){
-  if (data) {
-    console.log("started home data updating ....")
-
-    // Update the HomeData field within portfolioData
-    const updatedData = { ...data, About: { ...About } };
-
-    // Update the document in Firestore
-    updateDoc(userPortfolioRef, updatedData)
-      .then(() => {
-        console.log('About data updated successfully.');
-      })
-      .catch((error) => {
-        console.error('Error updating Home data :', error);
-      });
+  else {
+    console.log(" current user id not found !")
   }
-}
-},[aboutData,skills,statistics,experience,education]);
-
-
-
-useEffect(() => {
-  getDoc(userPortfolioRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        setPortfolioData(snapshot.data());
-      } else {
-        console.error('Portfolio data not found for document ID:', documentId);
+  useEffect(() => {
+    const About = {
+      aboutPageData: {
+        aboutData: {
+          ...aboutData,
+          skills: [...skills],
+          statistics: [...statistics]
+        },
+        experienceData: [...experience],
+        educationData: [...education]
       }
-    })
-    .catch((error) => {
-      console.error('Error loading portfolio data:', error);
-    });
-}, [documentId, userPortfolioRef]);
+    }
+    const updatedData = { ...data, About: { ...About } };
+    // console.log("updated portfolio : ",updatedData)
+
+
+    // ---------------- update to firebase -----------------------
+
+    if (userPortfolioRef) {
+      if (data) {
+        console.log("started home data updating ....")
+
+        // Update the HomeData field within portfolioData
+        const updatedData = { ...data, About: { ...About } };
+
+        // Update the document in Firestore
+        updateDoc(userPortfolioRef, updatedData)
+          .then(() => {
+            console.log('About data updated successfully.');
+          })
+          .catch((error) => {
+            console.error('Error updating Home data :', error);
+          });
+      }
+    }
+  }, [aboutData, skills, statistics, experience, education]);
+
+
+
+  // useEffect(() => {
+  //   getDoc(userPortfolioRef)
+  //     .then((snapshot) => {
+  //       if (snapshot.exists()) {
+  //         setPortfolioData(snapshot.data());
+  //       } else {
+  //         console.error('Portfolio data not found for document ID:', documentId);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error loading portfolio data:', error);
+  //     });
+  // }, [documentId, userPortfolioRef]);
 
 
 
 
-// --------------------------- data updates end  ---------------------------------
+  // --------------------------- data updates end  ---------------------------------
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
   };
@@ -301,7 +302,7 @@ useEffect(() => {
     handleOpenFormModal();
   };
 
- 
+
 
   // -------------------------------------------------------
   // -----------  about data  ---------
@@ -372,7 +373,7 @@ useEffect(() => {
   //   console.log("Updated statistics:", statistics);
   // }, [statistics]);
 
-  const updateExperience = (updatedExperience,position) => {
+  const updateExperience = (updatedExperience, position) => {
     setExperience((prevData) =>
       prevData.map((experience) =>
         experience.position === position
@@ -393,7 +394,7 @@ useEffect(() => {
   //   console.log("Updated Expreience :", experience);
   // }, [experience]);
 
-  const updateEducation = (updatedEducation,type) => {
+  const updateEducation = (updatedEducation, type) => {
     setEducation((prevData) =>
       prevData.map((education) =>
         education.type === type
@@ -558,7 +559,7 @@ useEffect(() => {
                   <EditExperience
                     key={experience.position}
                     experienceData={experience}
-                    onSave={(exp,pos)=>{updateExperience(exp,pos)}}
+                    onSave={(exp, pos) => { updateExperience(exp, pos) }}
                     onDelete={deleteExperience}
                   />
                 ))}
@@ -587,7 +588,7 @@ useEffect(() => {
                   <EditEducation
                     key={education.type}
                     educationData={education}
-                    onSave={(exp,type)=>{updateEducation(exp,type)}}
+                    onSave={(exp, type) => { updateEducation(exp, type) }}
                     onDelete={deleteEducation}
                   />
                 ))}

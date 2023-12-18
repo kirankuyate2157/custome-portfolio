@@ -5,9 +5,9 @@ import Image from "next/image";
 import Layout from "@/components/Layout";
 import AnimatedText from "@/components/AnimatedText";
 import { motion, useMotionValue } from "framer-motion";
-import TransitionEffect from "../../components/TransitionEffect";
+import TransitionEffect from "@/components/TransitionEffect";
 
-import { useArticleData } from "../../context/DataProvider";
+import { useArticleData } from "@/context/DataProvider";
 
 const FramerImage = motion(Image);
 

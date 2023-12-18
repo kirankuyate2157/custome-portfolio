@@ -9,6 +9,7 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [title, setTitle] = useState(articleData.title)
   const [formData, setFormData] = useState({ ...articleData });
+  const [addType,setAddType] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -17,6 +18,12 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  if(formData.img==='https://kiran.dev/potrate-style.png'){
+    setAddType(true);
+    openModal();
+  }
+
 
   const handleSave = () => {
     onSave(formData,title);
@@ -30,6 +37,7 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
 
   return (
     <div className="font-mono">
+      {!addType && (<>
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, height: 0 }}
@@ -103,6 +111,8 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
           </a>
         </div>
       )}
+      </>
+      )}
 
       <Modal
         isOpen={isModalOpen}
@@ -110,7 +120,7 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
         className="modal fixed inset-0 p-2 w-full flex items-center justify-center z-50"
         overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
       >
-        <div className="bg-white w-full max-w-[530px] p-4 rounded-lg shadow-lg">
+        <div className="bg-white text-gray-600 w-full max-w-[530px] p-4 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4">Edit Article</h2>
           <div className="space-y-4">
             <div>
@@ -123,7 +133,7 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
-            <div>
+            {formData.summary&&(<div>
               <label className="text-gray-600">Summary</label>
               <textarea
                 className="block w-full h-24 py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -131,8 +141,8 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
                 value={formData.summary}
                 onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
               />
-            </div>
-            <div>
+            </div>)}
+           {formData.time&&( <div>
               <label className="text-gray-600">Time</label>
               <input
                 type="text"
@@ -140,6 +150,26 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
                 placeholder="Time"
                 value={formData.time}
                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              />
+            </div>)}
+            {formData.date &&( <div>
+              <label className="text-gray-600">Date </label>
+              <input
+                type="text"
+                className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                placeholder="date "
+                value={formData.date }
+                onChange={(e) => setFormData({ ...formData, date : e.target.value })}
+              />
+            </div>)}
+            <div>
+              <label className="text-gray-600">Image</label>
+              <input
+                type="text"
+                className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                placeholder="Link"
+                value={formData.img}
+                onChange={(e) => setFormData({ ...formData, img: e.target.value })}
               />
             </div>
             <div>

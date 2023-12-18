@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import { motion } from "framer-motion";
@@ -19,14 +19,12 @@ import Trynow from "./Trynow";
 import AuthModal from "./AuthModal";
 const CustomLink = ({ href, title, className = "" }) => {
   const router = useRouter();
-
   return (
     <Link href={href} className={`${className} relative group`}>
       {title}
       <span
-        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${
-          router.asPath === href ? "w-full" : "w-0"
-        }`}
+        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${router.asPath === href ? "w-full" : "w-0"
+          }`}
       >
         &nbsp;
       </span>
@@ -47,9 +45,8 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
     >
       {title}
       <span
-        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${
-          router.asPath === href ? "w-full" : "w-0"
-        }`}
+        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${router.asPath === href ? "w-full" : "w-0"
+          }`}
       >
         &nbsp;
       </span>
@@ -63,14 +60,70 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
 //   GitHub: "https://github.com/kirankuyate2157",
 // };
 
+const Notification = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div
+      className={`fixed top-4 right-4 px-4 py-2 rounded-md text-white ${type === 'done' ? 'bg-green-600' : 'bg-yellow-400'
+        }`}
+    >
+      {message}
+    </div>
+  );
+};
 const Navbar = () => {
   const [mode, setMode] = useThemeSwitcher();
   const [isOpen, setIsOpen] = useState(false);
+  const [notify, setNotify] = useState(false);
   const socialLinks = useSocialLinkData();
 
+  const router = useRouter();
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleShowNotification = () => {
+    setNotify(true);
+    // Close the notification after 3 seconds
+    const timer = setTimeout(() => {
+      setNotify(false);
+    }, 4000);
+  };
+
+  const handleCloseNotification = () => {
+    setNotify(false);
+  };
+
+  let { userName } = router.query;
+  if (!userName) userName = "lol";
+  // Check if userName is falsy (null, undefined, empty string, etc.)
+  const validUserNames = ['kiran312', 'john_doe', 'someuser'];
+
+  const pathToCheck = '/id/[userName]';
+  const route = router.pathname;
+  useEffect(() => {
+
+
+    const validateUserName = (userName) => {
+      const user = validUserNames.forEach((name) => name === userName)
+      if (!user) {
+        // Username is valid, proceed with the logic
+        handleShowNotification();
+      
+      }
+    }
+    const match = router.pathname.includes(pathToCheck)
+    if (match)
+      validateUserName(userName);
+  }, [userName])
+
   return (
     <header className='w-full relative px-32 py-8 font-medium text-black dark:text-light flex items-center justify-between  z-10 lg:px-16 md:px-12 sm:px-8'>
       <button
@@ -78,29 +131,26 @@ const Navbar = () => {
         onClick={handleClick}
       >
         <span
-          className={`bg-dark dark:bg-light block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${
-            isOpen ? "rotate-45 traslate-y-1" : "-translate-y-0.5"
-          }`}
+          className={`bg-dark dark:bg-light block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${isOpen ? "rotate-45 traslate-y-1" : "-translate-y-0.5"
+            }`}
         ></span>
         <span
-          className={`bg-dark dark:bg-light block transition-all duration-100 ease-out h-0.5 w-6 rounded-sm ${
-            isOpen ? "opacity-0" : "opacity-100"
-          }`}
+          className={`bg-dark dark:bg-light block transition-all duration-100 ease-out h-0.5 w-6 rounded-sm ${isOpen ? "opacity-0" : "opacity-100"
+            }`}
         ></span>
         <span
-          className={`bg-dark dark:bg-light block transition-all duration-400 ease-out h-0.5 w-6 rounded-sm ${
-            isOpen ? "-rotate-45 traslate-y-1" : "translate-y-0.5"
-          }`}
+          className={`bg-dark dark:bg-light block transition-all duration-400 ease-out h-0.5 w-6 rounded-sm ${isOpen ? "-rotate-45 traslate-y-1" : "translate-y-0.5"
+            }`}
         ></span>
       </button>
 
       <div className='w-full flex justify-between items-center lg:hidden'>
         <nav>
-          <CustomLink href='/' title='Home' className='mr-4' />
-          <CustomLink href='/about' title='About' className='mx-4' />
-          <CustomLink href='/projects' title='Projects' className='mx-4' />
-          <CustomLink href='/articles' title='Articles' className='mx-4' />
-          <CustomLink href='/dashboards' title='Dashboards' className='ml-4' />
+          <CustomLink href={`/id/${userName}/`} title='Home' className='mr-4' />
+          <CustomLink href={`/id/${userName}/about`} title='About' className='mx-4' />
+          <CustomLink href={`/id/${userName}/projects`} title='Projects' className='mx-4' />
+          <CustomLink href={`/id/${userName}/articles`} title='Articles' className='mx-4' />
+          <CustomLink href={`/id/${userName}/dashboards`} title='Dashboards' className='ml-4' />
         </nav>
         <nav className='flex items-center justify-center flex-wrap'>
           <motion.a
@@ -132,9 +182,8 @@ const Navbar = () => {
             onClick={() => {
               setMode(mode === "light" ? "dark" : "light");
             }}
-            className={`ml-3 flex items-center justify-center rounded-full p-1 ${
-              mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
-            }`}
+            className={`ml-3 flex items-center justify-center rounded-full p-1 ${mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
+              }`}
           >
             {mode == "dark" ? (
               <SunIcon className={"fill-dark"} />
@@ -154,31 +203,31 @@ const Navbar = () => {
         >
           <nav className='flex flex-col justify-center items-center'>
             <CustomMobileLink
-              href='/'
+              href={`/id/${userName}/`}
               title='Home'
               className='mx-4 text-light dark:text-dark'
               toggle={handleClick}
             />
             <CustomMobileLink
-              href='/about'
+              href={`/id/${userName}/about`}
               title='About'
               className='mx-4'
               toggle={handleClick}
             />
             <CustomMobileLink
-              href='/projects'
+              href={`/id/${userName}/projects`}
               title='Projects'
               className='mx-4'
               toggle={handleClick}
             />
             <CustomMobileLink
-              href='/articles'
+              href={`/id/${userName}/articles`}
               title='Articles'
               className='mx-4'
               toggle={handleClick}
             />
             <CustomLink
-              href='/dashboards'
+              href={`/id/${userName}/dashboards`}
               title='Dashboards'
               className='mx-4'
               toggle={handleClick}
@@ -215,9 +264,8 @@ const Navbar = () => {
                 setMode(mode === "light" ? "dark" : "light");
                 handleClick();
               }}
-              className={`flex items-center justify-center rounded-full p-1 ${
-                mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
-              }`}
+              className={`flex items-center justify-center rounded-full p-1 ${mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
+                }`}
             >
               {mode == "dark" ? (
                 <SunIcon className={"fill-dark"} />
@@ -234,6 +282,13 @@ const Navbar = () => {
       <div className='absolute left-[50%] top-2 translate-x-[-50%]'>
         <Logo />
       </div>
+      {notify && (
+        <Notification
+          message="User not found 🫠"
+          type="warn"
+          onClose={handleCloseNotification}
+        />
+      )}
     </header>
   );
 };

@@ -6,9 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { GithubIcon } from "@/components/icons";
 import { motion } from "framer-motion";
-import TransitionEffect from "../components/TransitionEffect";
+import TransitionEffect from "@/components/TransitionEffect";
 const FramerImage = motion(Image);
-import { useProjectData } from "../context/DataProvider";
+import { useProjectData } from "@/context/DataProvider";
 
 const FeaturedPrject = ({ type, title, summary, img, link, github }) => {
   return (
