@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { BiAddToQueue } from "react-icons/bi";
+import { VscFolderActive } from "react-icons/vsc";
+import { TbCloudCheck } from "react-icons/tb"
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,10 +11,18 @@ import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getCurrentUserId } from "../services/firebaseConfig.js";
 import { FiUpload, FiFolder } from 'react-icons/fi';
 import { uploadFile } from '@/services/firebaseConfig.js';
-
+import Notification from "./Notification"
 const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
   const [formData, setFormData] = useState({ ...homeData });
-
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [resume, setResume] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ", type: "warn"
+  });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -21,31 +31,41 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
 
   const handleSaveClick = () => {
     onSave(formData);
+    setNoteMsg({ message: "Home data is saved 🌨️ ", type: "done" });
+    showNotificationMsg();
     closeModal();
   };
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [resume, setResume] = useState(null);
-  const [resumeUrl, setResumeUrl] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadError, setUploadError] = useState(null);
+
+
+
+
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  }
 
   const handleResumeChange = (e) => {
     if (e.target.files[0]) {
-      console.log("updating..resume  data ")
+      // console.log("updating..resume  data ")
       setResume(e.target.files[0]);
     }
   };
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
-      console.log("updating..img data ")
+      // console.log("updating..img data ")
       setImage(e.target.files[0]);
     }
   };
 
-
   const handleImgUpload = async () => {
-    if (!image) return;
+    if (!image) {
+      setNoteMsg({ message: "Image is not selected 🫠", type: "warn" });
+      showNotificationMsg();
+
+      return;
+    }
 
     const path = 'test';
     const imageName = image.name;
@@ -63,19 +83,22 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
   };
 
   const handleResumeUpload = async () => {
-    if (!resume) return;
+    if (!resume) {
+      setNoteMsg({ message: "Resume is not selected 🫠", type: "warn" });
+      showNotificationMsg();
+      return;
+    }
 
-    const path = 'test';
+    const path = 'resumeT';
     const resumeName = resume.name;
 
     try {
       const url = await uploadFile(image, path, resumeName);
       setResumeUrl(url);
-      alert("Uploaded resu.... ⭕ ", url);
       setFormData((prevData) => ({ ...prevData, resumeLink: url })); // Update using previous state
       setUploadError(null);
     } catch (error) {
-      console.log("Error uploading ", error);
+      // console.log("Error uploading ", error);
       setUploadError('File upload failed. Please try again.');
     }
   };
@@ -84,7 +107,7 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
     console.log("Upload img 🌨️: ", imageUrl);
     console.log("upload resume 🌨️ : ", resumeUrl)
 
-  }, [image, imageUrl, resumeUrl])
+  }, [image, resume, imageUrl, resumeUrl])
 
   return (
     <Modal
@@ -117,14 +140,16 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
                 onChange={handleChange}
               />
               <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
-                <label htmlFor="fileInput" className="cursor-pointer" onClick={handleImgUpload}>
-                  <FiUpload className="text-blue-500 hover:bg-blue-200 rounded" />
+                <label htmlFor="fileInput" className="cursor-pointer text-blue-500 hover:bg-blue-200 rounded p-1" onClick={handleImgUpload}>
+                  {imageUrl ? <TbCloudCheck /> : <FiUpload />}
                 </label>
 
-                <label htmlFor="fileInput" className=" cursor-pointer">
-                  <FiFolder className="text-green-500 hover:bg-green-200 rounded" />
+                <label htmlFor="fileInput1" className=" cursor-pointer">
+                  <div className="text-green-500 hover:bg-green-200 rounded p-1">
+                    {image ? <VscFolderActive /> : <FiFolder />}
+                  </div>
                   <input
-                    id="fileInput"
+                    id="fileInput1"
                     type="file"
                     className="hidden"
                     onChange={handleImageChange}
@@ -163,17 +188,19 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
                 onChange={handleChange}
               />
               <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
-                <label htmlFor="fileInput" className="cursor-pointer" onClick={handleResumeUpload}>
-                  <FiUpload className="text-blue-500 hover:bg-blue-200 rounded" />
+                <label htmlFor="fileInput2" className="cursor-pointer text-blue-500 hover:bg-blue-200  rounded p-1 " onClick={handleResumeUpload}  >
+                  {resumeUrl ? <TbCloudCheck /> : <FiUpload />}
                 </label>
 
-                <label htmlFor="fileInput" className="cursor-pointer">
-                  <FiFolder className="text-green-500 hover:bg-green-200 rounded" />
+                <label htmlFor="fileInput4" className="cursor-pointer text-green-500 hover:bg-green-200 rounded p-1 relative">
+                  <div className="">
+                    {resume ? <VscFolderActive /> : <FiFolder />}
+                  </div>
                   <input
-                    id="fileInput"
+                    id="fileInput4"
                     type="file"
                     className="hidden"
-                    onChange={(e) => handleResumeChange(e)}
+                    onChange={handleResumeChange}
                   />
                 </label>
               </div>
@@ -205,6 +232,13 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
           </button>
         </div>
       </div>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={handleNotificationClose}
+        />
+      )}
     </Modal>
   );
 };
