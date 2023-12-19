@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
       // Get the user's UID
       const userId = getCurrentUserId();
       // const userId = "IewXRnC69XRTnbgRf41EmKuU9cu2";
-      console.log("userId--: " + userId);
+      // console.log("userId--: " + userId);
       var userPortfolioData = await getUserPortfolioData(userId);
       if (userPortfolioData) console.log("user data fetched ✅ ");
 

@@ -1,50 +1,53 @@
 import React, { useState } from 'react';
-import { uploadFile } from '@/services/firebaseConfig.js';
+import AddArticle from './../../components/AddArticle.js';
 
-// components/ImageUploader.js
-const Home = () => {
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadError, setUploadError] = useState(null);
+const ParentComponent = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [recentArticlesData, setRecentArticlesData] = useState([
+    {
+      title: 'Article Name...',
+      summary: 'Summary for the article. Edit and update as needed...',
+      time: '5 min read',
+      img: 'https://kiran.dev/potrate-style.png',
+      link: 'https://kiran.dev/article-of-dev-ngf01...',
+    },
+  ]);
 
-  const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
+  const handleAddNewData = (newArticle) => {
+    setRecentArticlesData([...recentArticlesData, newArticle]);
   };
 
-  const handleUpload = async () => {
-    if (!image) return;
-
-    const path = 'test'; // Change this to your desired path
-    const imageName = image.name; // You can customize how you want to name the image
-
-    try {
-      const url = await uploadFile(image, path, imageName);
-      setImageUrl(url);
-      alert("Uploaded image..");
-      setUploadError(null); // Clear any previous errors
-    } catch (error) {
-      console.log("Error uploading ", error)
-      setUploadError('File upload failed. Please try again.'); // Set error message
-    }
+  const openAddModal = () => {
+    setIsAddModalOpen(true);
   };
 
+  const closeAddModal = () => {
+    setIsAddModalOpen(false);
+  };
 
   return (
-    <div>
-      <input type="file" onChange={handleImageChange} />
-      <button onClick={handleUpload}>Upload</button>
+    <>
+      <button onClick={openAddModal}>Add New Article</button>
 
-      {uploadProgress > 0 && uploadProgress < 100 && (
-        <progress value={uploadProgress} max="100"></progress>
+      {isAddModalOpen && (
+        <AddArticle
+          articleData={recentArticlesData[0]}
+          onSave={handleAddNewData}
+          onClose={closeAddModal}
+        />
       )}
 
-      {imageUrl && <img src={imageUrl} alt="Uploaded" />}
-      {uploadError && <p style={{ color: 'red' }}>{uploadError}</p>}
-    </div>
+      <div>
+        <h2>Recent Articles:</h2>
+        {recentArticlesData.map((article, index) => (
+          <div key={`${article.title}-${index}`}>
+            <p>Title: {article.title}</p>
+            <p>Summary: {article.summary}</p>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
-export default Home;
+export default ParentComponent;
