@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const EditEducation = ({ educationData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [type,setType] = useState(educationData.type);
+  const [type, setType] = useState(educationData.type);
   const [formData, setFormData] = useState({ ...educationData });
 
   const openModal = () => {
@@ -22,7 +22,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
   };
 
   const handleSave = () => {
-    onSave(formData,type);
+    onSave(formData, type);
     closeModal();
   };
 
@@ -40,7 +40,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.7 }}
-          className="m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg text-white shadow-lg flex items-center justify-between overflow-hidden"
+          className="m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg text-gray-800 dark:text-white shadow-lg flex items-center justify-between overflow-hidden"
           onClick={toggleDetails}
         >
           <div className="w-full grid grid-flow-row grid-cols-12 sm:text-xs">
@@ -87,50 +87,50 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
         className="modal fixed inset-0 p-2 w-full flex items-center justify-center z-50"
         overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
       >
-        <div className="bg-white w-full max-w-[530px] p-4 rounded-lg shadow-lg">
+        <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[700px] mx-10 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4">Edit Education</h2>
           <div className="space-y-4">
             <div>
-              <label className="text-gray-600">Type</label>
+              <label className="text-gray-600 dark:text-gray-300" >Type</label>
               <input
                 type="text"
-                className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder="Type"
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               />
             </div>
             <div>
-              <label className="text-gray-600">Time</label>
+              <label className="text-gray-600 dark:text-gray-300" >Time</label>
               <input
                 type="text"
-                className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder="Time"
                 value={formData.time}
                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
               />
             </div>
             <div>
-              <label className="text-gray-600">Place</label>
+              <label className="text-gray-600 dark:text-gray-300" >Place</label>
               <input
                 type="text"
-                className="block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder="Place"
                 value={formData.place}
                 onChange={(e) => setFormData({ ...formData, place: e.target.value })}
               />
             </div>
             <div>
-              <label className="text-gray-600">Info</label>
+              <label className="text-gray-600 dark:text-gray-300" >Info</label>
               <textarea
-                className="block w-full h-24 py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder="Info"
                 value={formData.info}
                 onChange={(e) => setFormData({ ...formData, info: e.target.value })}
               />
             </div>
           </div>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-end mt-4 gap-3 px-2">
             <button
               onClick={handleSave}
               className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
@@ -139,7 +139,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
             </button>
             <button
               onClick={closeModal}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition"
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
             >
               <span>Cancel</span>
             </button>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
 import Modal from "react-modal";
+import { VscFolderActive } from "react-icons/vsc";
+import { TbCloudCheck } from "react-icons/tb"
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BiAddToQueue } from "react-icons/bi";
@@ -12,7 +14,9 @@ import EditEducation from "./EditEducation";
 import { useAboutData, useData } from "../context/DashboardDataProvider";
 import { getCurrentUserId } from "./../services/firebaseConfig.js";
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-
+import { FiUpload, FiFolder } from 'react-icons/fi';
+import { uploadFile } from '@/services/firebaseConfig.js';
+import Notification from "./Notification"
 const AboutDetailsDropdown = ({ aboutData }) => {
   const [close, setClose] = useState(false);
 
@@ -88,63 +92,70 @@ const AboutDetailsDropdown = ({ aboutData }) => {
 
 const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
   const [formData, setFormData] = useState({ ...aboutData });
-
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ", type: "warn"
+  });
   const handleSaveClick = () => {
     onSave(formData);
+    setNoteMsg({ message: "About data is saved 🌨️ ", type: "done" });
+    showNotificationMsg();
     closeModal();
   };
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  }
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      // console.log("updating..img data ")
+      setImage(e.target.files[0]);
+    }
+  };
 
+  const handleImgUpload = async () => {
+    if (!image) {
+      setNoteMsg({ message: "Image is not selected 🫠", type: "warn" });
+      showNotificationMsg();
 
-  // function splitTextIntoParagraphs(text, numParagraphs) {
-  //   const paragraphs = [];
+      return;
+    }
 
-  //   // Split the text into sentences
-  //   const sentences = text.split('. ');
+    const path = 'test';
+    const imageName = image.name;
 
-  //   // Combine sentences into paragraphs with a roughly equal number of characters
-  //   let currentParagraph = '';
-  //   sentences.forEach((sentence) => {
-  //     if (currentParagraph.length + sentence.length <= text.length / numParagraphs) {
-  //       currentParagraph += sentence + '. ';
-  //     } else {
-  //       paragraphs.push(currentParagraph.trim());
-  //       currentParagraph = sentence + '. ';
-  //     }
-  //   });
-
-  //   // Add the last paragraph
-  //   paragraphs.push(currentParagraph.trim());
-
-  //   // If the number of paragraphs is less than the desired number, pad with empty paragraphs
-  //   while (paragraphs.length < numParagraphs) {
-  //     paragraphs.push('');
-  //   }
-
-  //   return paragraphs;
-  // }
-
-  // // Example usage:
-  // const userInputText = "I'm Kiran Kuyate, an enthusiastic software lover with an unquenchable thirst for learning. I'm all about coding and solving problems, on an ongoing journey to untangle the complexities of technology. As a student and eager learner, I'm drawn to the realm of software engineering, where every line of code takes us a step closer to innovation. With an ever-curious mindset, I wholeheartedly welcome new challenges and absorb knowledge like a sponge. I'm thrilled to connect with fellow enthusiasts, learn, and collaborate. Together, we have the power to shape the future of software development. Speaking of involvement and inspiration, I've taken part in leadership roles and engaged in hackathons and meetups, where I've had the opportunity to share my technical understanding and learn from others.";
-
-  // const resultParagraphs = splitTextIntoParagraphs(userInputText, 3);
-  // console.log(resultParagraphs);
-
+    try {
+      const url = await uploadFile(image, path, imageName);
+      setImageUrl(url);
+      alert("Uploaded image..", url);
+      setFormData((prevData) => ({ ...prevData, profileImg: url })); // Update using previous state
+      setUploadError(null);
+    } catch (error) {
+      console.log("Error uploading ", error);
+      setUploadError('File upload failed. Please try again.');
+    }
+  };
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      className='modal fixed inset-0 flex items-center justify-center z-50'
+      className='modal fixed inset-0 font-mono flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className='bg-white w-full sm:w-96 p-4 rounded-lg shadow-lg'>
+      <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg">
         <h2 className='text-2xl font-semibold mb-4'>Edit About</h2>
         <div className='space-y-4'>
           <div>
-            <label className='text-gray-600'>Title</label>
+            <label className='text-gray-600 dark:text-gray-300 '>Title</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
               placeholder='Title'
               value={formData.title}
               onChange={(e) =>
@@ -152,24 +163,41 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
               }
             />
           </div>
+          <div className="relative">
+            <label className="text-gray-600 dark:text-gray-300">Profile Image</label>
+            <div className="flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400">
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Profile Image URL'
+                value={formData.profileImg}
+                onChange={(e) =>
+                  setFormData({ ...formData, profileImg: e.target.value })
+                }
+              />
+              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
+                <label htmlFor="fileInput" className="cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1" onClick={handleImgUpload}>
+                  {imageUrl ? <TbCloudCheck /> : <FiUpload />}
+                </label>
 
-          <div>
-            <label className='text-gray-600'>Profile Image</label>
-            <input
-              type='text'
-              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-              placeholder='Profile Image URL'
-              value={formData.profileImg}
-              onChange={(e) =>
-                setFormData({ ...formData, profileImg: e.target.value })
-              }
-            />
+                <label htmlFor="fileInput1" className=" cursor-pointer">
+                  <div className="text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1">
+                    {image ? <VscFolderActive /> : <FiFolder />}
+                  </div>
+                  <input
+                    id="fileInput1"
+                    type="file"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
-
           <div>
-            <label className='text-gray-600'>Bio</label>
+            <label className='text-gray-600 dark:text-gray-300 '>Bio</label>
             <textarea
-              className='block w-full h-24 py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
               placeholder='Bio'
               value={formData.bio.join("\n")}
               onChange={(e) =>
@@ -179,7 +207,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
           </div>
           {/* Add more fields as needed */}
         </div>
-        <div className='flex justify-between mt-4'>
+        <div className="flex justify-end mt-4 gap-3 px-2">
           <button
             className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
             onClick={() => {
@@ -190,13 +218,20 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
             <span>Save</span>
           </button>
           <button
-            className='flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition'
+            className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
             onClick={closeModal}
           >
             <span>Cancel</span>
           </button>
         </div>
       </div>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={handleNotificationClose}
+        />
+      )}
     </Modal>
   );
 };

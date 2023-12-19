@@ -24,14 +24,15 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
       className='modal fixed inset-0 p-2 w-full flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className='bg-white w-full max-w-[530px] p-4 rounded-lg shadow-lg'>
+      <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg">
         <h2 className='text-2xl font-semibold mb-4'>Add Skill</h2>
+        <p className='text-[0.7rem] text-orange-400'>please put value in proper formate so it will visible accordingly on skill spiral "value vw" </p>
         <div className='space-y-4'>
           <div>
-            <label className='text-gray-600'>Skill Name</label>
+            <label className='text-gray-600 dark:text-gray-300'>Skill Name</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
               placeholder='Skill Name'
               value={newSkill.name}
               onChange={(e) =>
@@ -40,27 +41,27 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
             />
           </div>
           <div>
-            <label className='text-gray-600'>X Position</label>
+            <label className='text-gray-600 dark:text-gray-300'>X Position</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
               placeholder='X Position'
               value={newSkill.x}
               onChange={(e) => setNewSkill({ ...newSkill, x: e.target.value })}
             />
           </div>
           <div>
-            <label className='text-gray-600'>Y Position</label>
+            <label className='text-gray-600 dark:text-gray-300'>Y Position</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
               placeholder='Y Position'
               value={newSkill.y}
               onChange={(e) => setNewSkill({ ...newSkill, y: e.target.value })}
             />
           </div>
         </div>
-        <div className='flex justify-between mt-4'>
+        <div className="flex justify-end mt-4 gap-3 px-2">
           <button
             onClick={handleAddSkill}
             className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
@@ -69,7 +70,7 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
           </button>
           <button
             onClick={closeModal}
-            className='flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover-bg-gray-300 transition'
+            className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
           >
             <span>Cancel</span>
           </button>
@@ -114,7 +115,7 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.7 }}
-          className=' m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg  text-white shadow-lg  flex items-center justify-between  overflow-hidden'
+          className=' m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg  text-gray-800 dark:text-white shadow-lg  flex items-center justify-between  overflow-hidden'
         >
           {/* <div className=" m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg  text-white shadow-lg  flex items-center justify-between"> */}
           <div className='w-full grid grid-flow-row grid-cols-12 sm:text-xs '>
@@ -145,14 +146,15 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
         className='modal fixed inset-0  p-2 w-full  flex items-center justify-center z-50'
         overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
       >
-        <div className='bg-white w-full max-w-[530px] p-4 rounded-lg shadow-lg'>
+        <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg">
           <h2 className='text-2xl font-semibold mb-4'>Edit Skill</h2>
+          <p className='text-[0.7rem] text-orange-400'>please put value in proper formate so it will visible accordingly on skill spiral "value vw" </p>
           <div className='space-y-4'>
             <div>
-              <label className='text-gray-600'>Skill Name</label>
+              <label className='text-gray-600 dark:text-gray-300'>Skill Name</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder='Skill Name'
                 value={formData.name}
                 onChange={(e) =>
@@ -161,10 +163,10 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className='text-gray-600'>X Position</label>
+              <label className='text-gray-600 dark:text-gray-300'>X Position</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder='X Position'
                 value={formData.x}
                 onChange={(e) =>
@@ -173,10 +175,10 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className='text-gray-600'>Y Position</label>
+              <label className='text-gray-600 dark:text-gray-300'>Y Position</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border border-gray-300 rounded-md bg-gray-100 text-gray-900 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder='Y Position'
                 value={formData.y}
                 onChange={(e) =>
@@ -185,7 +187,7 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
               />
             </div>
           </div>
-          <div className='flex justify-between mt-4'>
+          <div className="flex justify-end mt-4 gap-3 px-2">
             <button
               onClick={handleSave}
               className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
@@ -194,7 +196,7 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
             </button>
             <button
               onClick={closeModal}
-              className='flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition'
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
             >
               <span>Cancel</span>
             </button>

@@ -32,23 +32,24 @@ const SocialLinksFormModal = ({
       className='modal fixed inset-0 mx-4 font-mono   flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className='bg-[#1b1f30]  text-gray-300  w-full sm:w-96 p-4 rounded-lg shadow-lg'>
+      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300  w-full max-w-[800px]   sm:w-96   p-4 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>Edit Social Links</h2>
         <div className='space-y-4'>
           {Object.entries(formData).map(([key, value]) => (
             <div key={key}>
-              <label className='text-gray-300'>{key}</label>
+              <label className='text-gray-600 dark:text-gray-300'>{key}</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border border-[#8f0c4344] rounded-full  bg-[#1b2034] text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 name={key}
+                placeholder={`${key} url`}
                 value={value}
                 onChange={handleChange}
               />
             </div>
           ))}
         </div>
-        <div className='flex justify-between mt-4'>
+        <div className='flex justify-end mt-4 gap-3 px-2'>
           <button
             className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
             onClick={handleSaveClick}
