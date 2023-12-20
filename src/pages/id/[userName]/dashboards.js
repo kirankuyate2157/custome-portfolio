@@ -4,7 +4,7 @@ import EditProject from "@/components/EditProjects.js";
 import EditAbout from "@/components/EditAbout.js";
 // import EditSkills from '../components/EditSkills';
 import EditHome from "@/components/EditHome.js";
-import NewArticle from "@/components/NewArticle.js";
+import EditArticles from "@/components/EditArticles.js";
 import EditSocial from "@/components/EditSocial.js";
 import { addDataToFirebase } from "@/services/useFirebase.js";
 import {
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
   return (
     <DashboardDataProvider data={Data}>
-      <div className='mb-20 '>
+      <div className='mb-20 min-h-[70vh] '>
         {!isdata && (
           <div className='flex justify-center my-10'>Loading Data ...</div>
         )}
@@ -68,11 +68,9 @@ const Dashboard = () => {
           <>
             <EditSocial />
             <EditHome />
-
             <EditAbout />
-
             <EditProject />
-            <NewArticle />
+            <EditArticles />
           </>
         )}
       </div>

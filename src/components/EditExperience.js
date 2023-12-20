@@ -9,10 +9,136 @@ import {
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
+const AddExperience = ({ onSave, isModalOpen, closeModal }) => {
+  const [formData, setFormData] = useState({
+    company: "KWAYS",
+    address: "Mumbai, India",
+    time: "Jun 2021 - Sept 2021",
+    position: "Software Developer INTERN",
+    companyLink: "https://kways.com",
+    work: "Worked on Android App and Ui features and Notification strategies... ",
+  });
+
+  const handleSave = () => {
+    onSave(formData);
+    closeModal();
+  };
+
+  return (
+    <div className='font-mono'>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        className='modal fixed inset-0 p-2 w-full flex items-center justify-center z-50'
+        overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
+      >
+        <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[700px] mx-10 rounded-lg shadow-lg'>
+          <h2 className='text-2xl font-semibold mb-4'>Edit Experience</h2>
+          <div className='space-y-4'>
+            <div>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Position
+              </label>
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Position'
+                value={formData.position}
+                onChange={(e) =>
+                  setFormData({ ...formData, position: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Company
+              </label>
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Company'
+                value={formData.company}
+                onChange={(e) =>
+                  setFormData({ ...formData, company: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Company Link
+              </label>
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Company Link'
+                value={formData.companyLink}
+                onChange={(e) =>
+                  setFormData({ ...formData, companyLink: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className='text-gray-600 dark:text-gray-300'>Time</label>
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Time'
+                value={formData.time}
+                onChange={(e) =>
+                  setFormData({ ...formData, time: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Address
+              </label>
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Address'
+                value={formData.address}
+                onChange={(e) =>
+                  setFormData({ ...formData, address: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className='text-gray-600 dark:text-gray-300'>Work</label>
+              <textarea
+                className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                placeholder='Work'
+                value={formData.work}
+                onChange={(e) =>
+                  setFormData({ ...formData, work: e.target.value })
+                }
+              />
+            </div>
+          </div>
+          <div className='flex justify-end mt-4 gap-3 px-2'>
+            <button
+              onClick={handleSave}
+              className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
+            >
+              <span>Save</span>
+            </button>
+            <button
+              onClick={closeModal}
+              className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
+            >
+              <span>Cancel</span>
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
 const EditExperience = ({ experienceData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [position, setPosition] = useState(experienceData.position)
+  const [position, setPosition] = useState(experienceData.position);
   const [formData, setFormData] = useState({ ...experienceData });
 
   const openModal = () => {
@@ -101,11 +227,13 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
         className='modal fixed inset-0 p-2 w-full flex items-center justify-center z-50'
         overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
       >
-        <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[700px] mx-10 rounded-lg shadow-lg">
+        <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[700px] mx-10 rounded-lg shadow-lg'>
           <h2 className='text-2xl font-semibold mb-4'>Edit Experience</h2>
           <div className='space-y-4'>
             <div>
-              <label className="text-gray-600 dark:text-gray-300" >Position</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Position
+              </label>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
@@ -117,7 +245,9 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className="text-gray-600 dark:text-gray-300" >Company</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Company
+              </label>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
@@ -129,7 +259,9 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className="text-gray-600 dark:text-gray-300" >Company Link</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Company Link
+              </label>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
@@ -141,7 +273,7 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className="text-gray-600 dark:text-gray-300" >Time</label>
+              <label className='text-gray-600 dark:text-gray-300'>Time</label>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
@@ -153,7 +285,9 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className="text-gray-600 dark:text-gray-300" >Address</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Address
+              </label>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
@@ -165,7 +299,7 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className="text-gray-600 dark:text-gray-300" >Work</label>
+              <label className='text-gray-600 dark:text-gray-300'>Work</label>
               <textarea
                 className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
                 placeholder='Work'
@@ -176,7 +310,7 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
               />
             </div>
           </div>
-          <div className="flex justify-end mt-4 gap-3 px-2">
+          <div className='flex justify-end mt-4 gap-3 px-2'>
             <button
               onClick={handleSave}
               className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
@@ -185,7 +319,7 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
             </button>
             <button
               onClick={closeModal}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
+              className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
             >
               <span>Cancel</span>
             </button>
@@ -196,4 +330,4 @@ const EditExperience = ({ experienceData, onSave, onDelete }) => {
   );
 };
 
-export default EditExperience;
+export { EditExperience, AddExperience };

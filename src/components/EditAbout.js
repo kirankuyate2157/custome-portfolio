@@ -2,21 +2,21 @@ import React, { useEffect, useState } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
 import Modal from "react-modal";
 import { VscFolderActive } from "react-icons/vsc";
-import { TbCloudCheck } from "react-icons/tb"
+import { TbCloudCheck } from "react-icons/tb";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BiAddToQueue } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
 import { EditSkills, AddSkill } from "./EditSkills";
 import EditStatistics from "./EditStatistics";
-import EditExperience from "./EditExperience";
-import EditEducation from "./EditEducation";
+import { EditExperience, AddExperience } from "./EditExperience";
+import { EditEducation, AddEducation } from "./EditEducation";
 import { useAboutData, useData } from "../context/DashboardDataProvider";
 import { getCurrentUserId } from "./../services/firebaseConfig.js";
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { FiUpload, FiFolder } from 'react-icons/fi';
-import { uploadFile } from '@/services/firebaseConfig.js';
-import Notification from "./Notification"
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { FiUpload, FiFolder } from "react-icons/fi";
+import { uploadFile } from "@/services/firebaseConfig.js";
+import Notification from "./Notification";
 const AboutDetailsDropdown = ({ aboutData }) => {
   const [close, setClose] = useState(false);
 
@@ -50,7 +50,7 @@ const AboutDetailsDropdown = ({ aboutData }) => {
                   trimRight
                   basedOn='letters'
                   className='text-indigo-600 hover:underline'
-                // onClick={() => setShowFullText(!showFullText)}
+                  // onClick={() => setShowFullText(!showFullText)}
                 />
               </a>
             </div>
@@ -97,7 +97,8 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
   const [uploadError, setUploadError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [noteMsg, setNoteMsg] = useState({
-    message: "some action done 😕 ", type: "warn"
+    message: "some action done 😕 ",
+    type: "warn",
   });
   const handleSaveClick = () => {
     onSave(formData);
@@ -110,7 +111,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
   };
   const showNotificationMsg = () => {
     setShowNotification(true);
-  }
+  };
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       // console.log("updating..img data ")
@@ -126,7 +127,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
       return;
     }
 
-    const path = 'test';
+    const path = "test";
     const imageName = image.name;
 
     try {
@@ -137,7 +138,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
       setUploadError(null);
     } catch (error) {
       console.log("Error uploading ", error);
-      setUploadError('File upload failed. Please try again.');
+      setUploadError("File upload failed. Please try again.");
     }
   };
 
@@ -148,7 +149,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
       className='modal fixed inset-0 font-mono flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg">
+      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>Edit About</h2>
         <div className='space-y-4'>
           <div>
@@ -163,9 +164,11 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
               }
             />
           </div>
-          <div className="relative">
-            <label className="text-gray-600 dark:text-gray-300">Profile Image</label>
-            <div className="flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400">
+          <div className='relative'>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Profile Image
+            </label>
+            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400'>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
@@ -175,19 +178,23 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
                   setFormData({ ...formData, profileImg: e.target.value })
                 }
               />
-              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
-                <label htmlFor="fileInput" className="cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1" onClick={handleImgUpload}>
+              <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
+                <label
+                  htmlFor='fileInput'
+                  className='cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1'
+                  onClick={handleImgUpload}
+                >
                   {imageUrl ? <TbCloudCheck /> : <FiUpload />}
                 </label>
 
-                <label htmlFor="fileInput1" className=" cursor-pointer">
-                  <div className="text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1">
+                <label htmlFor='fileInput1' className=' cursor-pointer'>
+                  <div className='text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1'>
                     {image ? <VscFolderActive /> : <FiFolder />}
                   </div>
                   <input
-                    id="fileInput1"
-                    type="file"
-                    className="hidden"
+                    id='fileInput1'
+                    type='file'
+                    className='hidden'
                     onChange={handleImageChange}
                   />
                 </label>
@@ -207,7 +214,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
           </div>
           {/* Add more fields as needed */}
         </div>
-        <div className="flex justify-end mt-4 gap-3 px-2">
+        <div className='flex justify-end mt-4 gap-3 px-2'>
           <button
             className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
             onClick={() => {
@@ -218,7 +225,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
             <span>Save</span>
           </button>
           <button
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
+            className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
             onClick={closeModal}
           >
             <span>Cancel</span>
@@ -253,19 +260,20 @@ const EditAbout = () => {
     ...allAboutData.aboutData.statistics,
   ]);
   const [experienceClose, setExperienceClose] = useState(false);
+  const [addExperience, setAddExperience] = useState(false);
   const [experience, setExperience] = useState([
     ...allAboutData.experienceData,
   ]);
   const [educationClose, setEducationClose] = useState(false);
+  const [addEducation, setAddEducation] = useState(false);
   const [education, setEducation] = useState([...allAboutData.educationData]);
   // ------------------------  data updating -------------------------------
 
   const db = getFirestore();
   if (documentId) {
-    var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
-  }
-  else {
-    console.log(" current user id not found !")
+    var userPortfolioRef = doc(db, "User_portfolio_data", documentId);
+  } else {
+    console.log(" current user id not found !");
   }
   useEffect(() => {
     const About = {
@@ -273,21 +281,20 @@ const EditAbout = () => {
         aboutData: {
           ...aboutData,
           skills: [...skills],
-          statistics: [...statistics]
+          statistics: [...statistics],
         },
         experienceData: [...experience],
-        educationData: [...education]
-      }
-    }
+        educationData: [...education],
+      },
+    };
     const updatedData = { ...data, About: { ...About } };
     // console.log("updated portfolio : ",updatedData)
-
 
     // ---------------- update to firebase -----------------------
 
     if (userPortfolioRef) {
       if (data) {
-        console.log("started home data updating ....")
+        console.log("started home data updating ....");
 
         // Update the HomeData field within portfolioData
         const updatedData = { ...data, About: { ...About } };
@@ -295,16 +302,14 @@ const EditAbout = () => {
         // Update the document in Firestore
         updateDoc(userPortfolioRef, updatedData)
           .then(() => {
-            console.log('About data updated successfully.');
+            console.log("About data updated successfully.");
           })
           .catch((error) => {
-            console.error('Error updating Home data :', error);
+            console.error("Error updating Home data :", error);
           });
       }
     }
   }, [aboutData, skills, statistics, experience, education]);
-
-
 
   // useEffect(() => {
   //   getDoc(userPortfolioRef)
@@ -320,9 +325,6 @@ const EditAbout = () => {
   //     });
   // }, [documentId, userPortfolioRef]);
 
-
-
-
   // --------------------------- data updates end  ---------------------------------
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
@@ -336,8 +338,6 @@ const EditAbout = () => {
     setSelectedAbout(aboutData);
     handleOpenFormModal();
   };
-
-
 
   // -------------------------------------------------------
   // -----------  about data  ---------
@@ -423,6 +423,17 @@ const EditAbout = () => {
       prevData.filter((experience) => experience.position !== position)
     );
   };
+  const addNewExperience = (ExpData) => {
+    setExperience([...experience, ExpData]);
+  };
+
+  // ----- Add experience binary ------
+  const openAddExperience = () => {
+    setAddExperience(true);
+  };
+  const closeAddExperience = () => {
+    setAddExperience(false);
+  };
 
   // ------------------- Education -----------
   // useEffect(() => {
@@ -444,7 +455,17 @@ const EditAbout = () => {
       prevData.filter((education) => education.type !== type)
     );
   };
+  const addNewEducation = (ExpData) => {
+    if (ExpData.place && ExpData.info && ExpData.time && ExpData.type)
+      setEducation([...education, ExpData]);
+  };
 
+  const openAddEducation = () => {
+    setAddEducation(true);
+  };
+  const closeAddEducation = () => {
+    setAddEducation(false);
+  };
   // ------------------- Education -----------
   // useEffect(() => {
   //   console.log("Updated Education :", education);
@@ -581,7 +602,10 @@ const EditAbout = () => {
               <strong className='cursor-pointer ml-1 font-extrabold'>
                 Experience
               </strong>
-              <div className='flex gap-2 '>
+              <div className='flex gap-2 text-2xl '>
+                <button onClick={openAddExperience}>
+                  <BiAddToQueue />
+                </button>
                 <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
                   {experienceClose ? <FiChevronUp /> : <FiChevronDown />}
                 </button>
@@ -594,11 +618,23 @@ const EditAbout = () => {
                   <EditExperience
                     key={experience.position}
                     experienceData={experience}
-                    onSave={(exp, pos) => { updateExperience(exp, pos) }}
+                    onSave={(exp, pos) => {
+                      updateExperience(exp, pos);
+                    }}
                     onDelete={deleteExperience}
                   />
                 ))}
               </div>
+            )}
+
+            {addExperience && (
+              <AddExperience
+                isModalOpen={addExperience}
+                closeModal={closeAddExperience}
+                onSave={(newExp) => {
+                  addNewExperience(newExp);
+                }}
+              />
             )}
           </li>
 
@@ -610,7 +646,10 @@ const EditAbout = () => {
               <strong className='cursor-pointer ml-1 font-extrabold'>
                 Education
               </strong>
-              <div className='flex gap-2 '>
+              <div className='flex gap-2 text-2xl'>
+                <button onClick={openAddEducation}>
+                  <BiAddToQueue />
+                </button>
                 <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
                   {educationClose ? <FiChevronUp /> : <FiChevronDown />}
                 </button>
@@ -623,12 +662,21 @@ const EditAbout = () => {
                   <EditEducation
                     key={education.type}
                     educationData={education}
-                    onSave={(exp, type) => { updateEducation(exp, type) }}
+                    onSave={(exp, type) => {
+                      updateEducation(exp, type);
+                    }}
                     onDelete={deleteEducation}
                   />
                 ))}
               </div>
             )}
+            <AddEducation
+              isModalOpen={addEducation}
+              closeModal={closeAddEducation}
+              onSave={(newEdu) => {
+                addNewEducation(newEdu);
+              }}
+            />
           </li>
         </ul>
       </div>
