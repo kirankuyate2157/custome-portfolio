@@ -4,7 +4,7 @@ import EditProject from "@/components/EditProjects.js";
 import EditAbout from "@/components/EditAbout.js";
 // import EditSkills from '../components/EditSkills';
 import EditHome from "@/components/EditHome.js";
-import EditArticles from "@/components/EditArticles.js";
+import NewArticle from "@/components/NewArticle.js";
 import EditSocial from "@/components/EditSocial.js";
 import { addDataToFirebase } from "@/services/useFirebase.js";
 import {
@@ -72,7 +72,7 @@ const Dashboard = () => {
             <EditAbout />
 
             <EditProject />
-            <EditArticles />
+            <NewArticle />
           </>
         )}
       </div>

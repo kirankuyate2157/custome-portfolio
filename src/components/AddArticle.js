@@ -8,9 +8,8 @@ import { FiUpload, FiFolder } from 'react-icons/fi';
 import { uploadFile } from '@/services/firebaseConfig.js';
 import Notification from './Notification';
 
-const AddArticle = ({ articleData, onSave, onClose }) => {
-    const [isModalOpen, setIsModalOpen] = useState(true);
-    const [isAllArticles, setIsAllArticles] = useState(articleData.title !== "Article Name...");
+const AddArticle = ({ isOpen, articleData, onSave, closeModal }) => {
+    const [isAllArticles, setIsAllArticles] = useState(articleData.title === "Article Name...");
     const [formData, setFormData] = useState({ ...articleData });
     const [image, setImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
@@ -20,14 +19,6 @@ const AddArticle = ({ articleData, onSave, onClose }) => {
         message: 'some action done 😕 ',
         type: 'warn',
     });
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
 
     const handleNotificationClose = () => {
         setShowNotification(false);
@@ -41,8 +32,7 @@ const AddArticle = ({ articleData, onSave, onClose }) => {
         onSave(formData);
         setNoteMsg({ message: 'Article data is saved 🌨️ ', type: 'done' });
         showNotificationMsg();
-        closeModal();
-        onClose(); // Close modal after saving data
+        closeModal();// Close modal after saving data
     };
 
     const handleImageChange = (e) => {
@@ -76,13 +66,13 @@ const AddArticle = ({ articleData, onSave, onClose }) => {
         <div className="font-mono">
 
             <Modal
-                isOpen={isModalOpen}
+                isOpen={isOpen}
                 onRequestClose={closeModal}
                 className="modal fixed inset-0 p-2 w-full flex items-center justify-center z-50"
                 overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
             >
                 <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[700px] mx-10 rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-semibold mb-4">Edit Article</h2>
+                    <h2 className="text-2xl font-semibold mb-4">Add Article</h2>
                     <div className="space-y-4">
                         <div>
                             <label className="text-gray-600 dark:text-gray-300" >Title</label>
@@ -123,16 +113,7 @@ const AddArticle = ({ articleData, onSave, onClose }) => {
                                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                             />
                         </div>)}
-                        <div>
-                            <label className="text-gray-600 dark:text-gray-300" >Image</label>
-                            <input
-                                type="text"
-                                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-                                placeholder="Link"
-                                value={formData.img}
-                                onChange={(e) => setFormData({ ...formData, img: e.target.value })}
-                            />
-                        </div>
+
 
                         <div className="relative">
                             <label className="text-gray-600 dark:text-gray-300">Image</label>

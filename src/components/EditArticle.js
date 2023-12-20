@@ -31,10 +31,6 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
     setIsModalOpen(false);
   };
 
-  if (formData.img === 'https://kiran.dev/potrate-style.png') {
-    setAddType(true);
-    openModal();
-  }
 
   const handleNotificationClose = () => {
     setShowNotification(false);
@@ -86,81 +82,79 @@ const EditArticle = ({ articleData, onSave, onDelete }) => {
 
   return (
     <div className="font-mono">
-      {!addType && (<>
-        <AnimatePresence>
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.7 }}
-            className="m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg text-black dark:text-white shadow-lg flex items-center justify-between overflow-hidden"
-            onClick={() => { setShowDetails(!showDetails) }}
-          >
-            <div className="w-full grid grid-flow-row grid-cols-12 sm:text-xs">
-              <h3 className="font-semibold col-span-9 "><LinesEllipsis
-                text={articleData.title}
-                maxLine={1}
-                ellipsis='...'
-                trimRight
-                basedOn='letters'
-              /></h3>
-              <p className="sm:hidden col-span-2 sm:col-span-0">{`${articleData.time ? articleData.time : articleData.date}`}</p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={openModal}
-                className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
-              >
-                <FiEdit2 />
-              </button>
-              <button
-                onClick={handleDelete}
-                className="text-red-600 hover:text-red-800 focus:outline-none"
-              >
-                <FiTrash2 />
-              </button>
-              <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
-                {showDetails ? (
-                  <FiChevronUp />
-                ) : (
-                  <FiChevronDown />
-                )}
-              </button>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-        {showDetails && (
-          <div className="mx-3 mb-3 sm:text-xs bg-transparent  border-b-2 border-x-2 border-gray-600 p-2 px-4 rounded-b-lg shadow-lg overflow-hidden ">
-            {articleData.summary && <><h4 className="font-semibold">Summary</h4><p>{articleData.summary}</p></>}
-            <h4 className="font-semibold">Time</h4>
-            <p>{`${articleData.time ? articleData.time : articleData.date}`}</p>
-            <h4 className="font-semibold">Image </h4>
-            <a
-              href={articleData.img}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-indigo-600 hover:underline'
-            >
-              <LinesEllipsis
-                text={articleData.img}
-                maxLine={1}
-                ellipsis='...'
-                trimRight
-                basedOn='letters'
-              />
-            </a>
-            <h4 className="font-semibold">Link</h4>
-            <a
-              href={articleData.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-600 hover:underline"
-            >
-              {articleData.link}
-            </a>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.7 }}
+          className="m-3 font-extrabold bg-transparent border-2 border-gray-600 p-2 rounded-lg text-black dark:text-white shadow-lg flex items-center justify-between overflow-hidden"
+          onClick={() => { setShowDetails(!showDetails) }}
+        >
+          <div className="w-full grid grid-flow-row grid-cols-12 sm:text-xs">
+            <h3 className="font-semibold col-span-9 "><LinesEllipsis
+              text={articleData.title}
+              maxLine={1}
+              ellipsis='...'
+              trimRight
+              basedOn='letters'
+            /></h3>
+            <p className="sm:hidden col-span-2 sm:col-span-0">{`${articleData.time ? articleData.time : articleData.date}`}</p>
           </div>
-        )}
-      </>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={openModal}
+              className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+            >
+              <FiEdit2 />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-red-600 hover:text-red-800 focus:outline-none"
+            >
+              <FiTrash2 />
+            </button>
+            <button className='text-pink-600  flex text-3xl font-bold hover:text-indigo-800'>
+              {showDetails ? (
+                <FiChevronUp />
+              ) : (
+                <FiChevronDown />
+              )}
+            </button>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+      {showDetails && (
+        <div className="mx-3 mb-3 sm:text-xs bg-transparent  border-b-2 border-x-2 border-gray-600 p-2 px-4 rounded-b-lg shadow-lg overflow-hidden ">
+          {articleData.summary && <><h4 className="font-semibold">Summary</h4><p>{articleData.summary}</p></>}
+          <h4 className="font-semibold">Time</h4>
+          <p>{`${articleData.time ? articleData.time : articleData.date}`}</p>
+          <h4 className="font-semibold">Image </h4>
+          <a
+            href={articleData.img}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-indigo-600 hover:underline'
+          >
+            <LinesEllipsis
+              text={articleData.img}
+              maxLine={1}
+              ellipsis='...'
+              trimRight
+              basedOn='letters'
+            />
+          </a>
+          <h4 className="font-semibold">Link</h4>
+          <a
+            href={articleData.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-600 hover:underline"
+          >
+            {articleData.link}
+          </a>
+        </div>
+
       )}
 
       <Modal

@@ -530,7 +530,7 @@ const EditAbout = () => {
                     }}
                   />
                 ))}
-                {openAddSkillModal && <AddSkill />}
+                {/* {openAddSkillModal && <AddSkill />} */}
               </div>
             )}
             {openAddSkillModal && (

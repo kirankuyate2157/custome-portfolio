@@ -35,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
     };
 
     fetchData();
-  }, [PortfolioData]);
+  }, []);
 
   const router = useRouter();
   return (
