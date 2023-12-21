@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import Notification from "./Notification";
+
 const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
   // State for the new skill being added
   const [newSkill, setNewSkill] = useState({
@@ -9,11 +11,45 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
     x: "",
     y: "",
   });
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
+
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  };
 
   const handleAddSkill = () => {
     if (newSkill.name && newSkill.x && newSkill.y) {
-      addNewSkill(newSkill);
-      closeModal();
+      if (isNaN(parseFloat(newSkill.x)) || isNaN(parseFloat(newSkill.y))) {
+        setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
+        showNotificationMsg();
+        return null; // Invalid input
+      }
+
+      // Ensure 'vw' is present at the end of x and y
+      const formattedX = `${parseFloat(newSkill.x)}vw`
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+      const formattedY = `${parseFloat(newSkill.y)}vw`
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+      if (formattedX && formattedY) {
+        const updateSkill = {
+          name: newSkill.name,
+          x: formattedX,
+          y: formattedY,
+        };
+        setNewSkill(updateSkill);
+        console.log(" value of x, y", formattedX, formattedY);
+        addNewSkill(updateSkill);
+        closeModal();
+      }
     }
   };
 
@@ -24,15 +60,20 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
       className='modal fixed inset-0 p-2 w-full flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg">
+      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>Add Skill</h2>
-        <p className='text-[0.7rem] text-orange-400'>please put value in proper formate so it will visible accordingly on skill spiral "value vw" </p>
+        <p className='text-[0.7rem] text-orange-400'>
+          please put value in proper formate so it will visible accordingly on
+          skill spiral "value vw"
+        </p>
         <div className='space-y-4'>
           <div>
-            <label className='text-gray-600 dark:text-gray-300'>Skill Name</label>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Skill Name
+            </label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Skill Name'
               value={newSkill.name}
               onChange={(e) =>
@@ -41,27 +82,31 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
             />
           </div>
           <div>
-            <label className='text-gray-600 dark:text-gray-300'>X Position</label>
+            <label className='text-gray-600 dark:text-gray-300'>
+              X Position
+            </label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='X Position'
               value={newSkill.x}
               onChange={(e) => setNewSkill({ ...newSkill, x: e.target.value })}
             />
           </div>
           <div>
-            <label className='text-gray-600 dark:text-gray-300'>Y Position</label>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Y Position
+            </label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Y Position'
               value={newSkill.y}
               onChange={(e) => setNewSkill({ ...newSkill, y: e.target.value })}
             />
           </div>
         </div>
-        <div className="flex justify-end mt-4 gap-3 px-2">
+        <div className='flex justify-end mt-4 gap-3 px-2'>
           <button
             onClick={handleAddSkill}
             className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
@@ -70,12 +115,21 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
           </button>
           <button
             onClick={closeModal}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
+            className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
           >
             <span>Cancel</span>
           </button>
         </div>
       </div>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={() => {
+            handleNotificationClose();
+          }}
+        />
+      )}
     </Modal>
   );
 };
@@ -84,6 +138,12 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState(skillsData.name);
   const [formData, setFormData] = useState({ ...skillsData });
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
+  // ------------------binary mode---------------------
   const openModal = () => {
     setIsModalOpen(true);
     // Set the formData to the skill you want to edit
@@ -94,11 +154,41 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  };
 
+  // --------------------  Handlers ---------------------------
   const handleSave = () => {
-    onSave(formData, name);
-    console.log("skill key ss : ", name);
-    closeModal();
+    if (formData.name && formData.x && formData.y) {
+      if (isNaN(parseFloat(formData.x)) || isNaN(parseFloat(formData.y))) {
+        setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
+        showNotificationMsg();
+        return null; // Invalid input
+      }
+
+      // Ensure 'vw' is present at the end of x and y
+      const formattedX = `${parseFloat(formData.x)}vw`
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+      const formattedY = `${parseFloat(formData.y)}vw`
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+      if (formattedX && formattedY) {
+        const update = {
+          name: formData.name,
+          x: formattedX,
+          y: formattedY,
+        };
+        setFormData(update);
+        console.log(" value of x, y", formattedX, formattedY);
+        onSave(update, name);
+        closeModal();
+      }
+    }
   };
 
   const handleDelete = () => {
@@ -146,15 +236,20 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
         className='modal fixed inset-0  p-2 w-full  flex items-center justify-center z-50'
         overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
       >
-        <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg">
+        <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg'>
           <h2 className='text-2xl font-semibold mb-4'>Edit Skill</h2>
-          <p className='text-[0.7rem] text-orange-400'>please put value in proper formate so it will visible accordingly on skill spiral "value vw" </p>
+          <p className='text-[0.7rem] text-orange-400'>
+            please put value in proper formate so it will visible accordingly on
+            skill spiral "value vw"{" "}
+          </p>
           <div className='space-y-4'>
             <div>
-              <label className='text-gray-600 dark:text-gray-300'>Skill Name</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Skill Name
+              </label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Skill Name'
                 value={formData.name}
                 onChange={(e) =>
@@ -163,10 +258,12 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className='text-gray-600 dark:text-gray-300'>X Position</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                X Position
+              </label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='X Position'
                 value={formData.x}
                 onChange={(e) =>
@@ -175,10 +272,12 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
               />
             </div>
             <div>
-              <label className='text-gray-600 dark:text-gray-300'>Y Position</label>
+              <label className='text-gray-600 dark:text-gray-300'>
+                Y Position
+              </label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Y Position'
                 value={formData.y}
                 onChange={(e) =>
@@ -187,7 +286,7 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
               />
             </div>
           </div>
-          <div className="flex justify-end mt-4 gap-3 px-2">
+          <div className='flex justify-end mt-4 gap-3 px-2'>
             <button
               onClick={handleSave}
               className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
@@ -196,12 +295,21 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
             </button>
             <button
               onClick={closeModal}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
+              className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
             >
               <span>Cancel</span>
             </button>
           </div>
         </div>
+        {showNotification && (
+          <Notification
+            message={noteMsg.message}
+            type={noteMsg.type}
+            onClose={() => {
+              handleNotificationClose();
+            }}
+          />
+        )}
       </Modal>
     </div>
   );

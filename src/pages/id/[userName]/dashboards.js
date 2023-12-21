@@ -60,7 +60,7 @@ const Dashboard = () => {
 
   return (
     <DashboardDataProvider data={Data}>
-      <div className='mb-20 min-h-[70vh] '>
+      <div className='mb-20  w-full min-h-[70vh] '>
         {!isdata && (
           <div className='flex justify-center my-10'>Loading Data ...</div>
         )}

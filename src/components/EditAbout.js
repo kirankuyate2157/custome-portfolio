@@ -100,18 +100,31 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
     message: "some action done 😕 ",
     type: "warn",
   });
-  const handleSaveClick = () => {
-    onSave(formData);
-    setNoteMsg({ message: "About data is saved 🌨️ ", type: "done" });
-    showNotificationMsg();
-    closeModal();
-  };
+
   const handleNotificationClose = () => {
     setShowNotification(false);
   };
   const showNotificationMsg = () => {
     setShowNotification(true);
   };
+  const handleSaveClick = () => {
+    // Show warning notification if any field is empty
+    if (
+      !(
+        formData.title !== "" &&
+        formData.bio.length > 0 &&
+        formData.profileImg !== ""
+      )
+    ) {
+      console.log(formData);
+      setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
+      showNotificationMsg();
+    } else {
+      onSave(formData);
+      closeModal();
+    }
+  };
+
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       // console.log("updating..img data ")
@@ -156,7 +169,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
             <label className='text-gray-600 dark:text-gray-300 '>Title</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Title'
               value={formData.title}
               onChange={(e) =>
@@ -168,10 +181,10 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
             <label className='text-gray-600 dark:text-gray-300'>
               Profile Image
             </label>
-            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400'>
+            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600'>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Profile Image URL'
                 value={formData.profileImg}
                 onChange={(e) =>
@@ -204,7 +217,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
           <div>
             <label className='text-gray-600 dark:text-gray-300 '>Bio</label>
             <textarea
-              className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Bio'
               value={formData.bio.join("\n")}
               onChange={(e) =>
@@ -219,7 +232,6 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
             className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
             onClick={() => {
               handleSaveClick();
-              closeModal();
             }}
           >
             <span>Save</span>
@@ -267,6 +279,13 @@ const EditAbout = () => {
   const [educationClose, setEducationClose] = useState(false);
   const [addEducation, setAddEducation] = useState(false);
   const [education, setEducation] = useState([...allAboutData.educationData]);
+  const [openAddSkillModal, setOpenAddSkillModal] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
+
   // ------------------------  data updating -------------------------------
 
   const db = getFirestore();
@@ -326,6 +345,24 @@ const EditAbout = () => {
   // }, [documentId, userPortfolioRef]);
 
   // --------------------------- data updates end  ---------------------------------
+
+  const notifySave = () => {
+    setNoteMsg({ message: "About data is saved 🌨️ ", type: "done" });
+    setShowNotification(true);
+  };
+  const notifyDelete = () => {
+    setNoteMsg({ message: "About data is deleted 🗑️🧹 ", type: "dengues" });
+    setShowNotification(true);
+  };
+
+
+  const openAddSkill = () => {
+    setOpenAddSkillModal(true);
+  };
+
+  const closeAddSkill = () => {
+    setOpenAddSkillModal(false);
+  };
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
   };
@@ -343,7 +380,7 @@ const EditAbout = () => {
   // -----------  about data  ---------
   const updateAboutData = (newAboutData) => {
     setAboutData({ ...newAboutData });
-    console.log("about data is updating LC .. 👍🏻");
+    notifySave();
   };
   // --------- update skills ---------
   const updateSkill = (updatedSkill, name) => {
@@ -354,28 +391,25 @@ const EditAbout = () => {
     if (index !== -1) {
       updatedSkills[index] = { ...updatedSkill };
       setSkills(updatedSkills); // Update the skills array
+      notifySave();
     }
+
+   
   };
 
   const handleDeleteSkill = (skillName) => {
     const updatedSkills = skills.filter((skill) => skill.name !== skillName);
     setSkills(updatedSkills);
-    console.log("skill deleted  🌸 : ", skillName);
+    notifyDelete();
   };
   // Function to update the skills array when a new skill is added
   const addNewSkill = (newSkill) => {
     if (newSkill.name && newSkill.x && newSkill.y) {
       setSkills([...skills, newSkill]);
+      notifySave();
     }
   };
-  const [openAddSkillModal, setOpenAddSkillModal] = useState(false);
-  const openAddSkill = () => {
-    setOpenAddSkillModal(true);
-  };
-
-  const closeAddSkill = () => {
-    setOpenAddSkillModal(false);
-  };
+  
 
   // ------------------- statistics -----------
   // useEffect(() => {
@@ -389,7 +423,9 @@ const EditAbout = () => {
     if (index !== -1) {
       updatedStatistics[index] = { ...updatedStat };
       setStatistics(updatedStatistics);
+      notifySave();
     }
+
   };
 
   const handleDeleteStatistic = (statLabel) => {
@@ -397,10 +433,12 @@ const EditAbout = () => {
       (stat) => stat.label !== statLabel
     );
     setStatistics(updatedStatistics);
+    notifyDelete();
   };
 
   const addNewStatistic = (newStat) => {
     setStatistics([...statistics, newStat]);
+    notifySave();
   };
 
   // ------------------- Experience -----------
@@ -416,15 +454,18 @@ const EditAbout = () => {
           : experience
       )
     );
+    notifySave();
   };
 
   const deleteExperience = (position) => {
     setExperience((prevData) =>
       prevData.filter((experience) => experience.position !== position)
     );
+    notifyDelete();
   };
   const addNewExperience = (ExpData) => {
     setExperience([...experience, ExpData]);
+    notifySave();
   };
 
   // ----- Add experience binary ------
@@ -448,16 +489,20 @@ const EditAbout = () => {
           : education
       )
     );
+    notifySave();
   };
 
   const deleteEducation = (type) => {
     setEducation((prevData) =>
       prevData.filter((education) => education.type !== type)
     );
+    notifyDelete();
   };
   const addNewEducation = (ExpData) => {
-    if (ExpData.place && ExpData.info && ExpData.time && ExpData.type)
+    if (ExpData.place && ExpData.info && ExpData.time && ExpData.type){
       setEducation([...education, ExpData]);
+      notifySave();
+    }
   };
 
   const openAddEducation = () => {
@@ -579,6 +624,11 @@ const EditAbout = () => {
             </div>
             {aboutData && statisticsClose && (
               <div>
+                <p className='text-[0.6rem] pl-1 text-orange-700 dark:text-orange-400'>
+                  Completed 3 internships, contributed to 5 projects, earned 300
+                  stars on GitHub repositories, gained 10% growth in social
+                  media followers, accumulated 3 years of experience, and more..
+                </p>
                 <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
                 {statistics.map((statistic, index) => (
                   <EditStatistics
@@ -587,7 +637,7 @@ const EditAbout = () => {
                     onSave={(state, label) => {
                       updateStatistic(state, label);
                     }}
-                    onDelete={handleDeleteStatistic}
+                    // onDelete={handleDeleteStatistic}
                   />
                 ))}
               </div>
@@ -689,6 +739,13 @@ const EditAbout = () => {
           updateAboutData(newAboutData);
         }}
       />
+       {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import AddArticle from "./AddArticle";
 import { useArticleData, useData } from "../context/DashboardDataProvider";
 import { getCurrentUserId } from "./../services/firebaseConfig.js";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import Notification from "./Notification";
 
 const EditArticles = () => {
   const data = useData();
@@ -38,8 +39,21 @@ const EditArticles = () => {
       link: "https://kiran.dev/article-of-dev-ngf01...",
     },
   ]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
 
   //  ---------------- handlers -------------------------
+  const notifySave = () => {
+    setNoteMsg({ message: "Article data is saved 🌨️ ", type: "done" });
+    setShowNotification(true);
+  };
+  const notifyDelete = () => {
+    setNoteMsg({ message: "Article data is deleted 🗑️🧹 ", type: "dengues" });
+    setShowNotification(true);
+  };
   const handleSaveArticle = (updatedArticle, title) => {
     const updatedArticlesData = [...articlesData];
     const indexToUpdate = updatedArticlesData.findIndex(
@@ -50,6 +64,7 @@ const EditArticles = () => {
       updatedArticlesData[indexToUpdate] = { ...updatedArticle };
       setArticlesData(updatedArticlesData);
     }
+    notifySave();
   };
 
   const handleSaveAllArticle = (updatedArticle, title) => {
@@ -62,6 +77,7 @@ const EditArticles = () => {
       updatedArticlesData[indexToUpdate] = { ...updatedArticle };
       setAllArticlesData(updatedArticlesData);
     }
+    notifySave();
   };
 
   const handleDeleteArticle = (title) => {
@@ -69,6 +85,7 @@ const EditArticles = () => {
       (article) => article.title !== title
     );
     setArticlesData(updatedArticlesData);
+    notifyDelete();
   };
 
   const handleDeleteAllArticle = (title) => {
@@ -76,6 +93,7 @@ const EditArticles = () => {
       (article) => article.title !== title
     );
     setAllArticlesData(updatedArticlesData);
+    notifyDelete();
   };
 
   // -------------------- Add new Articles -----------------
@@ -88,38 +106,33 @@ const EditArticles = () => {
     } else {
       console.log(" not updated..");
     }
+    notifySave();
     setType(-1);
   };
 
   // ------------------ binary modes --------------------------------
   const openAddModal = () => {
     setIsAddModalOpen(true);
-    console.log("open AddModal of article is called ..1️⃣");
   };
 
   const closeAddModal = () => {
     setIsAddModalOpen(false);
-    console.log("close Modal article  is called ..🅾️");
   };
   const openAddModalAll = () => {
     setIsAddModalOpenAll(true);
-    console.log("open AddModal of All is called ..1️⃣");
   };
 
   const closeAddModalAll = () => {
     setIsAddModalOpenAll(false);
-    console.log("close Modal ALL  is called ..🅾️");
   };
 
   const addToArticles = () => {
     setType(0);
     openAddModal();
-    console.log("Add article  is called ..");
   };
   const addToAllArticles = () => {
     setType(1);
     openAddModalAll();
-    console.log("add All article is called ..");
   };
   // ------------------- binary Mode End -----------------------
 
@@ -158,7 +171,7 @@ const EditArticles = () => {
       </div>
       <div className='flex-grow p-4 overflow-y-auto text-black dark:text-white'>
         <ul className='space-y-4'>
-          <li className='bg-transparent border-2 border-gray-600 p-2 rounded-lg'>
+          <li className='bg-transparent border-2 border-gray-600 p-2 rounded-lg shadow-md shadow-primary'>
             <div
               className='flex items-center justify-between cursor-pointer'
               onClick={() => setRecentClose(!recentClose)}
@@ -201,7 +214,7 @@ const EditArticles = () => {
               />
             )}
           </li>
-          <li className='bg-transparent border-2 border-gray-600 p-2 rounded-lg'>
+          <li className='bg-transparent border-2 border-gray-600 p-2 rounded-lg shadow-md shadow-primary'>
             <div
               className='flex items-center justify-between cursor-pointer'
               onClick={() => setAllClose(!allClose)}
@@ -246,6 +259,13 @@ const EditArticles = () => {
           </li>
         </ul>
       </div>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 };

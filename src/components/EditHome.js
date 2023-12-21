@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { BiAddToQueue } from "react-icons/bi";
 import { VscFolderActive } from "react-icons/vsc";
-import { TbCloudCheck } from "react-icons/tb"
+import { TbCloudCheck } from "react-icons/tb";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
 import { useHomeData, useData } from "../context/DashboardDataProvider.js";
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getCurrentUserId } from "../services/firebaseConfig.js";
-import { FiUpload, FiFolder } from 'react-icons/fi';
-import { uploadFile } from '@/services/firebaseConfig.js';
-import Notification from "./Notification"
+import { FiUpload, FiFolder } from "react-icons/fi";
+import { uploadFile } from "@/services/firebaseConfig.js";
+import Notification from "./Notification";
 const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
   const [formData, setFormData] = useState({ ...homeData });
   const [image, setImage] = useState(null);
@@ -21,7 +21,8 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
   const [uploadError, setUploadError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [noteMsg, setNoteMsg] = useState({
-    message: "some action done 😕 ", type: "warn"
+    message: "some action done 😕 ",
+    type: "warn",
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +42,7 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
   };
   const showNotificationMsg = () => {
     setShowNotification(true);
-  }
+  };
 
   const handleResumeChange = (e) => {
     if (e.target.files[0]) {
@@ -64,7 +65,7 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
       return;
     }
 
-    const path = 'test';
+    const path = "test";
     const imageName = image.name;
 
     try {
@@ -75,7 +76,7 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
       setUploadError(null);
     } catch (error) {
       console.log("Error uploading ", error);
-      setUploadError('File upload failed. Please try again.');
+      setUploadError("File upload failed. Please try again.");
     }
   };
 
@@ -86,7 +87,7 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
       return;
     }
 
-    const path = 'resumeT';
+    const path = "resumeT";
     const resumeName = resume.name;
 
     try {
@@ -96,59 +97,64 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
       setUploadError(null);
     } catch (error) {
       // console.log("Error uploading ", error);
-      setUploadError('File upload failed. Please try again.');
+      setUploadError("File upload failed. Please try again.");
     }
   };
 
   useEffect(() => {
     console.log("Upload img 🌨️: ", imageUrl);
-    console.log("upload resume 🌨️ : ", resumeUrl)
-
-  }, [image, resume, imageUrl, resumeUrl])
+    console.log("upload resume 🌨️ : ", resumeUrl);
+  }, [image, resume, imageUrl, resumeUrl]);
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      className="modal fixed inset-0 flex font-mono  items-center justify-center z-50 "
-      overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50"
+      className='modal fixed inset-0 flex font-mono  items-center justify-center z-50 '
+      overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold mb-4">Edit Home Data</h2>
-        <div className="space-y-4">
+      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg'>
+        <h2 className='text-2xl font-semibold mb-4'>Edit Home Data</h2>
+        <div className='space-y-4'>
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Name</label>
+            <label className='text-gray-600 dark:text-gray-300'>Name</label>
             <input
-              type="text"
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-              name="name"
+              type='text'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+              name='name'
               value={formData.name}
               onChange={handleChange}
             />
           </div>
-          <div className="relative">
-            <label className="text-gray-600 dark:text-gray-300">Profile Image</label>
-            <div className="flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400">
+          <div className='relative'>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Profile Image
+            </label>
+            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600'>
               <input
-                type="text"
-                className='block w-full py-2 px-3 border rounded-md  border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-                name="profileImg"
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md  border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+                name='profileImg'
                 value={formData.profileImg}
                 onChange={handleChange}
               />
-              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
-                <label htmlFor="fileInput" className="cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1" onClick={handleImgUpload}>
+              <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
+                <label
+                  htmlFor='fileInput'
+                  className='cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1'
+                  onClick={handleImgUpload}
+                >
                   {imageUrl ? <TbCloudCheck /> : <FiUpload />}
                 </label>
 
-                <label htmlFor="fileInput1" className=" cursor-pointer">
-                  <div className="text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1">
+                <label htmlFor='fileInput1' className=' cursor-pointer'>
+                  <div className='text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1'>
                     {image ? <VscFolderActive /> : <FiFolder />}
                   </div>
                   <input
-                    id="fileInput1"
-                    type="file"
-                    className="hidden"
+                    id='fileInput1'
+                    type='file'
+                    className='hidden'
                     onChange={handleImageChange}
                   />
                 </label>
@@ -156,47 +162,58 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
             </div>
           </div>
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Title</label>
+            <label className='text-gray-600 dark:text-gray-300'>Title</label>
             <input
-              type="text"
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-              name="title"
+              type='text'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+              name='title'
               value={formData.title}
               onChange={handleChange}
             />
           </div>
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Description</label>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Description
+            </label>
             <textarea
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-              name="description"
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+              name='description'
               value={formData.description}
               onChange={handleChange}
             />
           </div>
-          <div className="relative">
-            <label className="text-gray-600 dark:text-gray-300">Resume Link</label>
-            <div className="flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400">
+          <div className='relative'>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Resume Link
+            </label>
+            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600'>
               <input
-                type="text"
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-                name="resumeLink"
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+                name='resumeLink'
                 value={formData.resumeLink}
                 onChange={handleChange}
               />
-              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
-                <label htmlFor="fileInput2" className="cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900  rounded p-1 " onClick={handleResumeUpload}  >
+              <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
+                <label
+                  htmlFor='fileInput2'
+                  className='cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900  rounded p-1 '
+                  onClick={handleResumeUpload}
+                >
                   {resumeUrl ? <TbCloudCheck /> : <FiUpload />}
                 </label>
 
-                <label htmlFor="fileInput4" className="cursor-pointer text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1 relative">
-                  <div className="">
+                <label
+                  htmlFor='fileInput4'
+                  className='cursor-pointer text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1 relative'
+                >
+                  <div className=''>
                     {resume ? <VscFolderActive /> : <FiFolder />}
                   </div>
                   <input
-                    id="fileInput4"
-                    type="file"
-                    className="hidden"
+                    id='fileInput4'
+                    type='file'
+                    className='hidden'
                     onChange={handleResumeChange}
                   />
                 </label>
@@ -204,25 +221,25 @@ const HomeFormModal = ({ isOpen, closeModal, homeData, onSave }) => {
             </div>
           </div>
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Email</label>
+            <label className='text-gray-600 dark:text-gray-300'>Email</label>
             <input
-              type="text"
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
-              name="email"
+              type='text'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+              name='email'
               value={formData.email}
               onChange={handleChange}
             />
           </div>
         </div>
-        <div className="flex justify-end mt-4 gap-3 px-2">
+        <div className='flex justify-end mt-4 gap-3 px-2'>
           <button
-            className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
             onClick={handleSaveClick}
           >
             <span>Save</span>
           </button>
           <button
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
+            className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
             onClick={closeModal}
           >
             <span>Cancel</span>
@@ -251,12 +268,12 @@ const HomeDetailsDropdown = ({ homeData, onEdit, onDelete }) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className="grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden"
+          className='grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden'
         >
-          <div className="col-span-8 sm:col-span-12">
-            <div className="mb-2">
-              <h4 className="font-semibold">Name</h4>
-              <p className="text-black dark:text-gray-300">{homeData.name}</p>
+          <div className='col-span-8 sm:col-span-12'>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Name</h4>
+              <p className='text-black dark:text-gray-300'>{homeData.name}</p>
             </div>
             <div className='hidden sm:flex flex-col'>
               <h4 className='font-semibold'>Profile Image</h4>
@@ -269,25 +286,29 @@ const HomeDetailsDropdown = ({ homeData, onEdit, onDelete }) => {
                 <img
                   src={homeData.profileImg}
                   alt={homeData.name}
-                  className="w-32 h-32 rounded-full"
+                  className='w-32 h-32 rounded-full'
                 />
               </a>
             </div>
-            <div className="mb-2">
-              <h4 className="font-semibold">Title</h4>
-              <p className="text-black dark:text-gray-300">{homeData.title}</p>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Title</h4>
+              <p className='text-black dark:text-gray-300'>{homeData.title}</p>
             </div>
-            <div className="mb-2">
-              <h4 className="font-semibold">Description</h4>
-              <p className="text-black dark:text-gray-300">{homeData.description}</p>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Description</h4>
+              <p className='text-black dark:text-gray-300'>
+                {homeData.description}
+              </p>
             </div>
-            <div className="mb-2">
-              <h4 className="font-semibold">Resume Link</h4>
-              <p className="text-indigo-600 hover:underline">{homeData.resumeLink}</p>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Resume Link</h4>
+              <p className='text-indigo-600 hover:underline'>
+                {homeData.resumeLink}
+              </p>
             </div>
-            <div className="mb-2">
-              <h4 className="font-semibold">Email</h4>
-              <p className="text-black dark:text-gray-300">{homeData.email}</p>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Email</h4>
+              <p className='text-black dark:text-gray-300'>{homeData.email}</p>
             </div>
           </div>
           <div className='col-span-1 sm:hidden' />
@@ -318,24 +339,20 @@ const EditHome = () => {
   // console.log("current h id : ", documentId)
   // console.log("Hdata : ", HData);
 
-
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [homeData, setHomeData] = useState({ ...HData });
   const [portfolioData, setPortfolioData] = useState({ ...data });
   const [close, setClose] = useState(false);
-
 
   // const documentId = 'IewXRnC69XRTnbgRf41EmKuU9cu2';
 
   // console.log("cuurent user is : ", documentId);
   const db = getFirestore();
   if (documentId) {
-    var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
+    var userPortfolioRef = doc(db, "User_portfolio_data", documentId);
+  } else {
+    console.log(" current user id not found !");
   }
-  else {
-    console.log(" current user id not found !")
-  }
-
 
   const updateHomeData = (newHomeData) => {
     setHomeData({ ...newHomeData });
@@ -344,7 +361,7 @@ const EditHome = () => {
     // console.log("new link from form : ", newHomeData);
 
     if (portfolioData) {
-      console.log("started home data updating ....")
+      console.log("started home data updating ....");
 
       // Update the HomeData field within portfolioData
       const updatedData = { ...portfolioData, Home: { homeData: newHomeData } };
@@ -352,15 +369,13 @@ const EditHome = () => {
       // Update the document in Firestore
       updateDoc(userPortfolioRef, updatedData)
         .then(() => {
-          console.log('Home data updated successfully.');
+          console.log("Home data updated successfully.");
         })
         .catch((error) => {
-          console.error('Error updating Home data :', error);
+          console.error("Error updating Home data :", error);
         });
     }
   };
-
-
 
   // useEffect(() => {
   //   getDoc(userPortfolioRef)
@@ -389,53 +404,48 @@ const EditHome = () => {
   };
 
   return (
-    <div className="w-screen mb-5 font-mono flex flex-col">
-      <div className="w-full flex justify-between items-center text-white p-4">
-        <h2 className="text-xl sm:text-base px-3 py-1 flex items-center gap-1 rounded-full bg-pink-800 border border-primary font-semibold">
-          <span className="cursor-pointer">Data</span>
-          <span className="w-[2px] h-[80%] bg-gray-500 mx-1" />
+    <div className='w-screen mb-5 font-mono flex flex-col'>
+      <div className='w-full flex justify-between items-center text-white p-4'>
+        <h2 className='text-xl sm:text-base px-3 py-1 flex items-center gap-1 rounded-full bg-pink-800 border border-primary font-semibold'>
+          <span className='cursor-pointer'>Data</span>
+          <span className='w-[2px] h-[80%] bg-gray-500 mx-1' />
           | Edit Home
           <FiChevronRight />
         </h2>
         <h2
-          className="text-3xl mr-10 sm:mr-0 sm:text-2xl p-2 items-center gap-1 rounded-full text-pink-500 font-semibold"
+          className='text-3xl mr-10 sm:mr-0 sm:text-2xl p-2 items-center gap-1 rounded-full text-pink-500 font-semibold'
           onClick={handleOpenFormModal}
         >
           <BiAddToQueue />
         </h2>
       </div>
-      <div className="flex-grow p-4 overflow-y-auto text-black dark:text-white">
-        <ul className="space-y-4">
+      <div className='flex-grow p-4 overflow-y-auto text-black dark:text-white'>
+        <ul className='space-y-4'>
           <li
-            className="bg-transparent border-2 border-gray-600 p-2 rounded-lg"
+            className='bg-transparent border-2 border-gray-600 p-2 rounded-lg'
             onClick={() => {
               setClose(!close);
             }}
           >
-            <div className="flex items-center justify-between cursor-pointer"
-            >
-              <strong className="cursor-pointer ml-1 font-extrabold">
+            <div className='flex items-center justify-between cursor-pointer'>
+              <strong className='cursor-pointer ml-1 font-extrabold'>
                 {homeData.name}
               </strong>
-              <div className="flex gap-2">
+              <div className='flex gap-2'>
                 <button onClick={() => handleEditHome(homeData)}>
                   <BsPencilSquare />
                 </button>
                 <button onClick={() => handleDeleteHome(homeData.name)}>
                   <BsTrash />
                 </button>
-                <button className="text-pink-600 flex text-3xl font-bold hover:text-indigo-800">
-                  {close ? (
-                    <FiChevronUp />
-                  ) : (
-                    <FiChevronDown />
-                  )}
+                <button className='text-pink-600 flex text-3xl font-bold hover:text-indigo-800'>
+                  {close ? <FiChevronUp /> : <FiChevronDown />}
                 </button>
               </div>
             </div>
             {homeData && close && (
               <div>
-                <hr className="mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700" />
+                <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
                 <HomeDetailsDropdown homeData={homeData} />
               </div>
             )}

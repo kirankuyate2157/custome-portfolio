@@ -23,8 +23,9 @@ const CustomLink = ({ href, title, className = "" }) => {
     <Link href={href} className={`${className} relative group`}>
       {title}
       <span
-        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${router.asPath === href ? "w-full" : "w-0"
-          }`}
+        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${
+          router.asPath === href ? "w-full" : "w-0"
+        }`}
       >
         &nbsp;
       </span>
@@ -45,8 +46,9 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
     >
       {title}
       <span
-        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${router.asPath === href ? "w-full" : "w-0"
-          }`}
+        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 group-hover:w-full transition-[width] ease duration-300 ${
+          router.asPath === href ? "w-full" : "w-0"
+        }`}
       >
         &nbsp;
       </span>
@@ -71,8 +73,9 @@ const Notification = ({ message, type, onClose }) => {
 
   return (
     <div
-      className={`fixed top-4 right-4 px-4 py-2 rounded-md text-white ${type === 'done' ? 'bg-green-600' : 'bg-yellow-400'
-        }`}
+      className={`fixed top-4 right-4 px-4 py-2 rounded-md text-white ${
+        type === "done" ? "bg-green-600" : "bg-yellow-400"
+      }`}
     >
       {message}
     </div>
@@ -104,25 +107,21 @@ const Navbar = () => {
   let { userName } = router.query;
   if (!userName) userName = "lol";
   // Check if userName is falsy (null, undefined, empty string, etc.)
-  const validUserNames = ['kiran312', 'john_doe', 'someuser'];
+  const validUserNames = ["kiran312", "john_doe", "someuser"];
 
-  const pathToCheck = '/id/[userName]';
+  const pathToCheck = "/id/[userName]";
   const route = router.pathname;
   useEffect(() => {
-
-
     const validateUserName = (userName) => {
-      const user = validUserNames.forEach((name) => name === userName)
+      const user = validUserNames.forEach((name) => name === userName);
       if (!user) {
         // Username is valid, proceed with the logic
         handleShowNotification();
-      
       }
-    }
-    const match = router.pathname.includes(pathToCheck)
-    if (match)
-      validateUserName(userName);
-  }, [userName])
+    };
+    const match = router.pathname.includes(pathToCheck);
+    if (match) validateUserName(userName);
+  }, [userName]);
 
   return (
     <header className='w-full relative px-32 py-8 font-medium text-black dark:text-light flex items-center justify-between  z-10 lg:px-16 md:px-12 sm:px-8'>
@@ -131,26 +130,45 @@ const Navbar = () => {
         onClick={handleClick}
       >
         <span
-          className={`bg-dark dark:bg-light block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${isOpen ? "rotate-45 traslate-y-1" : "-translate-y-0.5"
-            }`}
+          className={`bg-dark dark:bg-light block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${
+            isOpen ? "rotate-45 traslate-y-1" : "-translate-y-0.5"
+          }`}
         ></span>
         <span
-          className={`bg-dark dark:bg-light block transition-all duration-100 ease-out h-0.5 w-6 rounded-sm ${isOpen ? "opacity-0" : "opacity-100"
-            }`}
+          className={`bg-dark dark:bg-light block transition-all duration-100 ease-out h-0.5 w-6 rounded-sm ${
+            isOpen ? "opacity-0" : "opacity-100"
+          }`}
         ></span>
         <span
-          className={`bg-dark dark:bg-light block transition-all duration-400 ease-out h-0.5 w-6 rounded-sm ${isOpen ? "-rotate-45 traslate-y-1" : "translate-y-0.5"
-            }`}
+          className={`bg-dark dark:bg-light block transition-all duration-400 ease-out h-0.5 w-6 rounded-sm ${
+            isOpen ? "-rotate-45 traslate-y-1" : "translate-y-0.5"
+          }`}
         ></span>
       </button>
 
       <div className='w-full flex justify-between items-center lg:hidden'>
         <nav>
           <CustomLink href={`/id/${userName}/`} title='Home' className='mr-4' />
-          <CustomLink href={`/id/${userName}/about`} title='About' className='mx-4' />
-          <CustomLink href={`/id/${userName}/projects`} title='Projects' className='mx-4' />
-          <CustomLink href={`/id/${userName}/articles`} title='Articles' className='mx-4' />
-          <CustomLink href={`/id/${userName}/dashboards`} title='Dashboards' className='ml-4' />
+          <CustomLink
+            href={`/id/${userName}/about`}
+            title='About'
+            className='mx-4'
+          />
+          <CustomLink
+            href={`/id/${userName}/projects`}
+            title='Projects'
+            className='mx-4'
+          />
+          <CustomLink
+            href={`/id/${userName}/articles`}
+            title='Articles'
+            className='mx-4'
+          />
+          <CustomLink
+            href={`/id/${userName}/dashboards`}
+            title='Dashboards'
+            className='ml-4'
+          />
         </nav>
         <nav className='flex items-center justify-center flex-wrap'>
           <motion.a
@@ -182,8 +200,9 @@ const Navbar = () => {
             onClick={() => {
               setMode(mode === "light" ? "dark" : "light");
             }}
-            className={`ml-3 flex items-center justify-center rounded-full p-1 ${mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
-              }`}
+            className={`ml-3 flex items-center justify-center rounded-full p-1 ${
+              mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
+            }`}
           >
             {mode == "dark" ? (
               <SunIcon className={"fill-dark"} />
@@ -264,8 +283,9 @@ const Navbar = () => {
                 setMode(mode === "light" ? "dark" : "light");
                 handleClick();
               }}
-              className={`flex items-center justify-center rounded-full p-1 ${mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
-                }`}
+              className={`flex items-center justify-center rounded-full p-1 ${
+                mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
+              }`}
             >
               {mode == "dark" ? (
                 <SunIcon className={"fill-dark"} />
@@ -284,8 +304,8 @@ const Navbar = () => {
       </div>
       {notify && (
         <Notification
-          message="User not found 🫠"
-          type="warn"
+          message='User not found 🫠'
+          type='warn'
           onClose={handleCloseNotification}
         />
       )}

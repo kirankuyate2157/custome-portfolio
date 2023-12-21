@@ -8,8 +8,14 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import Notification from "./Notification";
 
 const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
   const [formData, setFormData] = useState({
     place: "XYZ College or University",
     info: "Currently pursuing or Completed a Bachelor's degree in Computer Science form XYZ college or University, And Marks or CGPA ...more",
@@ -17,9 +23,28 @@ const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
     type: "B.Tech Computer Science",
   });
 
+  // --------------Binary Mode ----------------
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  };
+  // --------------handlers -----------------
   const handleSave = () => {
-    onSave(formData);
-    closeModal();
+    // Check if any form field is empty
+    const isAnyFieldEmpty = Object.values(formData).some(
+      (value) => !value || value.trim() === ""
+    );
+
+    // Show warning notification if any field is empty
+    if (isAnyFieldEmpty) {
+      setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
+      showNotificationMsg();
+    } else {
+      onSave(formData);
+      closeModal();
+    }
   };
 
   return (
@@ -37,7 +62,7 @@ const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
               <label className='text-gray-600 dark:text-gray-300'>Course</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Type like B.Tech computer Science'
                 value={formData.type}
                 onChange={(e) =>
@@ -51,7 +76,7 @@ const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
               </label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Time like.. Dec 2020 - Present '
                 value={formData.time}
                 onChange={(e) =>
@@ -63,7 +88,7 @@ const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
               <label className='text-gray-600 dark:text-gray-300'>Place</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Place i.e College or University'
                 value={formData.place}
                 onChange={(e) =>
@@ -74,7 +99,7 @@ const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
             <div>
               <label className='text-gray-600 dark:text-gray-300'>Info</label>
               <textarea
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Info i.e. Academic course,obtained Marks and more..'
                 value={formData.info}
                 onChange={(e) =>
@@ -98,6 +123,13 @@ const AddEducation = ({ onSave, isModalOpen, closeModal }) => {
             </button>
           </div>
         </div>
+        {showNotification && (
+          <Notification
+            message={noteMsg.message}
+            type={noteMsg.type}
+            onClose={handleNotificationClose}
+          />
+        )}
       </Modal>
     </div>
   );
@@ -108,6 +140,19 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [type, setType] = useState(educationData.type);
   const [formData, setFormData] = useState({ ...educationData });
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
+  // --------------binary mode  ------------------
+
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -121,14 +166,25 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
     setShowDetails(!showDetails);
   };
 
-  const handleSave = () => {
-    onSave(formData, type);
-    closeModal();
-  };
+  // ----------- handler ---------------------
 
+  const handleSave = () => {
+    // Check if any form field is empty
+    const isAnyFieldEmpty = Object.values(formData).some(
+      (value) => !value || value.trim() === ""
+    );
+
+    // Show warning notification if any field is empty
+    if (isAnyFieldEmpty) {
+      setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
+      showNotificationMsg();
+    } else {
+      onSave(formData, type);
+      closeModal();
+    }
+  };
   const handleDelete = () => {
     onDelete(type);
-    console.log(`deleting...  ${type}`);
     closeModal();
   };
 
@@ -194,7 +250,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
               <label className='text-gray-600 dark:text-gray-300'>Type</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Type'
                 value={formData.type}
                 onChange={(e) =>
@@ -206,7 +262,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
               <label className='text-gray-600 dark:text-gray-300'>Time</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Time'
                 value={formData.time}
                 onChange={(e) =>
@@ -218,7 +274,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
               <label className='text-gray-600 dark:text-gray-300'>Place</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Place'
                 value={formData.place}
                 onChange={(e) =>
@@ -229,7 +285,7 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
             <div>
               <label className='text-gray-600 dark:text-gray-300'>Info</label>
               <textarea
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Info'
                 value={formData.info}
                 onChange={(e) =>
@@ -254,6 +310,15 @@ const EditEducation = ({ educationData, onSave, onDelete }) => {
           </div>
         </div>
       </Modal>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={() => {
+            handleNotificationClose();
+          }}
+        />
+      )}
     </div>
   );
 };

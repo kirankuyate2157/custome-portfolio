@@ -40,7 +40,7 @@ const SocialLinksFormModal = ({
               <label className='text-gray-600 dark:text-gray-300'>{key}</label>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 name={key}
                 placeholder={`${key} url`}
                 value={value}

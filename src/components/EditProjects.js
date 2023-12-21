@@ -15,22 +15,14 @@ import classNames from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { VscFolderActive } from "react-icons/vsc";
-import { TbCloudCheck } from "react-icons/tb"
+import { TbCloudCheck } from "react-icons/tb";
 
-import {
-  useProjectData,
-  useData
-} from "../context/DashboardDataProvider";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc
-} from 'firebase/firestore';
+import { useProjectData, useData } from "../context/DashboardDataProvider";
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getCurrentUserId } from "../services/firebaseConfig.js";
-import { FiUpload, FiFolder } from 'react-icons/fi';
-import { uploadFile } from '@/services/firebaseConfig.js';
-import Notification from "./Notification"
+import { FiUpload, FiFolder } from "react-icons/fi";
+import { uploadFile } from "@/services/firebaseConfig.js";
+import Notification from "./Notification";
 
 // Dropdown component to display project details
 
@@ -40,11 +32,12 @@ const ProjectDetailsDropdown = ({ project }) => {
   return (
     <AnimatePresence>
       {project && (
-        <motion.div initial={{ opacity: 0, height: 0 }}
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className='grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden'
+          className='grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1  rounded p-2 ml-4 overflow-hidden'
         >
           <div className='col-span-9 sm:col-span-12'>
             {/* Project Type */}
@@ -56,9 +49,7 @@ const ProjectDetailsDropdown = ({ project }) => {
             {/* Project Summary */}
             <div>
               <h4 className='font-semibold'>Summary</h4>
-              <p className='text-black dark:text-gray-300'>
-                {project.summary}
-              </p>
+              <p className='text-black dark:text-gray-300'>{project.summary}</p>
             </div>
 
             {/* Preview (Hidden in small screens) */}
@@ -125,13 +116,7 @@ const ProjectDetailsDropdown = ({ project }) => {
 };
 
 // Modal component for editing/add new project
-const ProjectFormModal = ({
-  isOpen,
-  closeModal,
-  project,
-  onSave,
-  editing,
-}) => {
+const ProjectFormModal = ({ isOpen, closeModal, project, onSave, editing }) => {
   const [formData, setFormData] = useState({ ...project });
   const [title, setTitle] = useState(project.title);
   const [image, setImage] = useState(null);
@@ -139,16 +124,10 @@ const ProjectFormModal = ({
   const [uploadError, setUploadError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [noteMsg, setNoteMsg] = useState({
-    message: "some action done 😕 ", type: "warn"
+    message: "some action done 😕 ",
+    type: "warn",
   });
 
-  const handleSave = () => {
-    // console.log(`modal save project: ${JSON.stringify(formData)}`);
-    onSave(formData, title);
-    setNoteMsg({ message: "project data is saved 🌨️ ", type: "done" });
-    showNotificationMsg();
-    closeModal();
-  };
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       // console.log("updating..img data ")
@@ -160,7 +139,23 @@ const ProjectFormModal = ({
   };
   const showNotificationMsg = () => {
     setShowNotification(true);
-  }
+  };
+
+  const handleSave = () => {
+    // Check if any form field is empty
+    const isAnyFieldEmpty = Object.values(formData).some(
+      (value) => !value || value.trim() === ""
+    );
+
+    // Show warning notification if any field is empty
+    if (isAnyFieldEmpty) {
+      setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
+      showNotificationMsg();
+    } else {
+      onSave(formData, title);
+      closeModal();
+    }
+  };
 
   const handleImgUpload = async () => {
     if (!image) {
@@ -170,7 +165,7 @@ const ProjectFormModal = ({
       return;
     }
 
-    const path = 'test';
+    const path = "test";
     const imageName = image.name;
 
     try {
@@ -180,7 +175,7 @@ const ProjectFormModal = ({
       setUploadError(null);
     } catch (error) {
       console.log("Error uploading ", error);
-      setUploadError('File upload failed. Please try again.');
+      setUploadError("File upload failed. Please try again.");
     }
   };
 
@@ -191,17 +186,17 @@ const ProjectFormModal = ({
       className='modal fixed inset-0 flex my-2 items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className=" bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-4 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg">
+      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-4 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>
           {editing ? "Edit Project" : "Add New Project"}
         </h2>
         <div className='space-y-4'>
           {/* Project Type */}
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Type</label>
+            <label className='text-gray-600 dark:text-gray-300'>Type</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Type'
               value={formData.type}
               onChange={(e) =>
@@ -212,10 +207,10 @@ const ProjectFormModal = ({
 
           {/* Project Title */}
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Title</label>
+            <label className='text-gray-600 dark:text-gray-300'>Title</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Title'
               value={formData.title}
               onChange={(e) =>
@@ -226,32 +221,37 @@ const ProjectFormModal = ({
 
           {/* Image URL */}
 
-
-          <div className="relative">
-            <label className="text-gray-600 dark:text-gray-300">Image Url</label>
-            <div className="flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400">
+          <div className='relative'>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Image Url
+            </label>
+            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600'>
               <input
                 type='text'
-                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+                className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 placeholder='Image URL'
                 value={formData.img}
                 onChange={(e) =>
                   setFormData({ ...formData, img: e.target.value })
                 }
               />
-              <div className="flex-shrink-0 flex items-center px-1 gap-2 space-x-2">
-                <label htmlFor="fileInput" className="cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1" onClick={handleImgUpload}>
+              <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
+                <label
+                  htmlFor='fileInput'
+                  className='cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1'
+                  onClick={handleImgUpload}
+                >
                   {imageUrl ? <TbCloudCheck /> : <FiUpload />}
                 </label>
 
-                <label htmlFor="fileInput1" className=" cursor-pointer">
-                  <div className="text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1">
+                <label htmlFor='fileInput1' className=' cursor-pointer'>
+                  <div className='text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1'>
                     {image ? <VscFolderActive /> : <FiFolder />}
                   </div>
                   <input
-                    id="fileInput1"
-                    type="file"
-                    className="hidden"
+                    id='fileInput1'
+                    type='file'
+                    className='hidden'
                     onChange={handleImageChange}
                   />
                 </label>
@@ -261,10 +261,10 @@ const ProjectFormModal = ({
 
           {/* Link */}
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Link</label>
+            <label className='text-gray-600 dark:text-gray-300'>Link</label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Link'
               value={formData.link}
               onChange={(e) =>
@@ -275,10 +275,12 @@ const ProjectFormModal = ({
 
           {/* GitHub URL */}
           <div>
-            <label className="text-gray-600 dark:text-gray-300">GitHub URL</label>
+            <label className='text-gray-600 dark:text-gray-300'>
+              GitHub URL
+            </label>
             <input
               type='text'
-              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='GitHub URL'
               value={formData.github}
               onChange={(e) =>
@@ -289,9 +291,9 @@ const ProjectFormModal = ({
 
           {/* Summary */}
           <div>
-            <label className="text-gray-600 dark:text-gray-300">Summary</label>
+            <label className='text-gray-600 dark:text-gray-300'>Summary</label>
             <textarea
-              className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034] text-gray-900 dark:text-gray-400 focus:outline-none focus:border-2 '
+              className='block w-full h-20 py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               placeholder='Summary'
               value={formData.summary}
               onChange={(e) =>
@@ -301,18 +303,18 @@ const ProjectFormModal = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-end mt-4 gap-3 px-2">
+          <div className='flex justify-end mt-4 gap-3 px-2'>
             <button
               className='flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition'
               onClick={() => {
-                handleSave(), closeModal();
+                handleSave();
               }}
             >
               <span>{editing ? "Save" : "Add"}</span>
             </button>
 
             <button
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition"
+              className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
               onClick={closeModal}
             >
               <span>Cancel</span>
@@ -342,13 +344,18 @@ const EditProject = () => {
   const [portfolio, setPortfolio] = useState({ ...data });
   const [formData, setFormData] = useState([...projects]);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
   const [projectTemp, setProjectTemp] = useState({
     img: "https://example.com/your-image.jpg",
     github: "https://github.com/yourusername/your-repo",
     title: "Your Project Title",
     link: "https://your-deployed-project-link.com",
     type: "Project techStack",
-    summary: "A brief summary of your project."
+    summary: "A brief summary of your project.",
   });
 
   const updateData = () => {
@@ -374,11 +381,22 @@ const EditProject = () => {
     setAddModal(false);
   };
 
+  const notifySave = () => {
+    setNoteMsg({ message: "Project data is saved 📝 ", type: "done" });
+    setShowNotification(true);
+  };
+  const notifyDelete = () => {
+    setNoteMsg({ message: "Project data is deleted 🗑️🧹 ", type: "dengues" });
+    setShowNotification(true);
+  };
+
   //  ---------------- handlers -------------------------
   const handleSave = (updatedProj, title) => {
     // console.log("title : ", title, updatedProj);
     const updatedProjects = [...formData];
-    const index = updatedProjects.findIndex((project) => project.title === title);
+    const index = updatedProjects.findIndex(
+      (project) => project.title === title
+    );
 
     if (index !== -1) {
       updatedProjects[index] = { ...updatedProj };
@@ -387,6 +405,7 @@ const EditProject = () => {
     // console.log(`updated Edit : ` + updatedProjects);
     setEditing(false);
     updateData();
+    notifySave();
   };
 
   const handleEdit = (project) => {
@@ -397,16 +416,16 @@ const EditProject = () => {
   };
 
   const handleDeleteProject = (title) => {
-    const updatedProjects = formData.filter(
-      (prj) => prj.title !== title
-    );
+    const updatedProjects = formData.filter((prj) => prj.title !== title);
     setFormData(updatedProjects);
     updateData();
+    notifyDelete();
   };
 
   const addNewProject = (newProj) => {
     setFormData([...formData, newProj]);
     updateData();
+    notifySave();
     // console.log("new project is added : " + newProj);
   };
 
@@ -415,9 +434,9 @@ const EditProject = () => {
   // console.log("current Project Id ⭕⭕⭕ user is : ", documentId);
   const db = getFirestore();
   if (documentId) {
-    var userPortfolioRef = doc(db, 'User_portfolio_data', documentId);
+    var userPortfolioRef = doc(db, "User_portfolio_data", documentId);
   } else {
-    console.log("current user id not found!")
+    console.log("current user id not found!");
   }
 
   useEffect(() => {
@@ -428,10 +447,10 @@ const EditProject = () => {
     // Update the document in Firestore
     updateDoc(userPortfolioRef, portfolio)
       .then(() => {
-        console.log('Project data updated successfully 🌨️🌨️🌨️.');
+        console.log("Project data updated successfully 🌨️🌨️🌨️.");
       })
       .catch((error) => {
-        console.error('Error updating Project data:', error);
+        console.error("Error updating Project data:", error);
       });
   }, [formData, documentId]);
 
@@ -458,7 +477,7 @@ const EditProject = () => {
           <FiChevronRight />
         </h2>
         <h2
-          className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-yellow-500  font-semibold'
+          className='text-4xl mr-10 sm:mr-0 sm:text-2xl p-2  items-center gap-1 rounded-full   text-pink-500 font-semibold'
           onClick={openAddModal}
         >
           <BiAddToQueue />
@@ -479,7 +498,7 @@ const EditProject = () => {
           {formData.map((project) => (
             <li
               key={project.title}
-              className='bg-transparent border-2 border-gray-600 p-2 rounded-lg'
+              className='bg-transparent border-2 border-gray-600 p-2  rounded-lg'
             >
               <div
                 className='flex items-center justify-between cursor-pointer '
@@ -514,7 +533,10 @@ const EditProject = () => {
                   project={selectedProject}
                   editing={editing}
                   onSave={(data, title) => handleSave(data, title)}
-                />) : ""}
+                />
+              ) : (
+                ""
+              )}
               {project == selectedProject && close && (
                 <div>
                   <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
@@ -526,10 +548,15 @@ const EditProject = () => {
           ))}
         </ul>
       </div>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 };
 
 export default EditProject;
-
-

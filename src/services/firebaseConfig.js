@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import {
   getAuth,
@@ -70,11 +70,11 @@ const getCurrentUserId = () => {
     return null; // or throw an error, depending on your application logic
   }
 };
-//uplode files 
+//uplode files
 const uploadFile = async (file, path, imageName) => {
   const storageRef = ref(storage, `${path}/${imageName}`);
   await uploadBytes(storageRef, file);
-  console.log(`Upload ...$`)
+  console.log(`Upload ...$`);
   const url = await getDownloadURL(storageRef);
   return url;
 };
