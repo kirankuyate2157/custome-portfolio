@@ -3,7 +3,14 @@ import Script from "next/script";
 export default function Document() {
   return (
     <Html lang='en'>
-      <Head />
+      <Head>
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap'
+          rel='stylesheet'
+        ></link>
+      </Head>
       <body>
         <Script id='theme-switcher' strategy='beforeInteractive'>
           {`if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
