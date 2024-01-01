@@ -6,37 +6,34 @@ import {
   login,
   logout,
 } from "./../services/firebaseConfig.js";
-
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+} from "firebase/firestore";
+import dummyPortfolioData from "../assets/portfolioData.js";
 const Trynow = () => {
   const [userData, setUserData] = useState({
     email: "",
+    displayName: "",
     password: "",
     uid: "",
     profileImage: "",
   });
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
   const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
+  const [profile, setProfile] = useState();
 
   useEffect(() => {
-    // Check the user's authentication status when the component loads
-    // const checkAuthStatus = async () => {
-    //   const user = getUserData();
-    //   if (user) {
-    //     // User is authenticated
-    //     setIsAuthenticated(true);
-    //     setUserName(user.displayName || user.email);
-    //   } else {
-    //     // User is not authenticated
-    //     setIsAuthenticated(false);
-    //     setUserName("");
-    //   }
-    // };
-    // checkAuthStatus()
     const storedUserData = localStorage.getItem("userDataP");
     const user = storedUserData ? JSON.parse(storedUserData) : null;
 
     if (user) {
+      setUserData(user);
       setIsAuthenticated(true);
       setUserName(user.displayName || user.email);
     } else {
@@ -47,6 +44,60 @@ const Trynow = () => {
     console.log("auth : ", userName, isAuthenticated);
   }, [userName, isAuthenticated]);
 
+  const db = getFirestore();
+
+  const findUser = async (userRef) => {
+    const userSnapshot = await getDoc(userRef);
+    return userSnapshot.data();
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userData && userData.uid) {
+        const userRef = doc(db, "Users", userData.uid);
+
+        if (userRef) {
+          const profileData = await findUser(userRef);
+          if (profileData) {
+            // Handle the fetched data
+            console.log("Profile Data:", profileData);
+          } else {
+            console.log("Profile data not found.");
+
+            const randomChars = Math.random().toString(36).substring(2, 5);
+            const username = `${userData.displayName.replace(
+              /\s/g,
+              ""
+            )}-${randomChars}`;
+            const newUserData = {
+              username: username,
+              email: userData.email,
+              profileLink: `http://localhost:3000/id/${username}`,
+              editLimit: 2,
+              visibility: true,
+              portfolioImg: "",
+              views: 0,
+              likes: 0,
+            };
+            // Create a new document with the user ID as the document ID
+            let portfolioRef = doc(db, "User_portfolio_data", userData.uid);
+            let done = await setDoc(userRef, newUserData);
+            let done2 = await setDoc(portfolioRef, dummyPortfolioData);
+            if (done) console.log("user created successfully");
+            if (done2) console.log("portfolio  created successfully");
+          }
+        } else {
+          console.log("Invalid user reference.");
+        }
+      } else {
+        console.log("Invalid user data or user ID.");
+      }
+    };
+
+    fetchData();
+  }, [userData, userName]);
+
+  // -------------------  handlers--------------------------
   const handleChange = (e) =>
     setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -80,7 +131,9 @@ const Trynow = () => {
       await GoogleAuth();
       alert("Login successful with Google!");
       const user = getUserData();
+      console.log("User logged data : " + user);
       setIsAuthenticated(true);
+      setUserData(user);
       setUserName(user.displayName || user.email);
       setShowLogoutDropdown(false);
 

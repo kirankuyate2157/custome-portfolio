@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/router";
 import { getUserPortfolioData } from "@/services/dataCRUD.js";
 import { DashboardDataProvider } from "@/context/DashboardDataProvider.js";
+import EditProfile from "../../../components/EditProfile";
 
 const Dashboard = () => {
   const [Data, setData] = useState({});
@@ -48,7 +49,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [isdata]);
   const sendData = async () => {
     //  DataUpload(KiranPortfolioData,"kiran2157");
     await addDataToFirebase(KiranPortfolioData)
@@ -66,6 +67,7 @@ const Dashboard = () => {
         )}
         {isdata && (
           <>
+            <EditProfile />
             <EditSocial />
             <EditHome />
             <EditAbout />

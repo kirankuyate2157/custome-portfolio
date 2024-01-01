@@ -4,16 +4,14 @@ import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSocialLinkData, useData } from "../context/DashboardDataProvider";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db, getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getCurrentUserId } from "../services/firebaseConfig.js";
 
-const SocialLinksFormModal = ({
-  isOpen,
-  closeModal,
-  initialSocialLinks,
-  onSave,
-}) => {
-  const [formData, setFormData] = useState({ ...initialSocialLinks });
+// Function to fetch user data from the "Users" collection
+
+// Modal component for editing profile
+const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
+  const [formData, setFormData] = useState({ ...initialProfile });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,11 +27,11 @@ const SocialLinksFormModal = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      className='modal fixed inset-0 mx-4 font-mono   flex items-center justify-center z-50'
+      className='modal fixed inset-0 mx-4 font-mono flex items-center justify-center z-50'
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
       <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300  w-full max-w-[800px]   sm:w-96   p-4 rounded-lg shadow-lg'>
-        <h2 className='text-2xl font-semibold mb-4'>Edit Social Links</h2>
+        <h2 className='text-2xl font-semibold mb-4'>Edit Profile</h2>
         <div className='space-y-4'>
           {Object.entries(formData).map(([key, value]) => (
             <div key={key}>
@@ -42,7 +40,7 @@ const SocialLinksFormModal = ({
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 name={key}
-                placeholder={`${key} url`}
+                placeholder={`${key} value`}
                 value={value}
                 onChange={handleChange}
               />
@@ -68,13 +66,13 @@ const SocialLinksFormModal = ({
   );
 };
 
-const SocialLinksDropdown = ({ socialLinks }) => {
+const ProfileDropdown = ({ profile }) => {
   const [close, setClose] = useState(false);
-  const [selectedSocial, setSelectedSocial] = useState(null);
+  const [selectedProfile, setSelectedProfile] = useState(null);
 
   return (
     <AnimatePresence>
-      {socialLinks && (
+      {profile && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
@@ -83,7 +81,7 @@ const SocialLinksDropdown = ({ socialLinks }) => {
           className='grid sm:text-sm font-mono  text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden'
         >
           <div className='col-span-8 sm:col-span-12'>
-            {Object.entries(socialLinks).map(([key, value]) => (
+            {Object.entries(profile).map(([key, value]) => (
               <div key={key} className='mb-2'>
                 <h4 className='font-semibold'>{key}</h4>
                 <p className='text-black dark:text-gray-300'>
@@ -100,64 +98,46 @@ const SocialLinksDropdown = ({ socialLinks }) => {
   );
 };
 
-const EditSocial = () => {
-  const initialSocialLinks = useSocialLinkData();
-  const data = useData();
-  // const documentId = getCurrentUserId();
-
-  const [socialLinks, setSocialLinks] = useState({ ...initialSocialLinks });
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [portfolioData, setPortfolioData] = useState({ ...data });
-  const [selectedSocial, setSelectedSocial] = useState(false);
-
-  const documentId = "IewXRnC69XRTnbgRf41EmKuU9cu2";
-
-  // Replace with your document ID
+const EditProfile = () => {
+  const userId = getCurrentUserId();
   const db = getFirestore();
-  // console.log("social user id : ", documentId);
-  if (documentId) {
-    var userPortfolioRef = doc(db, "User_portfolio_data", documentId);
-  } else {
-    console.log(" current user id not found !");
-  }
 
-  const updateSocialLinks = (newSocialLinks) => {
-    setSocialLinks({ ...newSocialLinks });
-    console.log("new link from form : ", newSocialLinks);
+  const [profile, setProfile] = useState();
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(false);
 
-    if (portfolioData) {
-      console.log("started data updating ....");
+  const findUser = async (userRef) => {
+    const userSnapshot = await getDoc(userRef);
+    return userSnapshot.data();
+  };
 
-      // Update the SocialLinks field within portfolioData
-      const updatedData = { ...portfolioData, SocialLinks: newSocialLinks };
-
-      // Update the document in Firestore
-      updateDoc(userPortfolioRef, updatedData)
-        .then(() => {
-          console.log("SocialLinks updated successfully.");
-        })
-        .catch((error) => {
-          console.error("Error updating SocialLinks:", error);
-        });
+  const updateProfile = async (newProfile) => {
+    try {
+      await updateDoc(userRef, newProfile);
+      setProfile(newProfile);
+      console.log("Profile updated successfully.", profile);
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
-  // useEffect(() => {
-  //   getDoc(userPortfolioRef)
-  //     .then((snapshot) => {
-  //       if (snapshot.exists()) {
-  //         setPortfolioData(snapshot.data());
-  //       } else {
-  //         console.error(
-  //           "Portfolio data not found for document ID:",
-  //           documentId
-  //         );
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error loading portfolio data:", error);
-  //     });
-  // }, [documentId, userPortfolioRef]);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userId) {
+        const userRef = doc(db, "Users", userId);
+        const userData = await findUser(userRef);
+        if (userData) {
+          console.log(profile);
+          setProfile(userData);
+        } else {
+          setProfile(null);
+          console.error("User data not found for user ID:", userId);
+        }
+      }
+    };
+
+    fetchData();
+  }, [userId, selectedProfile]);
 
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
@@ -173,7 +153,7 @@ const EditSocial = () => {
         <h2 className='text-xl sm:text-base px-3 py-1 flex items-center gap-1 rounded-full bg-pink-800 border border-primary font-semibold'>
           <span className='cursor-pointer'>Data</span>
           <span className='w-[2px] h-[80%] bg-gray-500 mx-1' />
-          | Edit Social Links
+          | Edit Profile
           <FiChevronRight />
         </h2>
         <h2 className='text-3xl mr-10 sm:mr-0 sm:text-2xl p-2 items-center gap-1 rounded-full text-pink-500 font-semibold'>
@@ -184,27 +164,23 @@ const EditSocial = () => {
         <ul className='space-y-4'>
           <li
             className='bg-transparent border-2 border-gray-600 p-2 rounded-lg'
-            onClick={() => setSelectedSocial(!selectedSocial)}
+            onClick={() => setSelectedProfile(!selectedProfile)}
           >
             <div className='flex items-center justify-between cursor-pointer'>
               <strong className='cursor-pointer ml-1 font-extrabold'>
-                Social Links
+                User Data
               </strong>
               <div className='flex gap-3'>
                 <button onClick={handleOpenFormModal}>
                   <BiEdit />
                 </button>
-
-                <button className='text-pink-600 flex text-3xl font-bold hover:text-indigo-800'>
-                  {!selectedSocial ? <FiChevronDown /> : <FiChevronUp />}
-                </button>
               </div>
             </div>
-            {selectedSocial && (
+            {selectedProfile && (
               <div>
                 <hr className='mb-3 mt-1 border-gray-500 border-1 dark:border-gray-700' />
-                <SocialLinksDropdown
-                  socialLinks={socialLinks}
+                <ProfileDropdown
+                  profile={profile}
                   onEdit={() => setIsFormModalOpen(true)}
                 />
               </div>
@@ -213,16 +189,17 @@ const EditSocial = () => {
         </ul>
       </div>
 
-      <SocialLinksFormModal
+      <ProfileFormModal
         isOpen={isFormModalOpen}
-        closeModal={() => setIsFormModalOpen(false)}
-        initialSocialLinks={socialLinks}
-        onSave={(newSocialLinks) => {
-          updateSocialLinks(newSocialLinks);
+        closeModal={handleCloseFormModal}
+        initialProfile={profile}
+        onSave={(newProfile) => {
+          updateProfile(newProfile);
           setIsFormModalOpen(false);
         }}
       />
     </div>
   );
 };
-export default EditSocial;
+
+export default EditProfile;

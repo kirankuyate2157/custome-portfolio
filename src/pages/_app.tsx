@@ -49,6 +49,7 @@ export default function App({ Component, pageProps }: AppProps) {
         className={`${montserrat.variable} font-mont bg-light dark:bg-dark w-full min-h-screen`}
       >
         <HomeDataProvider data={PortfolioData}>
+          <Navbar />
           <AnimatePresence mode='wait'>
             <Component key={router.asPath} {...pageProps} />
           </AnimatePresence>

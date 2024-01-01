@@ -56,12 +56,6 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
   );
 };
 
-// const socialLinks = {
-//   Twitter: "https://twitter.com/kuyatekiran",
-//   LinkedIn: "https://www.linkedin.com/in/kirankuyate",
-//   GitHub: "https://github.com/kirankuyate2157",
-// };
-
 const Notification = ({ message, type, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
