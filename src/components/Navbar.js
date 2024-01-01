@@ -56,29 +56,9 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
   );
 };
 
-const Notification = ({ message, type, onClose }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  return (
-    <div
-      className={`fixed top-4 right-4 px-4 py-2 rounded-md text-white ${
-        type === "done" ? "bg-green-600" : "bg-yellow-400"
-      }`}
-    >
-      {message}
-    </div>
-  );
-};
 const Navbar = () => {
   const [mode, setMode] = useThemeSwitcher();
   const [isOpen, setIsOpen] = useState(false);
-  const [notify, setNotify] = useState(false);
   const socialLinks = useSocialLinkData();
 
   const router = useRouter();
@@ -88,7 +68,6 @@ const Navbar = () => {
 
   const handleShowNotification = () => {
     setNotify(true);
-    // Close the notification after 3 seconds
     const timer = setTimeout(() => {
       setNotify(false);
     }, 4000);
@@ -99,23 +78,8 @@ const Navbar = () => {
   };
 
   let { userName } = router.query;
-  if (!userName) userName = "lol";
-  // Check if userName is falsy (null, undefined, empty string, etc.)
-  const validUserNames = ["kiran312", "john_doe", "someuser"];
 
-  const pathToCheck = "/id/[userName]";
-  const route = router.pathname;
-  useEffect(() => {
-    const validateUserName = (userName) => {
-      const user = validUserNames.forEach((name) => name === userName);
-      if (!user) {
-        // Username is valid, proceed with the logic
-        handleShowNotification();
-      }
-    };
-    const match = router.pathname.includes(pathToCheck);
-    if (match) validateUserName(userName);
-  }, [userName]);
+  if (!userName) userName = "lol";
 
   return (
     <header className='w-full relative px-32 py-8 font-medium text-black dark:text-light flex items-center justify-between  z-10 lg:px-16 md:px-12 sm:px-8'>
@@ -296,13 +260,6 @@ const Navbar = () => {
       <div className='absolute left-[50%] top-2 translate-x-[-50%]'>
         <Logo />
       </div>
-      {notify && (
-        <Notification
-          message='User not found 🫠'
-          type='warn'
-          onClose={handleCloseNotification}
-        />
-      )}
     </header>
   );
 };

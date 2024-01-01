@@ -2,50 +2,170 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { FiUpload, FiFolder } from "react-icons/fi";
+import { VscFolderActive } from "react-icons/vsc";
+import { TbCloudCheck } from "react-icons/tb";
+import { uploadFile } from "@/services/firebaseConfig.js";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSocialLinkData, useData } from "../context/DashboardDataProvider";
-import { db, getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getCurrentUserId } from "../services/firebaseConfig.js";
-
+import Notification from "./Notification";
 // Function to fetch user data from the "Users" collection
 
 // Modal component for editing profile
 const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
-  const [formData, setFormData] = useState({ ...initialProfile });
+  const [formData, setFormData] = useState(initialProfile);
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
+  const [uploadError, setUploadError] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [noteMsg, setNoteMsg] = useState({
+    message: "some action done 😕 ",
+    type: "warn",
+  });
+
+  console.log(JSON.stringify(initialProfile));
+  console.log(JSON.stringify(formData));
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    console.log("updated data  home : ", formData);
   };
 
   const handleSaveClick = () => {
     onSave(formData);
+    setNoteMsg({ message: "Home data is saved 🌨️ ", type: "done" });
+    showNotificationMsg();
     closeModal();
   };
+
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+  };
+  const showNotificationMsg = () => {
+    setShowNotification(true);
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      // console.log("updating..img data ")
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleImgUpload = async () => {
+    if (!image) {
+      setNoteMsg({ message: "Image is not selected 🫠", type: "warn" });
+      showNotificationMsg();
+
+      return;
+    }
+
+    const path = "test";
+    const imageName = image.name;
+
+    try {
+      const url = await uploadFile(image, path, imageName);
+      setImageUrl(url);
+      alert("Uploaded image..", url);
+      setFormData((prevData) => ({ ...prevData, portfolioImg: url })); // Update using previous state
+      setUploadError(null);
+    } catch (error) {
+      console.log("Error uploading ", error);
+      setUploadError("File upload failed. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    console.log("Upload img 🌨️: ", imageUrl);
+  }, [image, imageUrl]);
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      className='modal fixed inset-0 mx-4 font-mono flex items-center justify-center z-50'
+      className='modal fixed inset-0 flex font-mono  items-center justify-center z-50 '
       overlayClassName='modal-overlay fixed inset-0 bg-black bg-opacity-50'
     >
-      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300  w-full max-w-[800px]   sm:w-96   p-4 rounded-lg shadow-lg'>
-        <h2 className='text-2xl font-semibold mb-4'>Edit Profile</h2>
+      <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[800px] mx-10 rounded-lg shadow-lg'>
+        <h2 className='text-2xl font-semibold mb-4'>Edit Profile Data</h2>
         <div className='space-y-4'>
-          {Object.entries(formData).map(([key, value]) => (
-            <div key={key}>
-              <label className='text-gray-600 dark:text-gray-300'>{key}</label>
+          <div>
+            <label className='text-gray-600 dark:text-gray-300'>Name</label>
+            <input
+              type='text'
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+              name='name'
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+          {formData.editLimit && (
+            <div>
+              <label className='text-gray-600 dark:text-gray-300 flex items-center '>
+                User Name
+                <span className='text-[0.6rem] pl-2 text-orange-400  '>
+                  {`you can only edit username ${formData.editLimit} time`}{" "}
+                </span>
+              </label>
               <input
                 type='text'
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
-                name={key}
-                placeholder={`${key} value`}
-                value={value}
+                name='name'
+                value={formData.username}
                 onChange={handleChange}
               />
             </div>
-          ))}
+          )}
+          <div className='relative'>
+            <label className='text-gray-600 dark:text-gray-300'>
+              Portfolio Image
+            </label>
+            <div className='flex items-center border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600'>
+              <input
+                type='text'
+                className='block w-full py-2 px-3 border rounded-md  border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
+                name='profileImg'
+                value={formData.portfolioImg}
+                onChange={handleChange}
+              />
+              <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
+                <label
+                  htmlFor='fileInput'
+                  className='cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1'
+                  onClick={handleImgUpload}
+                >
+                  {imageUrl ? <TbCloudCheck /> : <FiUpload />}
+                </label>
+
+                <label htmlFor='fileInput1' className=' cursor-pointer'>
+                  <div className='text-green-500 hover:bg-green-200 dark:hover:bg-green-900 rounded p-1'>
+                    {image ? <VscFolderActive /> : <FiFolder />}
+                  </div>
+                  <input
+                    id='fileInput1'
+                    type='file'
+                    className='hidden'
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label className='text-gray-600 dark:text-gray-300 flex items-center '>
+              Privacy
+            </label>
+            <select
+              className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2'
+              value={`${formData.visibility ? "Public" : "Private"}`}
+            >
+              <option value={true}>Public</option>
+              <option value={false}>Private</option>
+            </select>
+          </div>
         </div>
         <div className='flex justify-end mt-4 gap-3 px-2'>
           <button
@@ -55,13 +175,20 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
             <span>Save</span>
           </button>
           <button
-            className='flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition'
+            className='flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-600  rounded-md hover:bg-gray-400 transition'
             onClick={closeModal}
           >
             <span>Cancel</span>
           </button>
         </div>
       </div>
+      {showNotification && (
+        <Notification
+          message={noteMsg.message}
+          type={noteMsg.type}
+          onClose={handleNotificationClose}
+        />
+      )}
     </Modal>
   );
 };
@@ -69,7 +196,6 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
 const ProfileDropdown = ({ profile }) => {
   const [close, setClose] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
-
   return (
     <AnimatePresence>
       {profile && (
@@ -78,19 +204,83 @@ const ProfileDropdown = ({ profile }) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className='grid sm:text-sm font-mono  text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden'
+          className='grid sm:text-sm text-black dark:text-white grid-cols-12 mt-1 rounded p-2 ml-4 overflow-hidden'
         >
           <div className='col-span-8 sm:col-span-12'>
-            {Object.entries(profile).map(([key, value]) => (
-              <div key={key} className='mb-2'>
-                <h4 className='font-semibold'>{key}</h4>
-                <p className='text-black dark:text-gray-300'>
-                  <a href={value} target='_blank' rel='noopener noreferrer'>
-                    {value}
-                  </a>
-                </p>
-              </div>
-            ))}
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Name</h4>
+              <p className='text-black dark:text-gray-300'>{profile.name}</p>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>UserName</h4>
+              <p className='text-black dark:text-gray-300'>
+                {profile.username}
+              </p>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Email</h4>
+              <p className='text-black dark:text-gray-300'>{profile.email}</p>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>portfolio URL</h4>
+              <p className='text-black dark:text-gray-300'>
+                {profile.profileLink}
+              </p>
+            </div>
+            <div className='hidden sm:flex flex-col'>
+              <h4 className='font-semibold'>portfolio Image</h4>
+              <a
+                href={profile.portfolioImg}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-indigo-600 hover:underline'
+              >
+                <img
+                  src={profile.portfolioImg}
+                  alt={profile.name}
+                  className='w-32 h-32  p-[2px] border border-primary rounded '
+                />
+              </a>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>portfolio Status</h4>
+              <p className='text-black dark:text-gray-300'>
+                {profile.visibility ? "Public" : "Private"}
+              </p>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>views</h4>
+              <p className='text-black dark:text-gray-300'>{profile.views}</p>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>Likes</h4>
+              <p className='text-indigo-600 hover:underline'>{profile.likes}</p>
+            </div>
+            <div className='mb-2'>
+              <h4 className='font-semibold'>
+                edit Limit
+                <span className='text-[0.5rem] pl-1 text-orange-600 items-center'>
+                  (want to increase limit ? "Say hello 👋🏻" in footer)
+                </span>
+              </h4>
+              <p className='text-indigo-600 hover:underline'>
+                {profile.editLimit}
+              </p>
+            </div>
+          </div>
+          <div className='col-span-1 sm:hidden' />
+          <div className='col-span-3 sm:hidden sm:col-span-12 flex flex-col items-center justify-center w-full h-auto p-1 sm:p-[2px]   max-h-[400px] '>
+            <a
+              href={profile.portfolioImg}
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <img
+                src={profile.portfolioImg}
+                alt={profile.name}
+                className='w-full max-h-[390px] p-[2px]  border border-primary rounded  '
+              />
+            </a>
           </div>
         </motion.div>
       )}
@@ -110,12 +300,19 @@ const EditProfile = () => {
     const userSnapshot = await getDoc(userRef);
     return userSnapshot.data();
   };
+  if (userId) {
+    console.log(userId)
+    var userRef = doc(db, "Users", userId);
+  } else {
+    console.log(" current user id not found !");
+  }
 
   const updateProfile = async (newProfile) => {
+    console.log(" updating profile " + JSON.stringify(newProfile));
     try {
-      await updateDoc(userRef, newProfile);
       setProfile(newProfile);
-      console.log("Profile updated successfully.", profile);
+      updateDoc(userRef, profile);
+      console.log("Profile updated successfully 🌠🌠.", profile);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -127,7 +324,6 @@ const EditProfile = () => {
         const userRef = doc(db, "Users", userId);
         const userData = await findUser(userRef);
         if (userData) {
-          console.log(profile);
           setProfile(userData);
         } else {
           setProfile(null);
@@ -195,7 +391,6 @@ const EditProfile = () => {
         initialProfile={profile}
         onSave={(newProfile) => {
           updateProfile(newProfile);
-          setIsFormModalOpen(false);
         }}
       />
     </div>

@@ -40,8 +40,6 @@ const Trynow = () => {
       setIsAuthenticated(false);
       setUserName("");
     }
-
-    console.log("auth : ", userName, isAuthenticated);
   }, [userName, isAuthenticated]);
 
   const db = getFirestore();
@@ -58,12 +56,7 @@ const Trynow = () => {
 
         if (userRef) {
           const profileData = await findUser(userRef);
-          if (profileData) {
-            // Handle the fetched data
-            console.log("Profile Data:", profileData);
-          } else {
-            console.log("Profile data not found.");
-
+          if (!profileData) {
             const randomChars = Math.random().toString(36).substring(2, 5);
             const username = `${userData.displayName.replace(
               /\s/g,
@@ -86,11 +79,7 @@ const Trynow = () => {
             if (done) console.log("user created successfully");
             if (done2) console.log("portfolio  created successfully");
           }
-        } else {
-          console.log("Invalid user reference.");
         }
-      } else {
-        console.log("Invalid user data or user ID.");
       }
     };
 
@@ -129,9 +118,8 @@ const Trynow = () => {
   const googleLogin = async () => {
     try {
       await GoogleAuth();
-      alert("Login successful with Google!");
       const user = getUserData();
-      console.log("User logged data : " + user);
+
       setIsAuthenticated(true);
       setUserData(user);
       setUserName(user.displayName || user.email);

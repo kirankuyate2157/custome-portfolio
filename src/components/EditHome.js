@@ -377,20 +377,6 @@ const EditHome = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getDoc(userPortfolioRef)
-  //     .then((snapshot) => {
-  //       if (snapshot.exists()) {
-  //         setPortfolioData(snapshot.data());
-  //       } else {
-  //         console.error('Portfolio data not found for document ID:', documentId);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error loading portfolio data:', error);
-  //     });
-  // }, [documentId, userPortfolioRef]);
-
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
   };

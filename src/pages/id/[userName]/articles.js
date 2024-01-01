@@ -113,9 +113,9 @@ const articles = () => {
         <title>kiran kuyate | Article | kiran.dev</title>
         <meta name='description' content='any description..' />
       </Head>
-      <main className='w-full mb-16 flex flex-col items-center justify-center overflow-hidden text-dark'>
+      <main className='w-full mb-16 flex flex-col items-center justify-center overflow-hidden text-dark dark:text-white'>
         <TransitionEffect />
-        <Layout className='pt-16 font-mono'>
+        <Layout className='pt-16 font-mono min-h-[100vh]'>
           <AnimatedText
             text='words can change the world!'
             className='mb-16 lg:!text-7xl sm:!text-6xl xs:!text-4xl sm:mb-8'
@@ -130,9 +130,14 @@ const articles = () => {
           </h2>
           <ul>
             {articles.allArticlesData.map((article, index) => (
-              <Article key={index} {...article} />
+              <Article key={index + 1} {...article} />
             ))}
           </ul>
+          <div
+            className={`${
+              articles.allArticlesData.length <= 2 ? "h-[20vh]" : ""
+            }`}
+          ></div>
         </Layout>
       </main>
     </>
