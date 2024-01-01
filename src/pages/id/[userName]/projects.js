@@ -7,6 +7,7 @@ import Image from "next/image";
 import { GithubIcon } from "@/components/icons";
 import { motion } from "framer-motion";
 import TransitionEffect from "@/components/TransitionEffect";
+import Navbar from "@/components/Navbar"
 const FramerImage = motion(Image);
 import { useProjectData } from "@/context/DataProvider";
 
@@ -123,7 +124,9 @@ const projects = () => {
         <title>Kiran Kuyate | Projects | kiran.dev</title>
         <meta name='description' content='my description' />
       </Head>
-      <main className='w-full mb-16 flex flex-col items-center justify-center text-dark/75 dark:text-light/75'>
+      <main>
+        <Navbar/>
+      <div className='w-full mb-16 flex flex-col items-center justify-center text-dark/75 dark:text-light/75'>
         <TransitionEffect />
         <Layout className='pt-16 font-mono'>
           <AnimatedText
@@ -148,6 +151,7 @@ const projects = () => {
             })}
           </div>
         </Layout>
+        </div>
       </main>
     </>
   );

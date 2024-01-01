@@ -6,7 +6,7 @@ import Layout from "@/components/Layout";
 import AnimatedText from "@/components/AnimatedText";
 import { motion, useMotionValue } from "framer-motion";
 import TransitionEffect from "@/components/TransitionEffect";
-
+import Navbar from "@/components/Navbar";
 import { useArticleData } from "@/context/DataProvider";
 
 const FramerImage = motion(Image);
@@ -113,32 +113,36 @@ const articles = () => {
         <title>kiran kuyate | Article | kiran.dev</title>
         <meta name='description' content='any description..' />
       </Head>
-      <main className='w-full mb-16 flex flex-col items-center justify-center overflow-hidden text-dark dark:text-white'>
-        <TransitionEffect />
-        <Layout className='pt-16 font-mono min-h-[100vh]'>
-          <AnimatedText
-            text='words can change the world!'
-            className='mb-16 lg:!text-7xl sm:!text-6xl xs:!text-4xl sm:mb-8'
-          />
-          <ul className='grid grid-cols-2 gap-16 lg:gap-8 md:grid-cols-1 md:gap-y-16'>
-            {articles.articlesData.map((article, index) => (
-              <FeaturedArticle key={index} {...article} />
-            ))}
-          </ul>
-          <h2 className='font-bold text-4xl w-full text-center my-16 mt-32'>
-            All Articles
-          </h2>
-          <ul>
-            {articles.allArticlesData.map((article, index) => (
-              <Article key={index + 1} {...article} />
-            ))}
-          </ul>
-          <div
-            className={`${
-              articles.allArticlesData.length <= 2 ? "h-[20vh]" : ""
-            }`}
-          ></div>
-        </Layout>
+
+      <main>
+        <Navbar/>
+        <div className='w-full mb-16 flex flex-col items-center justify-center overflow-hidden text-dark dark:text-white'>
+          <TransitionEffect />
+          <Layout className='pt-16 font-mono min-h-[100vh]'>
+            <AnimatedText
+              text='words can change the world!'
+              className='mb-16 lg:!text-7xl sm:!text-6xl xs:!text-4xl sm:mb-8'
+            />
+            <ul className='grid grid-cols-2 gap-16 lg:gap-8 md:grid-cols-1 md:gap-y-16'>
+              {articles.articlesData.map((article, index) => (
+                <FeaturedArticle key={index} {...article} />
+              ))}
+            </ul>
+            <h2 className='font-bold text-4xl w-full text-center my-16 mt-32'>
+              All Articles
+            </h2>
+            <ul>
+              {articles.allArticlesData.map((article, index) => (
+                <Article key={index + 1} {...article} />
+              ))}
+            </ul>
+            <div
+              className={`${
+                articles.allArticlesData.length <= 2 ? "h-[20vh]" : ""
+              }`}
+            ></div>
+          </Layout>
+        </div>
       </main>
     </>
   );

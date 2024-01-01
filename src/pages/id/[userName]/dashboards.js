@@ -7,6 +7,7 @@ import EditHome from "@/components/EditHome.js";
 import EditArticles from "@/components/EditArticles.js";
 import EditSocial from "@/components/EditSocial.js";
 import { addDataToFirebase } from "@/services/useFirebase.js";
+import Navbar from "@/components/Navbar";
 import {
   auth,
   getUserData,
@@ -61,6 +62,7 @@ const Dashboard = () => {
 
   return (
     <DashboardDataProvider data={Data}>
+      <Navbar/>
       <div className='mb-20  w-full min-h-[70vh] '>
         {!isdata && (
           <div className='flex justify-center my-10'>Loading Data ...</div>

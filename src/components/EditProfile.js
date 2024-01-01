@@ -317,7 +317,6 @@ const EditProfile = () => {
     return userSnapshot.data();
   };
   if (userId) {
-    console.log(userId);
     var userRef = doc(db, "Users", userId);
   }
 

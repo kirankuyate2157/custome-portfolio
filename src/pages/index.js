@@ -18,10 +18,15 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-
+<Navbar/>
       <main className='min-h-[80vh]'>
         <div className='relative'>
-          <Navbar />
+          <div
+          className='w-full h-full gradient-to-r from-blue-500 via-purple-500 to-pink-500'
+          style={{
+            background: "linear-gradient(to right, #2563EB, #9F5DE2, #FF6584)",
+          }}
+        ></div>
         </div>
       </main>
     </>
