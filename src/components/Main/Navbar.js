@@ -1,14 +1,35 @@
-import React from "react";
+import React,{useState} from "react";
 import { FaEquals } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { FaLinesLeaning } from "react-icons/fa6";
 import { PiDotsNineDuotone } from "react-icons/pi";
 import { CiMail } from "react-icons/ci";
+import { motion, AnimatePresence } from "framer-motion";
 import { MoonIcon, SunIcon } from "../icons";
 import useThemeSwitcher from "../hooks/useThemeSwitcher";
 
+
 const Navbar = () => {
   const [mode, setMode] = useThemeSwitcher();
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const closeDropdown = () => {
+    setDropdownOpen(false);
+  };
+
+  const handleTabClick = (tab) => {
+    // Handle tab click logic here
+    console.log(`Clicked on tab: ${tab}`);
+    closeDropdown();
+  };
+
+  const tabs = ["Portfolio", "Generate Context", "Socials", "Try Now", "Contact"];
+
   return (
     <div className='w-full min-w-[280px] sm:px-0 px-10 pt-2 sm:pt-0'>
       <div className='w-full flex justify-between items-center bg-slate-900 dark:bg-slate-400 bg-opacity-25 dark:bg-opacity-10 sm:rounded-none  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
@@ -52,7 +73,10 @@ const Navbar = () => {
           <div className='sm:hidden p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
             <IoNotificationsOutline />
           </div>
-          <div className='sm:hidden p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+          <div
+            className=' p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900 cursor-pointer'
+            onClick={toggleDropdown}
+          >
             <PiDotsNineDuotone />
           </div>
           <div className='p-[0.10rem] m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
@@ -66,8 +90,38 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Dropdown Modal */}
+      {isDropdownOpen && (
+        <AnimatePresence>
+     <motion.div 
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.7 }}
+     className='absolute font-mono right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden dark:text-white text-black  dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg bg-slate-900 dark:bg-slate-400 bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
+          
+        <ul>
+         
+            {tabs.map((tab, index) => (
+              <li
+                key={index}
+                onClick={() => handleTabClick(tab)}
+                className='px-1  w-full items-center justify-start flex relative py-2 cursor-pointer  bg-red-800 hover:text-red-600'
+              >
+                <FaLinesLeaning className="text-xs mr-2" />
+                {tab}
+               
+              </li>
+            ))}
+          </ul>
+        </motion.div >
+        </AnimatePresence>
+        )}
+    
     </div>
   );
 };
 
 export default Navbar;
+

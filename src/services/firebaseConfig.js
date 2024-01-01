@@ -65,8 +65,6 @@ const getCurrentUserId = () => {
   if (usr && usr.uid) {
     return usr.uid;
   } else {
-    // Handle the case when there is no authenticated user
-    console.error("User is not authenticated");
     return null; // or throw an error, depending on your application logic
   }
 };
@@ -95,7 +93,7 @@ const login = async (email, password) => {
 
 const logout = async () => {
   try {
-    await signOut();
+    await auth.signOut();
   } catch (error) {
     // throw new Error(error.message);
     console.log("logout error : ", error.message);

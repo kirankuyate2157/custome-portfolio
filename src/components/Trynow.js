@@ -168,7 +168,7 @@ const Trynow = () => {
               className='p-1
             py-3 rounded-lg bg-yellow-200 text-lg fixed text-black z-50 '
             >
-              <button onClick={handleLogout}>Logout</button>
+              <button onClick={()=>handleLogout}>Logout</button>
             </div>
           )}
         </div>
