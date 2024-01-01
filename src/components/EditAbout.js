@@ -116,7 +116,6 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
         formData.profileImg !== ""
       )
     ) {
-      console.log(formData);
       setNoteMsg({ message: "Please fill in all form fields", type: "warn" });
       showNotificationMsg();
     } else {
@@ -146,7 +145,7 @@ const AboutFormModal = ({ isOpen, closeModal, aboutData, onSave }) => {
     try {
       const url = await uploadFile(image, path, imageName);
       setImageUrl(url);
-      alert("Uploaded image..", url);
+      // alert("Uploaded image..", url);
       setFormData((prevData) => ({ ...prevData, profileImg: url })); // Update using previous state
       setUploadError(null);
     } catch (error) {

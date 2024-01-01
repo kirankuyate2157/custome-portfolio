@@ -63,14 +63,17 @@ const Trynow = () => {
               ""
             )}-${randomChars}`;
             const newUserData = {
-              username: username,
-              email: userData.email,
-              profileLink: `http://localhost:3000/id/${username}`,
-              editLimit: 2,
-              visibility: true,
-              portfolioImg: "",
-              views: 0,
-              likes: 0,
+              profileData: {
+                name: userData.displayName,
+                username: username,
+                email: userData.email,
+                profileLink: `http://localhost:3000/id/${username}`,
+                editLimit: 2,
+                visibility: true,
+                portfolioImg: "",
+                views: 0,
+                likes: 0,
+              },
             };
             // Create a new document with the user ID as the document ID
             let portfolioRef = doc(db, "User_portfolio_data", userData.uid);

@@ -54,7 +54,7 @@ export default function App({ Component, pageProps }: AppProps) {
     const db = getFirestore();
     const usersCollection = collection(db, "Users");
 
-    const q = query(usersCollection, where("username", "==", username));
+    const q = query(usersCollection, where("profileData.username", "==", username));
 
     try {
       const querySnapshot = await getDocs(q);

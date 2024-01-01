@@ -15,10 +15,15 @@ import Notification from "./Notification";
 
 // Modal component for editing profile
 const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
-  const [formData, setFormData] = useState(initialProfile);
+  console.log("init : " + initialProfile);
+  const [formData, setFormData] = useState(
+    { ...initialProfile } || initialProfile
+  );
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-
+  const [oldUsername, setOldUsername] = useState(
+    initialProfile?.username || formData?.username
+  );
   const [uploadError, setUploadError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [noteMsg, setNoteMsg] = useState({
@@ -26,17 +31,16 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
     type: "warn",
   });
 
-  console.log(JSON.stringify(initialProfile));
-  console.log(JSON.stringify(formData));
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    console.log("updated data  home : ", formData);
-  };
-
   const handleSaveClick = () => {
+    if (formData.editLimit > 0 && oldUsername !== formData.username) {
+      // If editLimit is greater than 0 and the username is edited
+      setFormData((prevData) => ({
+        ...prevData,
+        editLimit: prevData.editLimit - 1,
+      }));
+    }
     onSave(formData);
-    setNoteMsg({ message: "Home data is saved 🌨️ ", type: "done" });
+    setNoteMsg({ message: "Profile data is saved 🌨️ ", type: "done" });
     showNotificationMsg();
     closeModal();
   };
@@ -69,7 +73,7 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
     try {
       const url = await uploadFile(image, path, imageName);
       setImageUrl(url);
-      alert("Uploaded image..", url);
+      // alert("Uploaded image..", url);
       setFormData((prevData) => ({ ...prevData, portfolioImg: url })); // Update using previous state
       setUploadError(null);
     } catch (error) {
@@ -99,7 +103,9 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
               className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
               name='name'
               value={formData.name}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
             />
           </div>
           {formData.editLimit && (
@@ -115,7 +121,9 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
                 className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 name='name'
                 value={formData.username}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setFormData({ ...formData, username: e.target.value })
+                }
               />
             </div>
           )}
@@ -129,7 +137,9 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
                 className='block w-full py-2 px-3 border rounded-md  border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2 '
                 name='profileImg'
                 value={formData.portfolioImg}
-                onChange={handleChange}
+                onChange={() =>
+                  setFormData({ ...formData, portfolioImg: e.target.value })
+                }
               />
               <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
                 <label
@@ -160,7 +170,13 @@ const ProfileFormModal = ({ isOpen, closeModal, initialProfile, onSave }) => {
             </label>
             <select
               className='block w-full py-2 px-3 border rounded-md border-gray-300 dark:border-[#8f0c4344]  bg-gray-100 dark:bg-[#1b2034]  text-gray-900 dark:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-2'
-              value={`${formData.visibility ? "Public" : "Private"}`}
+              value={formData.visibility}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  visibility: e.target.value === "true",
+                })
+              }
             >
               <option value={true}>Public</option>
               <option value={false}>Private</option>
@@ -301,22 +317,20 @@ const EditProfile = () => {
     return userSnapshot.data();
   };
   if (userId) {
-    console.log(userId)
+    console.log(userId);
     var userRef = doc(db, "Users", userId);
-  } else {
-    console.log(" current user id not found !");
   }
 
-  const updateProfile = async (newProfile) => {
-    console.log(" updating profile " + JSON.stringify(newProfile));
-    try {
-      setProfile(newProfile);
-      updateDoc(userRef, profile);
-      console.log("Profile updated successfully 🌠🌠.", profile);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+  const saveProfile = (newProfile) => {
+    setProfile({ ...newProfile });
   };
+
+  useEffect(() => {
+    if (profile?.username && userId) {
+      const updatedData = { profileData: { ...profile } };
+      updateDoc(userRef, updatedData);
+    }
+  }, [profile]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -324,16 +338,13 @@ const EditProfile = () => {
         const userRef = doc(db, "Users", userId);
         const userData = await findUser(userRef);
         if (userData) {
-          setProfile(userData);
-        } else {
-          setProfile(null);
-          console.error("User data not found for user ID:", userId);
+          setProfile({ ...userData.profileData });
         }
       }
     };
 
     fetchData();
-  }, [userId, selectedProfile]);
+  }, [userId]);
 
   const handleOpenFormModal = () => {
     setIsFormModalOpen(true);
@@ -352,9 +363,6 @@ const EditProfile = () => {
           | Edit Profile
           <FiChevronRight />
         </h2>
-        <h2 className='text-3xl mr-10 sm:mr-0 sm:text-2xl p-2 items-center gap-1 rounded-full text-pink-500 font-semibold'>
-          <BiAddToQueue onClick={() => setIsFormModalOpen(true)} />
-        </h2>
       </div>
       <div className='flex-grow p-4 overflow-y-auto text-black dark:text-white'>
         <ul className='space-y-4'>
@@ -364,7 +372,7 @@ const EditProfile = () => {
           >
             <div className='flex items-center justify-between cursor-pointer'>
               <strong className='cursor-pointer ml-1 font-extrabold'>
-                User Data
+                Profile Data
               </strong>
               <div className='flex gap-3'>
                 <button onClick={handleOpenFormModal}>
@@ -390,7 +398,7 @@ const EditProfile = () => {
         closeModal={handleCloseFormModal}
         initialProfile={profile}
         onSave={(newProfile) => {
-          updateProfile(newProfile);
+          saveProfile(newProfile);
         }}
       />
     </div>
