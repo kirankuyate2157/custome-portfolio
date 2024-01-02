@@ -7,19 +7,19 @@ const FeedbackCard = ({ ans, name, question }) => {
   return (
     <>
      <section
-  className='flex border border-[#B50C58] justify-between flex-col px-10 py-8 rounded-[20px] max-w-[370px] md:mr-10 sm:mr-5 mr-0 my-5'
+  className='flex border  border-[#B50C58] justify-between flex-col px-10 py-8 rounded-[20px] max-w-[370px] md:mr-10 sm:mr-5 mr-0 my-5'
 >
         <FaQuoteLeft 
           style={{ color: 'red' }}
           className=' w-[42.6px] h-[27.6px] object-contain'
         />
-        <p className=' font-poppins font-normal text-[18px] leading-[22.4px] text-white my-2'>
+        <p className=' font-poppins font-normal text-[18px] leading-[22.4px] text-black dark:text-white my-2'>
           {question}
         </p>
         <div className='flex flex-row '>
-          <div className=' flex ml-4 '>
+          <div className=' flex ml-4 text-gray-700 dark:text-gray-300 '>
           <span>-</span>
-            <h2 className='ml-1 font-poppins font-normal text-[16px] leading-[24px] text-gray-300'>
+            <h2 className='ml-1 font-poppins font-normal text-[16px] leading-[24px] '>
               {ans}
             </h2>
           </div>
