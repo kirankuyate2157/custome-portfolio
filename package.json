@@ -25,6 +25,7 @@
     "react-icons": "^4.11.0",
     "react-lines-ellipsis": "^0.15.3",
     "react-modal": "^3.16.1",
+    "react-slick": "^0.29.0",
     "tailwindcss": "3.3.1",
     "typescript": "5.0.4"
   },

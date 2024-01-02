@@ -99,7 +99,7 @@ const Navbar = () => {
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.7 }}
-     className='absolute font-mono right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden dark:text-white text-black  dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg bg-slate-900 dark:bg-slate-400 bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
+     className='absolute font-mono right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden text-white   border border-gray-300 dark:border-gray-700  shadow-lg bg-slate-900  bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
           
         <ul>
          
@@ -107,7 +107,7 @@ const Navbar = () => {
               <li
                 key={index}
                 onClick={() => handleTabClick(tab)}
-                className='px-1  w-full items-center justify-start flex relative py-2 cursor-pointer  bg-red-800 hover:text-red-600'
+                className='px-1  w-full items-center justify-start flex py-2'
               >
                 <FaLinesLeaning className="text-xs mr-2" />
                 {tab}
