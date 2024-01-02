@@ -1,16 +1,7 @@
 import Head from "next/head";
-import Layout from "../components/Layout";
+import React,{useState} from "react";
 import Image from "next/image";
-import Link from "next/link";
-import roketbg from "../../public/images/svgs/roketbg.svg";
 import Animation from "../../public/images/svgs/Animation.svg";
-import lightBulb from "../../public/images/svgs/miscellaneous_icons_1.svg";
-import ProfilePic from "../../public/images/profile/pa3.png";
-import AnimatedText from "../components/AnimatedText";
-import Hireme from "../components/Hireme";
-import { LinkArrow } from "../components/icons";
-import TransitionEffect from "../components/TransitionEffect";
-import { motion } from "framer-motion";
 import { FaChevronCircleRight } from "react-icons/fa";
 import { MdOutlineWifiCalling } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
@@ -18,6 +9,61 @@ import { SiSpinrilla } from "react-icons/si";
 import Navbar from "../components/Main/Navbar";
 import Carousal from "../components/Main/ScrollBar";
 export default function Home() {
+
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    company: '',
+    country: '',
+    subject: '',
+    message: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate required fields (e.g., email, message, subject)
+    if (!formData.email || !formData.subject || !formData.message) {
+      console.log('Please fill in the required fields.');
+      return;
+    }
+    // Send form data to a server (dummy email in this example)
+    // try {
+    //   const response = await fetch('YOUR_SERVER_API_ENDPOINT', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(formData),
+    //   });
+
+    //   if (response.ok) {
+    //     console.log('Form data sent successfully:', formData);
+    // setFormData({
+    //   firstName: '',
+    //   lastName: '',
+    //   email: '',
+    //   phoneNumber: '',
+    //   company: '',
+    //   country: '',
+    //   subject: '',
+    //   message: '',
+    // });
+    //   } else {
+    //     console.error('Failed to send form data.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error sending form data:', error);
+    // }
+  };
+
   return (
     <>
       <Head>
@@ -388,8 +434,8 @@ export default function Home() {
                 filter: "blur(900px)",
               }}
             />
-              <div class='z-10 grid grid-cols-1 text-black md:grid-cols-2  gap-4'>
-                <div class='mb-4 dark:text-white'>
+              <form  onSubmit={handleSubmit} class='z-10 grid grid-cols-1 text-black md:grid-cols-2  gap-4'>
+                <div className='mb-4 dark:text-white'>
                   <label
                     for='firstName'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300 '
@@ -400,10 +446,12 @@ export default function Home() {
                     type='text'
                     id='firstName'
                     name='firstName'
+                    value={formData.firstName}
+                    onChange={handleChange}
                     className='mt-1 p-2 w-full border  border-gray-700 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='mb-4'>
+                <div className='mb-4 dark:text-white'>
                   <label
                     for='lastName'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -413,11 +461,13 @@ export default function Home() {
                   <input
                     type='text'
                     id='lastName'
+                    value={formData.lastName}
+                    onChange={handleChange}
                     name='lastName'
                     className='mt-1 p-2 w-full border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='mb-4'>
+                <div className='mb-4 dark:text-white'>
                   <label
                     for='email'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -428,11 +478,13 @@ export default function Home() {
                     type='email'
                     id='email'
                     name='email'
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                     className='mt-1 p-2 w-full border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='mb-4'>
+                <div className='mb-4 dark:text-white'>
                   <label
                     for='phoneNumber'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -443,10 +495,12 @@ export default function Home() {
                     type='tel'
                     id='phoneNumber'
                     name='phoneNumber'
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
                     className='mt-1 p-2 w-full border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='mb-4'>
+                <div className='mb-4 dark:text-white'>
                   <label
                     for='company'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -457,10 +511,12 @@ export default function Home() {
                     type='text'
                     id='company'
                     name='company'
+                    value={formData.company}
+                    onChange={handleChange}
                     className='mt-1 p-2 w-full border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='mb-4'>
+                <div className='mb-4 dark:text-white'>
                   <label
                     for='country'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -471,10 +527,12 @@ export default function Home() {
                     type='text'
                     id='country'
                     name='country'
+                    value={formData.country}
+                    onChange={handleChange}
                     className='mt-1 p-2 w-full border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='col-span-2 mb-4'>
+                <div class='col-span-2 mb-4 dark:text-white'>
                   <label
                     for='subject'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -485,11 +543,13 @@ export default function Home() {
                     type='text'
                     id='subject'
                     name='subject'
+                    value={formData.subject}
+                    onChange={handleChange}
                     required
                     className='mt-1 p-2 w-full border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   />
                 </div>
-                <div class='col-span-2 mb-4'>
+                <div class='col-span-2 mb-4 dark:text-white'>
                   <label
                     for='message'
                     class='block text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -500,18 +560,20 @@ export default function Home() {
                     id='message'
                     name='message'
                     rows='4'
+                    value={formData.message}
                     required
+                    onChange={handleChange}
                     className='mt-1 p-2 w-full  border  border-gray-600 rounded-md dark:bg-[#161A2E]  outline-none focus:outline-none focus:border-pink-500'
                   ></textarea>
                 </div>
 
                 <button
                   type='submit'
-                  class='px-4 py-2 bg-pink-400 text-white rounded-md hover:bg-pink-600'
+                  class='px-4 py-2 bg-pink-00 border bg-pink-400 text-white rounded-md hover:bg-pink-600'
                 >
                   Send Message
                 </button>
-              </div>
+              </form>
             </div>
           </section>
         </div>
