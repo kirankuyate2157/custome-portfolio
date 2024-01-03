@@ -1,6 +1,11 @@
 import Head from "next/head";
 import React,{useState} from "react";
 import Image from "next/image";
+import ai from "../../public/images/ai.png";
+import nl from "../../public/images/nl.png";
+ import nl2 from "../../public/images/nl2.png";
+ import lk from "../../public/images/lk.png";
+ import cr from "../../public/images/cr.png";
 import Animation from "../../public/images/svgs/Animation.svg";
 import { FaChevronCircleRight } from "react-icons/fa";
 import { MdOutlineWifiCalling } from "react-icons/md";
@@ -8,6 +13,122 @@ import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { SiSpinrilla } from "react-icons/si";
 import Navbar from "../components/Main/Navbar";
 import Carousal from "../components/Main/ScrollBar";
+
+const sendMail = (toMail,data) => {
+  const greeting = "Dear Kiran K. ";
+
+  const page = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Feedback Contact from Kways page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type="text/css">
+      .banner {
+        background-image:linear-gradient(to bottom, #960443,#960443, #7c134d,  #7c134d,#601d50,#601d50, #44214b, #44214b, #44214b,#44214b, #44214b);
+        color: #ffffff;
+        text-align: center;
+        padding: 8px;
+      }
+      .content {
+        padding: 18px;
+        font-family: Arial, sans-serif;
+        border: 1px solid #e0e0e0;
+        background-color: #f9f9f9;
+      }
+      .title {
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .subtitle {
+        font-size: 16px;
+        color: #960443;
+        margin-bottom: 15px;
+      }
+      .details {
+        font-size: 10px;
+        margin-bottom: 14px;
+      }
+      .details2 {
+        font-size: 10px;
+        margin-bottom: 5px;
+      }
+      .button {
+        display: inline-block;
+        background-color: #960443;
+        color: #ffffff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 10px;
+      }
+      .link {
+        color: #fff;
+        text-decoration: none;
+      }
+      .footer {
+        font-size: 8px;
+        color: #999;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banner">
+      <h2>New Feedback or Contact Form Kways landing page Submission${data.firstName ? ` ${data.firstName}` : ''}! </h2>
+    </div>
+    <div class="content">
+      <p class="title">${greeting}</p>
+      <p class="details">A new contact form has been submitted on the Kways Company landing page. Here are the details:</p>
+
+      <p class="details">Subject: ${data?.subject}</p>
+      <p class="details">Person Name: ${data?.firstName} ${data?.lastName}</p>
+      <p class="details">Email: <a href="mailto:${data?.email}" class="link">${data?.email}</a></p>
+      <p class="details">Phone Number: ${data?.phoneNumber}</p>
+      <p class="details">Company: ${data?.company}</p>
+      <p class="details">Country: ${data?.country}</p>
+      <p class="details">Message: ${data?.message}</p>
+     
+      <p class="details">Please review and respond to the users inquiry at your earliest convenience. </p>
+      <p class="details2">Best Regard </p>
+      <p class="details">kways auto mail api </p>
+      <p class="footer">⚠️ This email is sent from an automated API system. Please do not reply to this email as it is not monitored.</p>
+    </div>
+  </body>
+  </html>`;
+
+  const url = 'https://refine-dashboard-qxpf.onrender.com/api/v1/senttomail';
+  const dataInfo = {
+    to: toMail,
+    subject: 'Feedback from Kways landing page..',
+    text: greeting,
+    html: page,
+  };
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(dataInfo),
+    headers: headers,
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log('Email sent successfully!');
+      } else {
+        console.log('Failed to send email.');
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+};
+
+
 export default function Home() {
 
   const [formData, setFormData] = useState({
@@ -34,36 +155,21 @@ export default function Home() {
       console.log('Please fill in the required fields.');
       return;
     }
-    // Send form data to a server (dummy email in this example)
-    // try {
-    //   const response = await fetch('YOUR_SERVER_API_ENDPOINT', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(formData),
-    //   });
-
-    //   if (response.ok) {
-    //     console.log('Form data sent successfully:', formData);
-    // setFormData({
-    //   firstName: '',
-    //   lastName: '',
-    //   email: '',
-    //   phoneNumber: '',
-    //   company: '',
-    //   country: '',
-    //   subject: '',
-    //   message: '',
-    // });
-    //   } else {
-    //     console.error('Failed to send form data.');
-    //   }
-    // } catch (error) {
-    //   console.error('Error sending form data:', error);
-    // }
-  };
-
+    const res=sendMail('kiranrkuyate2021@gmail.com', formData);
+    setTimeout(()=>{
+        setFormData({
+              firstName: '',
+              lastName: '',
+              email: '',
+              phoneNumber: '',
+              company: '',
+              country: '',
+              subject: '',
+              message: '',
+            });
+    },4000)
+  }
+   
   return (
     <>
       <Head>
@@ -113,8 +219,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div className=' w-full my-10  flex justify-center'>
-                  <button className='bg-[#151829] border border-1 z-20 text-primary border-gray-400 p-2 px-5 rounded-xl flex  items-center gap-5'>
-                    Explore Now{" "}
+                  <button className='bg-[#151829] border border-1 z-20 hover:bg-[#2c2040] text-primary border-gray-400 p-2 px-5 rounded-xl flex  items-center gap-5'>
+                    Explore Now
                     <FaChevronCircleRight className='animate-pulse' />
                   </button>
                 </div>
@@ -184,10 +290,17 @@ export default function Home() {
               <div
                 className={`flex-1 w-1/2 md:w-full  flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
+                   <div
+              className='absolute z-[1] w-[60%]  h-[60%] -right-[5%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
+              style={{
+                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
                 <Image
-                  src={Animation}
+                  src={nl2}
                   alt='card deals'
-                  className='w-[70%] md:w-[50%] h-full '
+                  className='z-10 w-[60%] md:w-[40%] h-full '
                 />
               </div>
             </section>
@@ -195,10 +308,17 @@ export default function Home() {
               <div
                 className={`flex-1 w-1/2 md:w-full flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
+                 <div
+              className='absolute z-[1] w-[60%] h-[60%] right-[40%] rounded-full opacity-70 bottom-40'
+              style={{
+                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
                 <Image
-                  src={Animation}
+                  src={ai}
                   alt='card deals'
-                  className=' w-[70%] md:w-[50%] h-full '
+                  className='z-[10] w-[70%] md:w-[50%] h-full '
                 />
               </div>
               <div className='flex-1 flex justify-center items-start flex-col'>
@@ -259,10 +379,17 @@ export default function Home() {
               <div
                 className={`flex-1 w-1/2 md:w-full  flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
+                  <div
+              className='absolute z-[1] w-[60%]  h-[60%] right-[5%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
+              style={{
+                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
                 <Image
-                  src={Animation}
+                  src={lk}
                   alt='card deals'
-                  className='w-[70%] md:w-[50%] h-full '
+                  className='z-10 w-[70%] md:w-[50%] h-full '
                 />
               </div>
             </section>
@@ -270,10 +397,17 @@ export default function Home() {
               <div
                 className={`flex-1 w-1/2 md:w-full flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
+                    <div
+              className='absolute z-[1] w-[40%] h-[60%] right-[40%] rounded-full opacity-70 bottom-40'
+              style={{
+                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
                 <Image
-                  src={Animation}
+                  src={nl}
                   alt='card deals'
-                  className=' w-[70%] md:w-[50%] h-full '
+                  className='z-10 w-[70%] md:w-[50%] h-full '
                 />
               </div>
               <div className='flex-1 flex justify-center items-start flex-col'>
@@ -337,10 +471,17 @@ export default function Home() {
               <div
                 className={`flex-1 w-1/2 md:w-full  flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
+                   <div
+              className='absolute z-[1] w-[50%]  h-[60%] right-[10%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
+              style={{
+                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
                 <Image
-                  src={Animation}
+                  src={cr}
                   alt='card deals'
-                  className='w-[70%] md:w-[50%] h-full '
+                  className='z-10 w-[70%] md:w-[50%] h-full '
                 />
               </div>
             </section>
@@ -395,7 +536,7 @@ export default function Home() {
               <h1
                 className={`font-poppins font-semibold text-[42px] xs:text-[32px] text-black dark:text-white leading-[56.8px] xs:leading-[40px] w-full`}
               >
-                Contact with our team !
+                Give Feedback or Contact with our team !
               </h1>
               <p
                 className={`font-poppins font-normal text-gray-800 dark:text-gray-300 text-[18px] leading-[22.8px] max-w-[470px] mt-5`}
