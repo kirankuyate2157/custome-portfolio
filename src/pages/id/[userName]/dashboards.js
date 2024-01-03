@@ -1,13 +1,13 @@
 // pages/dashboard.js
 import React, { useState, useEffect } from "react";
-import EditProject from "@/components/EditProjects.js";
-import EditAbout from "@/components/EditAbout.js";
-// import EditSkills from '../components/EditSkills';
-import EditHome from "@/components/EditHome.js";
-import EditArticles from "@/components/EditArticles.js";
-import EditSocial from "@/components/EditSocial.js";
+import EditProject from "@/components/portfolio/EditProjects.js";
+import EditAbout from "@/components/portfolio/EditAbout.js";
+// import EditSkills from '../components/portfolio/EditSkills';
+import EditHome from "@/components/portfolio/EditHome.js";
+import EditArticles from "@/components/portfolio/EditArticles.js";
+import EditSocial from "@/components/portfolio/EditSocial.js";
 import { addDataToFirebase } from "@/services/useFirebase.js";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/portfolio/Navbar";
 import {
   auth,
   getUserData,
@@ -16,7 +16,7 @@ import {
 import { useRouter } from "next/router";
 import { getUserPortfolioData } from "@/services/dataCRUD.js";
 import { DashboardDataProvider } from "@/context/DashboardDataProvider.js";
-import EditProfile from "../../../components/EditProfile";
+import EditProfile from "../../../components/portfolio/EditProfile";
 
 const Dashboard = () => {
   const [Data, setData] = useState({});

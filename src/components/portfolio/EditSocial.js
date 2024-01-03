@@ -3,9 +3,9 @@ import Modal from "react-modal";
 import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSocialLinkData, useData } from "../context/DashboardDataProvider";
+import { useSocialLinkData, useData } from "../../context/DashboardDataProvider.js";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getCurrentUserId } from "../services/firebaseConfig.js";
+import { getCurrentUserId } from "../../services/firebaseConfig.js";
 
 const SocialLinksFormModal = ({
   isOpen,

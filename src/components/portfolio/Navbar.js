@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import { FaHome } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import useThemeSwitcher from "./hooks/useThemeSwitcher";
+import useThemeSwitcher from "../hooks/useThemeSwitcher";
 import { getCurrentUserId } from "@/services/firebaseConfig.js";
 import {
   TwitterIcon,
@@ -16,7 +16,7 @@ import {
   MoonIcon,
 } from "./icons";
 
-import { useSocialLinkData } from "../context/DataProvider";
+import { useSocialLinkData } from "../../context/DataProvider";
 import Trynow from "./Trynow";
 import AuthModal from "./AuthModal";
 const CustomLink = ({ href, title, className = "" }) => {

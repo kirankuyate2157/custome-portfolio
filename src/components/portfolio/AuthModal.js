@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { GoogleAuth, register } from "../services/firebaseConfig";
+import { GoogleAuth, register } from "../../services/firebaseConfig";
 
 export default function AuthModal() {
   const [log, setLog] = useState();

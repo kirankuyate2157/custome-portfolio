@@ -5,7 +5,7 @@ import {
   GoogleAuth,
   login,
   logout,
-} from "./../services/firebaseConfig.js";
+} from "../../services/firebaseConfig.js";
 import {
   getFirestore,
   doc,
@@ -13,7 +13,7 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
-import dummyPortfolioData from "../assets/portfolioData.js";
+import dummyPortfolioData from "../../assets/portfolioData.js";
 const Trynow = () => {
   const [userData, setUserData] = useState({
     email: "",

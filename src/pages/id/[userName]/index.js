@@ -1,16 +1,16 @@
 import Head from "next/head";
 
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import Layout from "@/components/portfolio/Layout";
 import Image from "next/image";
 import Link from "next/link";
 import lightBulb from "../../../../public/images/svgs/miscellaneous_icons_1.svg";
 import ProfilePic from "../../../../public/images/profile/pa3.png";
-import AnimatedText from "@/components/AnimatedText";
-import Hireme from "@/components/Hireme";
-import { LinkArrow } from "@/components/icons";
-import TransitionEffect from "@/components/TransitionEffect";
-import Navbar from "@/components/Navbar";
+import AnimatedText from "@/components/portfolio/AnimatedText";
+import Hireme from "@/components/portfolio/Hireme";
+import { LinkArrow } from "@/components/portfolio/icons";
+import TransitionEffect from "@/components/portfolio/TransitionEffect";
+import Navbar from "@/components/portfolio/Navbar";
 import { motion } from "framer-motion";
 
 import { useHomeData } from "@/context/DataProvider";

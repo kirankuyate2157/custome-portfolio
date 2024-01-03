@@ -7,9 +7,9 @@ import { VscFolderActive } from "react-icons/vsc";
 import { TbCloudCheck } from "react-icons/tb";
 import { uploadFile } from "@/services/firebaseConfig.js";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSocialLinkData, useData } from "../context/DashboardDataProvider";
+import { useSocialLinkData, useData } from "../../context/DashboardDataProvider.js";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getCurrentUserId } from "../services/firebaseConfig.js";
+import { getCurrentUserId } from "../../services/firebaseConfig.js";
 import Notification from "./Notification";
 // Function to fetch user data from the "Users" collection
 

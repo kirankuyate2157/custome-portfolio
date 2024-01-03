@@ -17,12 +17,12 @@ import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { VscFolderActive } from "react-icons/vsc";
 import { TbCloudCheck } from "react-icons/tb";
 
-import { useProjectData, useData } from "../context/DashboardDataProvider";
+import { useProjectData, useData } from "../../context/DashboardDataProvider.js";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getCurrentUserId } from "../services/firebaseConfig.js";
+import { getCurrentUserId } from "../../services/firebaseConfig.js";
 import { FiUpload, FiFolder } from "react-icons/fi";
 import { uploadFile } from "@/services/firebaseConfig.js";
-import Notification from "./Notification";
+import Notification from "./Notification.js";
 
 // Dropdown component to display project details
 

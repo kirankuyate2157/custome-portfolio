@@ -1,13 +1,13 @@
 import React from "react";
 import Head from "next/head";
-import AnimatedText from "@/components/AnimatedText";
-import Layout from "@/components/Layout";
+import AnimatedText from "@/components/portfolio/AnimatedText";
+import Layout from "@/components/portfolio/Layout";
 import Link from "next/link";
 import Image from "next/image";
-import { GithubIcon } from "@/components/icons";
+import { GithubIcon } from "@/components/portfolio/icons";
 import { motion } from "framer-motion";
-import TransitionEffect from "@/components/TransitionEffect";
-import Navbar from "@/components/Navbar"
+import TransitionEffect from "@/components/portfolio/TransitionEffect";
+import Navbar from "@/components/portfolio/Navbar"
 const FramerImage = motion(Image);
 import { useProjectData } from "@/context/DataProvider";
 

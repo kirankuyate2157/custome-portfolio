@@ -3,8 +3,8 @@ import { BiAddToQueue } from "react-icons/bi";
 import { FiChevronUp, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import EditArticle from "./EditArticle";
 import AddArticle from "./AddArticle";
-import { useArticleData, useData } from "../context/DashboardDataProvider";
-import { getCurrentUserId } from "./../services/firebaseConfig.js";
+import { useArticleData, useData } from "../../context/DashboardDataProvider.js";
+import { getCurrentUserId } from "../../services/firebaseConfig.js";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import Notification from "./Notification";
 

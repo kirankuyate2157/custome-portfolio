@@ -11,8 +11,9 @@ import { FaChevronCircleRight } from "react-icons/fa";
 import { MdOutlineWifiCalling } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { SiSpinrilla } from "react-icons/si";
-import Navbar from "../components/Main/Navbar";
-import Carousal from "../components/Main/ScrollBar";
+import Navbar from "@/components/main/Navbar";
+import Carousal from "@/components/main/ScrollBar";
+
 
 const sendMail = (toMail,data) => {
   const greeting = "Dear Kiran K. ";
@@ -129,7 +130,7 @@ const sendMail = (toMail,data) => {
 };
 
 
-export default function Home() {
+export default function Hero() {
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -258,6 +259,11 @@ export default function Home() {
                 "linear-gradient(to right top, #c6095b,#622c69, #151829,  #151829, #342955, #27264a,#151829, #151829, #151829, #191d34, #171a2e, #151829)",
             }}
           >
+            <div className=' w-full my-12  text-6xl sm:text-5xl flex justify-center'>
+            <h2 className=' z-20 text-primary  font-extrabold  p-2 px-5 rounded-xl flex  items-center gap-5'>
+              Features 
+            </h2>
+          </div>
             <section id='Solution' className='flex  md:flex-col-reverse'>
               <div className='flex-1 flex justify-center items-start flex-col'>
                 <h1

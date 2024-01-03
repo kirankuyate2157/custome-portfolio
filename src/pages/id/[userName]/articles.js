@@ -2,11 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 import React, { useRef } from "react";
 import Image from "next/image";
-import Layout from "@/components/Layout";
-import AnimatedText from "@/components/AnimatedText";
+import Layout from "@/components/portfolio/Layout";
+import AnimatedText from "@/components/portfolio/AnimatedText";
 import { motion, useMotionValue } from "framer-motion";
-import TransitionEffect from "@/components/TransitionEffect";
-import Navbar from "@/components/Navbar";
+import TransitionEffect from "@/components/portfolio/TransitionEffect";
+import Navbar from "@/components/portfolio/Navbar";
 import { useArticleData } from "@/context/DataProvider";
 
 const FramerImage = motion(Image);

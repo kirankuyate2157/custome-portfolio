@@ -80,7 +80,15 @@ const Navbar = () => {
           >
             <PiDotsNineDuotone />
           </div>
-         
+          <div className='p-[0.10rem] m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+            <div className=''>
+              <img
+                src='https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600'
+                alt='dp'
+                className='w-6 h-6 rounded-md'
+              />
+            </div>
+          </div>
         </div>
       </div>
 
