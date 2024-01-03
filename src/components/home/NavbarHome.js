@@ -1,5 +1,4 @@
 import React,{useState} from "react";
-import Link from "next/link";
 import { FaEquals } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -7,11 +6,11 @@ import { FaLinesLeaning } from "react-icons/fa6";
 import { PiDotsNineDuotone } from "react-icons/pi";
 import { CiMail } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
-import { MoonIcon, SunIcon } from "../portfolio/icons";
-import useThemeSwitcher from "../hooks/useThemeSwitcher";
+import { MoonIcon, SunIcon } from "../portfolio/icons.js";
+import useThemeSwitcher from "../hooks/useThemeSwitcher.js";
 
 
-const Navbar = () => {
+const NavbarHome = () => {
   const [mode, setMode] = useThemeSwitcher();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
@@ -32,7 +31,7 @@ const Navbar = () => {
   const tabs = ["Portfolio", "Generate Context", "Socials", "Try Now", "Contact"];
 
   return (
-    <div className='w-full min-w-[280px] sm:px-0 px-10 pt-2 sm:pt-0'>
+    <div className='w-full  min-w-[280px]  sm:px-0 px-10 pt-2 sm:pt-0'>
       <div className='w-full flex justify-between items-center bg-slate-900 dark:bg-slate-400 bg-opacity-25 dark:bg-opacity-10 sm:rounded-none  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
         <div className='w-full pl-2 items-center flex'>
           <div className='p-1 m-1  text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
@@ -126,5 +125,5 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarHome;
 
