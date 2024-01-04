@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, userouter.push } from "react-router-dom";
 import { useRouter } from "next/router";
 import EditPhoto from "./EditPhoto";
 import Picker from "emoji-picker-react";
+import emojiNameMap from 'emoji-name-map';
 import { BsCameraVideoFill } from "react-icons/bs";
 import { BiSolidChevronDown, BiTime } from "react-icons/bi";
 import { GrEmoji } from "react-icons/gr";
@@ -41,12 +41,17 @@ const WritePost = () => {
   const [editingFileName, setEditingFileName] = useState(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
   const videoRef = useRef(null);
+  const router= useRouter();
+  const dataPrams=router.query;
+  const documentType= dataPrams[0]||"Images";
+  const showPopup3= dataPrams.length > 1? dataPrams[1]: "false";
+ 
+  const postData=()=>{
+    console.log("article text : ",articleText);
+    console.log("file name : ",fileName)
+  }
 
-  const { documentType, showPopup3 } = useParams();
-  console.log("doc1 : ", documentType);
-  console.log("doc2 : ", showPopup3);
 
-  console.log("doc :", documentType);
   useEffect(() => {
     if (documentType && showPopup3) {
       setShowPopup2(true);
@@ -55,9 +60,9 @@ const WritePost = () => {
     }
   }, [documentType, showPopup3]); // Update the dependency array
 
-  const router = useRouter();
+
   const handleDocumentClick = (type) => {
-    router.push(`/write-post/${type}/true`); // Use route parameters format
+    router.push(`/k/write-post/${type}/true`); // Use route parameters format
   };
 
   const handleVideoClick = (event) => {
@@ -99,9 +104,23 @@ const WritePost = () => {
   };
 
   const onEmojiClick = (event, emojiObject) => {
-    setChosenEmoji(emojiObject.target);
-    setArticleText((prevText) => prevText + chosenEmoji);
-    setShowPopup(false);
+    const imgTagString = emojiObject.target.outerHTML;
+// Create a new DOMParser
+const parser = new DOMParser();
+// Parse the string into a Document
+const doc = parser.parseFromString(imgTagString, 'text/html');
+// Access the parsed <img> element
+const imgElement = doc.body.firstChild;
+// Access the alt attribute
+const emojiName = imgElement.getAttribute('alt');
+
+console.log(`Alt attribute: ${emojiName}`);
+const unicode = emojiNameMap.get(emojiName);
+
+if (unicode) {
+  setArticleText((prevText) => prevText + unicode);
+} 
+setShowPopup(false);
   };
 
   useOutsideClick(videoRef, () => {
@@ -113,8 +132,8 @@ const WritePost = () => {
 
   return (
     <>
-      <div className=' flex justify-center w-full py-2'>
-        <div className='p-3 w-[90%] md:w-[50%] border  bg-white rounded-xl'>
+      <div className='flex w-full  justify-center max-w-[800px] min-w-[310px] py-2 '>
+        <div className='p-3 w-[90%]  border text-black bg-white rounded-xl'>
           <div className='flex gap-1 justify-start items-center'>
             <div className='flex items-center hover:bg-gray-100 rounded-lg p-1 gap-2'>
               <div className='p-1'>
@@ -397,7 +416,9 @@ const WritePost = () => {
           <hr className='mt-2 text-black' />
           <div className='flex justify-end items-center gap-3 my-2'>
             <BiTime className='text-2xl text-gray-400' />
-            <button className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'>
+            <button className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
+            onClick={()=>postData()}
+            >
               Post
             </button>
           </div>
