@@ -16,14 +16,18 @@ const Home = () => {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className="min-h-[100vh] w-full">
-        <div className="w-full md:hidden">
-        <NavbarHome/>
-        </div>
-        <div className="min-w-[300px] sm:mx-0 md:mx-2 w-full flex justify-center">
-          <WritePost/>
-          </div>
-      </main>
+      <main className="min-h-screen relative w-full overflow-hidden">
+      {/* Background content */}
+      <div className="bg-image w-full h-screen">
+        <NavbarHome />
+      </div>
+
+      {/* Modal overlay */}
+      <div className="modal-overlay absolute inset-0 bg-black bg-opacity-30 backdrop-filter backdrop-blur-sm flex justify-center items-center">
+        {/* Modal content */}
+        <WritePost />
+      </div>
+    </main>
     </>
   );
 };

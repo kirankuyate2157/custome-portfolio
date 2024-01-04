@@ -10,11 +10,11 @@ const Media = ({ Icons, title, colors = "red", onClick }) => {
   return (
     <>
       <div
-        className={`flex justify-center sm:p-1 md:p-2 p-3 hover:bg-gray-100 cursor-pointer md:gap-1 gap-2 items-center md:text-sm text-lg rounded-md`}
+        className={`flex justify-center sm:p-1 md:p-2 p-3 hover:bg-gray-100 cursor-pointer md:gap-1 gap-2 items-center text-sm rounded-md`}
         onClick={onClick}
       >
         <Icons
-          className={`md:w-[30px] w-[56px] h-auto text-${colors}-600`}
+          className={`md:w-[30px] w-[32px] h-auto text-${colors}-600`}
           style={{ color: colors }}
         />
         <span className='sm:hidden w-full'>{title}</span>
@@ -34,7 +34,7 @@ const StartPost = () => {
   return (
     <>
     
-      <div className=' max-w-[612px] min-w-[310px] my-10 mx-2 rounded-xl text-black bg-white border'>
+      <div className=' max-w-[612px] min-w-[310px]  my-3 mx-2 rounded-xl text-black bg-white border'>
         <div className='flex gap-3 mx-5 py-2'>
           <div>
             <img
@@ -44,7 +44,7 @@ const StartPost = () => {
             />
           </div>
           <Link
-            href='/write-post'
+            href='/k/write-post/documents'
             className='w-full h-auto hover:bg-gray-100 p-1 rounded-full cursor-pointer'
           >
             <h5 className='w-full rounded-full items-center flex h-full text-lg border-[1px] input-none focus:outline-none border-gray-300 px-5'>
@@ -52,7 +52,7 @@ const StartPost = () => {
             </h5>
           </Link>
         </div>
-        <div className='flex w-full justify-around mb-2 '>
+        <div className='flex  justify-around mb-2 overflow-hidden'>
           <Media
             title={"Photo"}
             Icons={CiImageOn}

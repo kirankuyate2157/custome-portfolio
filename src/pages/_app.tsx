@@ -35,20 +35,39 @@ export default function App({ Component, pageProps }: AppProps) {
     message: "some action done 😕 ",
     type: "warn",
   });
+  const router = useRouter();
+  const hasIdParameter = router.asPath.startsWith('/id/');
+  const secureRoute = router.asPath.startsWith('/k');
+  const loginRoute = router.asPath.startsWith('/k/login');
+
+  if (typeof localStorage !== 'undefined') {
+    if(!loginRoute && secureRoute){
+      const storedUserData = localStorage.getItem("userDataP");
+      const user = storedUserData ? JSON.parse(storedUserData) : null;
+
+      if(!user?.uid){
+       router.push("/k/login")
+      }
+    }
+  }
+
 
   const handleNotificationClose = () => {
     setShowNotification(false);
   };
+
+
+
   const showNotificationMsg = () => {
+  if(hasIdParameter)
     setShowNotification(true);
   };
   const showNotificationMsgDelay = () => {
+    if(hasIdParameter){
     setTimeout(() => {
       setShowNotification(true);
-    }, 2000);
+    }, 2000);}
   };
-
-  const router = useRouter();
 
   const searchUserByUsername = async (username) => {
     const db = getFirestore();

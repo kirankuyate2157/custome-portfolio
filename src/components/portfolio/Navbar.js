@@ -108,14 +108,14 @@ const Navbar = () => {
         ></span>
       </button>
     
-      <Link href="/" className='flex-col justify-center items-center hidden lg:flex  text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+      <Link href="/k" className='flex-col justify-center items-center hidden lg:flex  text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
             <FaHome />
           </Link>
 
       <div className='w-full flex justify-between items-center lg:hidden'>
       
         <nav className="flex items-center">
-        <Link href="/" className=' p-1 mr-4  mb-2 text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+        <Link href="/k" className=' p-1 mr-4  mb-2 text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
             <FaHome />
           </Link>
           <CustomLink href={`/id/${userName}/`} title='Home' className='mr-4' />

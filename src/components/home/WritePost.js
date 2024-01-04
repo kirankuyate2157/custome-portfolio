@@ -124,7 +124,7 @@ setShowPopup(false);
   };
 
   useOutsideClick(videoRef, () => {
-    if (videoPlaying) {
+    if (videoRef.current && videoRef.current instanceof HTMLVideoElement && videoPlaying) {
       videoRef.current.pause();
       setVideoPlaying(false);
     }
@@ -260,7 +260,7 @@ setShowPopup(false);
                 onClick={handleVideoClick}
                 ref={videoRef}
               >
-                <div className='mt-1 px-3 gap-2 flex items-center overflow-auto font-semibold rounded-t-lg text-gray-600'>
+                <div className='mt-1 px-3 gap-2 flex  items-center overflow-auto font-semibold rounded-t-lg text-gray-600'>
                   {editingFileName !== null ? (
                     <>
                       <input

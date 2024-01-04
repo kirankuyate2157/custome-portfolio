@@ -221,7 +221,7 @@ const Post = () => {
           src={myphoto}
           alt='post image'
           priority
-          className='max-w-[612px] min-w-[310px]'
+          className='max-h-[500px] w-auto'
           sizes='(max-width:768px) 100vw,(max-width:1200px) 50vw,50vw'
         />
       </div>
