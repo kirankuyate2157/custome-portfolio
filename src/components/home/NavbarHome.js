@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { FaEquals } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -9,10 +9,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MoonIcon, SunIcon } from "../portfolio/icons.js";
 import useThemeSwitcher from "../hooks/useThemeSwitcher.js";
 
+const CustomLink = ({ title, className = "" }) => {
+    return (
+    <div  className={`${className} relative group`}>
+      {title}
+      <span
+        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 w-0 group-hover:w-full transition-[width] ease duration-300 
+        `}
+      >
+        &nbsp;
+      </span>
+    </div>
+  );
+};
 
 const NavbarHome = () => {
   const [mode, setMode] = useThemeSwitcher();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [tabs,setTabs]=useState("Posts");
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -27,8 +41,9 @@ const NavbarHome = () => {
     console.log(`Clicked on tab: ${tab}`);
     closeDropdown();
   };
+  console.log("current tab : ",tabs);
 
-  const tabs = ["Portfolio", "Generate Context", "Socials", "Try Now", "Contact"];
+  const tabsM = ["Portfolios", "Generative AI", "Posts", "Try Now", "Contact"];
 
   return (
     <div className='w-full  min-w-[280px]  sm:px-0 px-10 pt-2 sm:pt-0'>
@@ -53,6 +68,25 @@ const NavbarHome = () => {
           </div>
         </div>
         <div className='w-full flex pr-2 justify-end gap-1 items-center '>
+
+        <CustomLink
+            title='Home'
+            className='mx-4'
+            onClick={(prev)=>setTabs("Posts")}
+          /><CustomLink
+          title='Portfolio'
+          className='mx-4'
+          onClick={(prev)=>setTabs("Portfolio")}
+        /><CustomLink
+        title='Generative AI'
+        className='mx-4'
+        onClick={(prev)=>setTabs("GenAI")}
+      /><CustomLink
+      title='Contact'
+      className='mx-4'
+      onClick={(prev)=>setTabs("COntact")}
+    />
+
           <div
             className={`p-[0.15rem] m-1  rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900  ${
               mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
@@ -94,36 +128,35 @@ const NavbarHome = () => {
       {/* Dropdown Modal */}
       {isDropdownOpen && (
         <AnimatePresence>
-     <motion.div 
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.7 }}
-     className='absolute font-mono right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden text-white   border border-gray-300 dark:border-gray-700  shadow-lg bg-slate-900  bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
-          
-        <ul>
-         
-            {tabs.map((tab, index) => (
-              <li
-                key={index}
-                onClick={() => handleTabClick(tab)}
-                className='px-1  w-full items-center justify-start flex py-2'
-              >
-                <a href="http://localhost:3001/id/demo" className='px-1  w-full items-center justify-start flex'>
-                <FaLinesLeaning className="text-xs mr-2" />
-                {tab}
-                </a>
-               
-              </li>
-            ))}
-          </ul>
-        </motion.div >
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.7 }}
+            className='absolute font-mono right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden text-white   border border-gray-300 dark:border-gray-700  shadow-lg bg-slate-900  bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'
+          >
+            <ul>
+              {tabM.map((tab, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleTabClick(tab)}
+                  className='px-1  w-full items-center justify-start flex py-2'
+                >
+                  <a
+                    href='http://localhost:3001/id/demo'
+                    className='px-1  w-full items-center justify-start flex'
+                  >
+                    <FaLinesLeaning className='text-xs mr-2' />
+                    {tab}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
         </AnimatePresence>
-        )}
-    
+      )}
     </div>
   );
 };
 
 export default NavbarHome;
-

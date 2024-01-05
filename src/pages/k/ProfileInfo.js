@@ -91,37 +91,37 @@ const ProfileInfo = () => {
                 />
               </div>
             </div>
-            <hr className="border-gray-500 py-2"/>
+            <hr className='border-gray-500 py-2' />
             <div className='flex flex-col '>
               <h1 className='font-bold'>Contact</h1>
               <div className='flex flex-col gap-2 py-2 text-xs px-2'>
                 <div className='flex gap-2 justify-start'>
-                  <h3 className="font-semibold">Email</h3>
+                  <h3 className='font-semibold'>Email</h3>
                   <p>kirankuyate@gmail.com</p>
                 </div>
 
                 <div className='flex gap-2 justify-start'>
-                  <h3 className="font-semibold">Profile Url</h3>
+                  <h3 className='font-semibold'>Profile Url</h3>
                   <p>localhost:3000/k/kiran2157</p>
                 </div>
 
                 <div className='flex gap-2 justify-start'>
-                  <h3 className="font-semibold">Phone</h3>
+                  <h3 className='font-semibold'>Phone</h3>
                   <p>8855962341</p>
                 </div>
               </div>
             </div>
-            <hr className="border-gray-500 py-2"/>
+            <hr className='border-gray-500 py-2' />
 
             <div className='flex flex-col'>
-            <div className='flex gap-2 py-2 justify-between'>
-                  <h3 className="text-xs">Profile views</h3>
-                  <p>301</p>
-                </div>
-                <div className='flex gap-2 py-2 justify-between'>
-                  <h3 className="text-xs">Total posts</h3>
-                  <p>4</p>
-                </div>
+              <div className='flex gap-2 py-2 justify-between'>
+                <h3 className='text-xs'>Profile views</h3>
+                <p>301</p>
+              </div>
+              <div className='flex gap-2 py-2 justify-between'>
+                <h3 className='text-xs'>Total posts</h3>
+                <p>4</p>
+              </div>
             </div>
           </div>
           <div
@@ -131,11 +131,12 @@ const ProfileInfo = () => {
                 "linear-gradient(to right ,#44214b ,#601d50,#601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
             }}
           >
-  <div className='flex flex-col justify-start py-4 '>
+            <div className='flex flex-col justify-start py-4 '>
               <h1 className='font-bold px-4'>Posts</h1>
-              </div>
-<Post/>
-<Post/><Post/>
+            </div>
+            <Post />
+            <Post />
+            <Post />
           </div>
         </div>
       </div>

@@ -1,11 +1,11 @@
 import Head from "next/head";
-import React,{useState} from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import ai from "../../public/images/ai.png";
 import nl from "../../public/images/nl.png";
- import nl2 from "../../public/images/nl2.png";
- import lk from "../../public/images/lk.png";
- import cr from "../../public/images/cr.png";
+import nl2 from "../../public/images/nl2.png";
+import lk from "../../public/images/lk.png";
+import cr from "../../public/images/cr.png";
 import Animation from "../../public/images/svgs/Animation.svg";
 import { FaChevronCircleRight } from "react-icons/fa";
 import { MdOutlineWifiCalling } from "react-icons/md";
@@ -14,8 +14,7 @@ import { SiSpinrilla } from "react-icons/si";
 import Navbar from "@/components/main/Navbar";
 import Carousal from "@/components/main/ScrollBar";
 
-
-const sendMail = (toMail,data) => {
+const sendMail = (toMail, data) => {
   const greeting = "Dear Kiran K. ";
 
   const page = `
@@ -79,7 +78,9 @@ const sendMail = (toMail,data) => {
   </head>
   <body>
     <div class="banner">
-      <h2>New Feedback or Contact Form Kways landing page Submission${data.firstName ? ` ${data.firstName}` : ''}! </h2>
+      <h2>New Feedback or Contact Form Kways landing page Submission${
+        data.firstName ? ` ${data.firstName}` : ""
+      }! </h2>
     </div>
     <div class="content">
       <p class="title">${greeting}</p>
@@ -87,7 +88,9 @@ const sendMail = (toMail,data) => {
 
       <p class="details">Subject: ${data?.subject}</p>
       <p class="details">Person Name: ${data?.firstName} ${data?.lastName}</p>
-      <p class="details">Email: <a href="mailto:${data?.email}" class="link">${data?.email}</a></p>
+      <p class="details">Email: <a href="mailto:${data?.email}" class="link">${
+    data?.email
+  }</a></p>
       <p class="details">Phone Number: ${data?.phoneNumber}</p>
       <p class="details">Company: ${data?.company}</p>
       <p class="details">Country: ${data?.country}</p>
@@ -101,46 +104,44 @@ const sendMail = (toMail,data) => {
   </body>
   </html>`;
 
-  const url = 'https://refine-dashboard-qxpf.onrender.com/api/v1/senttomail';
+  const url = "https://refine-dashboard-qxpf.onrender.com/api/v1/senttomail";
   const dataInfo = {
     to: toMail,
-    subject: 'Feedback from Kways landing page..',
+    subject: "Feedback from Kways landing page..",
     text: greeting,
     html: page,
   };
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   fetch(url, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(dataInfo),
     headers: headers,
   })
     .then((response) => {
       if (response.ok) {
-        console.log('Email sent successfully!');
+        console.log("Email sent successfully!");
       } else {
-        console.log('Failed to send email.');
+        console.log("Failed to send email.");
       }
     })
     .catch((error) => {
-      console.error('Error:', error);
+      console.error("Error:", error);
     });
 };
 
-
 export default function Hero() {
-
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    company: '',
-    country: '',
-    subject: '',
-    message: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    company: "",
+    country: "",
+    subject: "",
+    message: "",
   });
 
   const handleChange = (e) => {
@@ -153,24 +154,24 @@ export default function Hero() {
 
     // Validate required fields (e.g., email, message, subject)
     if (!formData.email || !formData.subject || !formData.message) {
-      console.log('Please fill in the required fields.');
+      console.log("Please fill in the required fields.");
       return;
     }
-    const res=sendMail('kiranrkuyate2021@gmail.com', formData);
-    setTimeout(()=>{
-        setFormData({
-              firstName: '',
-              lastName: '',
-              email: '',
-              phoneNumber: '',
-              company: '',
-              country: '',
-              subject: '',
-              message: '',
-            });
-    },4000)
-  }
-   
+    const res = sendMail("kiranrkuyate2021@gmail.com", formData);
+    setTimeout(() => {
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        company: "",
+        country: "",
+        subject: "",
+        message: "",
+      });
+    }, 4000);
+  };
+
   return (
     <>
       <Head>
@@ -180,7 +181,7 @@ export default function Hero() {
       </Head>
       <main className='w-full' style={{ fontFamily: "Quicksand" }}>
         <div
-          className=' min-h-[100vh] bg-[#151829] '
+          className=' min-h-[100vh] h-full bg-[#151829] '
           style={{
             backgroundImage:
               "linear-gradient(to bottom, #960443, #7c134d, #601d50, #44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829, #151829)",
@@ -251,19 +252,19 @@ export default function Hero() {
         </div>
 
         {/* ----- section 3 --------- */}
-        <div className='max-w-[1600px]'>
-          <div
-            className=' bg-[#151829] flex flex-col gap-2 py-6 pb-40 sm:px-4 px-20  relative'
-            style={{
+        <div className='bg-[#151829] flex justify-center' style={{
               backgroundImage:
                 "linear-gradient(to right top, #c6095b,#622c69, #151829,  #151829, #342955, #27264a,#151829, #151829, #151829, #191d34, #171a2e, #151829)",
-            }}
+            }}>
+          <div
+            className='  flex flex-col gap-2 py-6 pb-40 sm:px-4 px-20 max-w-[1600px] relative'
+            
           >
             <div className=' w-full my-12  text-6xl sm:text-5xl flex justify-center'>
-            <h2 className=' z-20 text-primary  font-extrabold  p-2 px-5 rounded-xl flex  items-center gap-5'>
-              Features 
-            </h2>
-          </div>
+              <h2 className=' z-20 text-primary  font-extrabold  p-2 px-5 rounded-xl flex  items-center gap-5'>
+                Features
+              </h2>
+            </div>
             <section id='Solution' className='flex  md:flex-col-reverse'>
               <div className='flex-1 flex justify-center items-start flex-col'>
                 <h1
@@ -296,13 +297,14 @@ export default function Hero() {
               <div
                 className={`flex-1 w-1/2 md:w-full  flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
-                   <div
-              className='absolute z-[1] w-[60%]  h-[60%] -right-[5%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
-              style={{
-                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
-                filter: "blur(900px)",
-              }}
-            />
+                <div
+                  className='absolute z-[1] w-[60%]  h-[60%] -right-[5%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
                 <Image
                   src={nl2}
                   alt='card deals'
@@ -314,13 +316,14 @@ export default function Hero() {
               <div
                 className={`flex-1 w-1/2 md:w-full flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
-                 <div
-              className='absolute z-[1] w-[60%] h-[60%] right-[40%] rounded-full opacity-70 bottom-40'
-              style={{
-                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
-                filter: "blur(900px)",
-              }}
-            />
+                <div
+                  className='absolute z-[1] w-[60%] h-[60%] right-[40%] rounded-full opacity-70 bottom-40'
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
                 <Image
                   src={ai}
                   alt='card deals'
@@ -385,13 +388,14 @@ export default function Hero() {
               <div
                 className={`flex-1 w-1/2 md:w-full  flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
-                  <div
-              className='absolute z-[1] w-[60%]  h-[60%] right-[5%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
-              style={{
-                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
-                filter: "blur(900px)",
-              }}
-            />
+                <div
+                  className='absolute z-[1] w-[60%]  h-[60%] right-[5%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
                 <Image
                   src={lk}
                   alt='card deals'
@@ -403,13 +407,14 @@ export default function Hero() {
               <div
                 className={`flex-1 w-1/2 md:w-full flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
-                    <div
-              className='absolute z-[1] w-[40%] h-[60%] right-[40%] rounded-full opacity-70 bottom-40'
-              style={{
-                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
-                filter: "blur(900px)",
-              }}
-            />
+                <div
+                  className='absolute z-[1] w-[40%] h-[60%] right-[40%] rounded-full opacity-70 bottom-40'
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
                 <Image
                   src={nl}
                   alt='card deals'
@@ -477,13 +482,14 @@ export default function Hero() {
               <div
                 className={`flex-1 w-1/2 md:w-full  flex justify-center items-center md:mr-10 mr-0 md:mt-0 mt-10 relative  pb-4 md:pb-0`}
               >
-                   <div
-              className='absolute z-[1] w-[50%]  h-[60%] right-[10%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
-              style={{
-                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
-                filter: "blur(900px)",
-              }}
-            />
+                <div
+                  className='absolute z-[1] w-[50%]  h-[60%] right-[10%] md:right-[10%] rounded-full opacity-70 bottom-40 md:top-20'
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
                 <Image
                   src={cr}
                   alt='card deals'
@@ -554,7 +560,6 @@ export default function Hero() {
               <p
                 className={`font-poppins flex items-center gap-2  font-normal text-gray-800 dark:text-gray-300 text-[15px] leading-[22.8px] max-w-[470px] mt-5`}
               >
-             
                 <IoCheckmarkDoneCircle className='text-pink-700 text-lg' />
                 Learn more about Kways chat now
               </p>
@@ -574,14 +579,18 @@ export default function Hero() {
             <div
               className={`flex-1  md:w-full  flex justify-center items-center md:mr-10 mr-0  mt-10 relative  pb-4 md:pb-0`}
             >
-               <div
-              className='absolute z-[0] w-[70%] h-[60%] right-[40%] rounded-full opacity-50 bottom-40'
-              style={{
-                background: "linear-gradient(90deg, #601d50 40%, #960443 100%)",
-                filter: "blur(900px)",
-              }}
-            />
-              <form  onSubmit={handleSubmit} class='z-10 grid grid-cols-1 text-black md:grid-cols-2  gap-4'>
+              <div
+                className='absolute z-[0] w-[70%] h-[60%] right-[40%] rounded-full opacity-50 bottom-40'
+                style={{
+                  background:
+                    "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                  filter: "blur(900px)",
+                }}
+              />
+              <form
+                onSubmit={handleSubmit}
+                class='z-10 grid grid-cols-1 text-black md:grid-cols-2  gap-4'
+              >
                 <div className='mb-4 dark:text-white'>
                   <label
                     for='firstName'

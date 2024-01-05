@@ -3,10 +3,12 @@ import NavbarHome from "@/components/home/NavbarHome";
 import StartPost from "@/components/home/StartPost";
 import Post from "@/components/home/Post";
 import Profile from "@/components/home/Profile";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ProfileInfo from "./ProfileInfo";
+import PortfolioLists from '../../components/home/PortfolioLists';
 const Home = () => {
+  const [tabs,setTabs]=useState("posts");
   return (
     <>
       <Head>
@@ -28,7 +30,17 @@ const Home = () => {
             className='flex flex-col max-w-[612px] min-w-[310px] hide-scrollbar  overflow-y-auto'
             style={{ height: "100vh" }}
           >
-            <ProfileInfo/>
+            {tabs=="posts"&&(
+              <>
+              <StartPost/>
+              <Post/>
+              <Post/>
+              <Post/>
+              </>
+            )}
+           {tabs=="portfolios"&&( <PortfolioLists/>)}
+           {tabs=="profile"&&( <ProfileInfo/>)}
+           
           </div>
         </div>
         </div>
