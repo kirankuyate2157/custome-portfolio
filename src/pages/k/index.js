@@ -5,6 +5,7 @@ import Post from "@/components/home/Post";
 import Profile from "@/components/home/Profile";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import ProfileInfo from "./ProfileInfo";
 const Home = () => {
   return (
     <>
@@ -13,7 +14,7 @@ const Home = () => {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className='min-h-screen w-full'>
+      <main className='min-h-screen w-full' style={{ fontFamily: "Quicksand" }}>
         <NavbarHome />
         <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '>
           <div
@@ -27,9 +28,7 @@ const Home = () => {
             className='flex flex-col max-w-[612px] min-w-[310px] hide-scrollbar  overflow-y-auto'
             style={{ height: "100vh" }}
           >
-            <StartPost />
-            <Post />
-            <Post />
+            <ProfileInfo/>
           </div>
         </div>
         </div>

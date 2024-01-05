@@ -23,7 +23,7 @@ const Home = () => {
       </div>
 
       {/* Modal overlay */}
-      <div className="modal-overlay absolute inset-0 bg-black bg-opacity-30 backdrop-filter backdrop-blur-sm flex justify-center items-center">
+      <div className="modal-overlay absolute inset-0 bg-black bg-opacity-30 backdrop-filter backdrop-blur-sm flex justify-center  sm:pt-10 sm:items-start items-center">
         {/* Modal content */}
         <WritePost />
       </div>
