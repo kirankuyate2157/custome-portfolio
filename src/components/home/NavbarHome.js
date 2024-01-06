@@ -62,7 +62,7 @@ const NavbarHome = ({ currentTab }) => {
     handleTabClick2();
   }, [tabs]);
 
-  const tabM = ["Home", "Portfolio", "Gen AI", "Contact"];
+  const tabM = ["Home", "Portfolio", "Gen AI", "Contact","Profile"];
 
   return (
     <div className='w-full  min-w-[280px]  sm:px-0 px-10 pt-2 sm:pt-0'>
@@ -151,7 +151,9 @@ const NavbarHome = ({ currentTab }) => {
             <IoNotificationsOutline />
           </div>
        
-          <div className='p-[0.10rem] mx-1  sm:p-1 sm:m-1  sm:text-lg  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+          <div className='p-[0.10rem] mx-1  sm:p-1 sm:m-1  sm:text-lg  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'
+           onClick={() => setTabs("Profile")}
+          >
            
               <img
                 src='https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600'

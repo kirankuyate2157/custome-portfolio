@@ -43,7 +43,7 @@ const Home = () => {
               </>
             )}
            {tabs=="Portfolio"&&( <PortfolioLists/>)}
-           {tabs=="profile"&&( <ProfileInfo/>)}
+           {tabs=="Profile"&&( <ProfileInfo/>)}
            
           </div>
         </div>

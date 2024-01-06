@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["imgix.bustle.com", "**"],
+    domains: ["imgix.bustle.com","https://firebasestorage.googleapis.com", "**"],
     remotePatterns: [
       {
         protocol: "https",
