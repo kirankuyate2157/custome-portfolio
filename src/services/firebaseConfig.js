@@ -54,7 +54,13 @@ const getUserData = () => {
     return { uid, displayName, email, photoURL };
   } else {
     // User not logged in
-    return null;
+    if (typeof window !== 'undefined' && window.localStorage) {
+    const storedUserData = localStorage.getItem("userDataP");
+    const user2 = storedUserData ? JSON.parse(storedUserData) : null;
+    return user2;}
+    else{
+      return null;
+    }
   }
 };
 const usr = getUserData();

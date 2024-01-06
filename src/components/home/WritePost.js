@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import EditPhoto from "./EditPhoto";
 import Picker from "emoji-picker-react";
-import emojiNameMap from 'emoji-name-map';
+import emojiNameMap from "emoji-name-map";
 import { BsCameraVideoFill } from "react-icons/bs";
 import { BiSolidChevronDown, BiTime } from "react-icons/bi";
 import { GrEmoji } from "react-icons/gr";
@@ -10,6 +10,20 @@ import { CiImageOn } from "react-icons/ci";
 import { FaCertificate } from "react-icons/fa";
 import { MdWork, MdEdit, MdDone } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
+import { uploadFile, getUserData } from "@/services/firebaseConfig.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  setDoc,
+  getDoc,
+  arrayUnion,
+  serverTimestamp,
+} from "firebase/firestore";
 
 const useOutsideClick = (ref, callback) => {
   const handleClickOutside = (event) => {
@@ -24,6 +38,10 @@ const useOutsideClick = (ref, callback) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, [ref, callback]);
+};
+
+const getCurrentTimestampInSeconds = () => {
+  return Math.floor(Date.now() / 1000);
 };
 
 const WritePost = () => {
@@ -41,16 +59,215 @@ const WritePost = () => {
   const [editingFileName, setEditingFileName] = useState(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
   const videoRef = useRef(null);
-  const router= useRouter();
-  const dataPrams=router.query;
-  const documentType= dataPrams[0]||"Images";
-  const showPopup3= dataPrams.length > 1? dataPrams[1]: "false";
- 
-  const postData=()=>{
-    console.log("article text : ",articleText);
-    console.log("file name : ",fileName)
-  }
+  const router = useRouter();
+  const dataPrams = router.query;
+  const documentType = dataPrams[0] || "Images";
+  const showPopup3 = dataPrams.length > 1 ? dataPrams[1] : "false";
 
+  const [fileUrl, setFileUrl] = useState("");
+  const [uploadError, setUploadError] = useState(null);
+  const [post, setPost] = useState(null);
+
+  const user = getUserData();
+  const db = getFirestore();
+
+  const Data = {
+    reactions: {
+      Celebrate: 0,
+      Love: 3,
+      Like: 12,
+      Insightful: 2,
+      Support: 0,
+      uids:[ "UR93ipCQCcdF7kLF56iloz9ROyp2",]
+    },
+    text: "I'm happy to share that I have obtained a new certification of Advanced Software Engineering Virtual Program of Walmart Global Tech, it was provided by Forage. #walmartglobaltech #theforage #softwareengineer #virtualexperience",
+    Time: {
+      seconds: 1704534141,
+      nanoseconds: 126000000,
+    },
+    handle:
+      "SDE aspirants 💫 | final yr | web dev (MERN) | DS | DSA | AI enthusiast | 2x100DaysO",
+    avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
+    uid: "UR93ipCQCcdF7kLF56iloz9ROyp2",
+    comments: [
+      { 
+        uid: "UR93ipCQCcdF7kLF56iloz9ROyp2",
+        name: "rahul jadhav",
+        handle: "data scientist | 100k on youtube ",
+        gender: true,
+        time: {
+          seconds: 1704537946,
+          nanoseconds: 840000000,
+        },
+        reactions: {
+          Like: 2,
+          Insightful: 0,
+          Love: 5,
+          Celebrate: 0,
+          Support: 1,
+          uids:[ "UR93ipCQCcdF7kLF56iloz9ROyp2",]
+        },
+        text: "greate share  🔥🙌🏻🙌🏻",
+        avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
+      },
+    ],
+    fileType: "Image",
+    file: "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/kiran%20kuyate%2F2845649e523847ce561a0db1b86addb5.jpg?alt=media&token=a1eb4463-8b8b-479a-a419-dd9c009343fc",
+
+};
+  const newData = {
+      reactions: {
+        Celebrate: 0,
+        Love: 0,
+        Like: 0,
+        Insightful: 0,
+        Support: 0,
+        uids:[ ]
+      },
+      text: articleText,
+      Time: {
+        seconds: getCurrentTimestampInSeconds(),
+        nanoseconds: 0,
+      },
+      handle:"",
+      avatar: "",
+      uid:user?.uid,
+      comments: [
+        { 
+          uid: user?.uid,
+          name: user?.displayName,
+          handle: "data scientist | 100k on youtube ",
+          gender: true,
+          time: {
+            seconds: getCurrentTimestampInSeconds(),
+            nanoseconds:0,
+          },
+          reactions: {
+            Like: 0,
+            Insightful: 0,
+            Love: 0,
+            Celebrate: 0,
+            Support: 0,
+            uids:[]
+          },
+          text: "greate share  🔥🙌🏻🙌🏻",
+          avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
+        },
+      ],
+      fileType: "Image",
+      file: "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/kiran%20kuyate%2F2845649e523847ce561a0db1b86addb5.jpg?alt=media&token=a1eb4463-8b8b-479a-a419-dd9c009343fc",
+  };
+
+ const addNewPost = async (userUid, postData) => {
+  const db = getFirestore();
+  const userDocRef = doc(db, "posts", userUid);
+
+  try {
+    await updateDoc(userDocRef, {
+      posts: arrayUnion({
+        ...postData,
+        Time: serverTimestamp(),
+      }),
+    });
+
+    console.log("Post added successfully.");
+  } catch (error) {
+    console.error("Error adding post: ", error);
+  }
+};
+
+  // ---------------- file upload ------------------
+
+  const handleImgUpload = async () => {
+    if (!fileType) {
+      return;
+    }
+    let file = null;
+    switch (fileType) {
+      case "Images":
+        file = selectedImage;
+        break;
+      case "Videos":
+        file = selectedVideo;
+        break;
+      case "Documents":
+        file = selectedDocument;
+        break;
+      default:
+        console.log(" file not selected ..,please try again .. ", file);
+        break;
+    }
+    if (user) {
+      console.log(user);
+      const path = user.displayName;
+      const imageName = fileName;
+
+      try {
+        const url = await uploadFile(file, path, imageName);
+        // setImageUrl(url);
+        setFileUrl(() => url); // Update using previous state
+        setUploadError(null);
+      } catch (error) {
+        console.log("Error uploading ", error);
+        setUploadError("File upload failed. Please try again.");
+      }
+    } else {
+      console.log(" user not found .. can`t upload file..");
+    }
+  };
+
+  const fetchPostData = async () => {
+    const db = getFirestore();
+    console.log(user);
+    if (user) {
+      const postRef = doc(db, "posts", user.uid);
+      console.log("fetching post data ..");
+      try {
+        const postDataSnapshot = await getDoc(postRef);
+
+        if (postDataSnapshot.exists()) {
+          const newPostData = postDataSnapshot.data();
+
+          // Update the state with the fetched user portfolio data
+          setPost(() => newPostData);
+        }
+      } catch (error) {
+        return null;
+      }
+    }
+  };
+
+  const setDummyPostData = async () => {
+    if (user) {
+      const db = getFirestore();
+      const accountRef = doc(db, "posts", user.uid);
+      let done = await setDoc(accountRef, newData);
+      if (done) {
+        console.log(" account created sucessfully .✔️");
+      }
+    } else {
+      console.log("auth user id not found till now..");
+    }
+  };
+
+  useEffect(() => {
+    fetchPostData();
+    console.log("post data :", JSON.stringify(post));
+    setDummyPostData();
+  }, []);
+
+
+
+
+  //  --------------------  Data Updating ----------------------------
+  const postData = () => {
+    console.log("article text : ", articleText);
+    console.log("file name : ", fileName);
+    console.log("file type : ", fileType);
+    if(user &&user.uid){
+      console.log("pushing data .. ok..")
+    addNewPost(user.uid,newData);}
+  };
 
   useEffect(() => {
     if (documentType && showPopup3) {
@@ -59,8 +276,6 @@ const WritePost = () => {
       console.log("Parameters from routes: ", documentType);
     }
   }, [documentType, showPopup3]); // Update the dependency array
-
-
   const handleDocumentClick = (type) => {
     router.push(`/k/write-post/${type}/true`); // Use route parameters format
   };
@@ -105,26 +320,30 @@ const WritePost = () => {
 
   const onEmojiClick = (event, emojiObject) => {
     const imgTagString = emojiObject.target.outerHTML;
-// Create a new DOMParser
-const parser = new DOMParser();
-// Parse the string into a Document
-const doc = parser.parseFromString(imgTagString, 'text/html');
-// Access the parsed <img> element
-const imgElement = doc.body.firstChild;
-// Access the alt attribute
-const emojiName = imgElement.getAttribute('alt');
+    // Create a new DOMParser
+    const parser = new DOMParser();
+    // Parse the string into a Document
+    const doc = parser.parseFromString(imgTagString, "text/html");
+    // Access the parsed <img> element
+    const imgElement = doc.body.firstChild;
+    // Access the alt attribute
+    const emojiName = imgElement.getAttribute("alt");
 
-console.log(`Alt attribute: ${emojiName}`);
-const unicode = emojiNameMap.get(emojiName);
+    console.log(`Alt attribute: ${emojiName}`);
+    const unicode = emojiNameMap.get(emojiName);
 
-if (unicode) {
-  setArticleText((prevText) => prevText + unicode);
-} 
-setShowPopup(false);
+    if (unicode) {
+      setArticleText((prevText) => prevText + unicode);
+    }
+    setShowPopup(false);
   };
 
   useOutsideClick(videoRef, () => {
-    if (videoRef.current && videoRef.current instanceof HTMLVideoElement && videoPlaying) {
+    if (
+      videoRef.current &&
+      videoRef.current instanceof HTMLVideoElement &&
+      videoPlaying
+    ) {
       videoRef.current.pause();
       setVideoPlaying(false);
     }
@@ -416,8 +635,9 @@ setShowPopup(false);
           <hr className='mt-2 text-black' />
           <div className='flex justify-end items-center gap-3 my-2'>
             <BiTime className='text-2xl text-gray-400' />
-            <button className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
-            onClick={()=>postData()}
+            <button
+              className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
+              onClick={() => postData()}
             >
               Post
             </button>
