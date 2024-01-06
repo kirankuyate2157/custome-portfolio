@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEquals } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { CiMenuKebab } from "react-icons/ci";
+import { TiHome } from "react-icons/ti";
+import { AiFillRobot } from "react-icons/ai";
+import { MdOutlinePortrait } from "react-icons/md";
 import { FaLinesLeaning } from "react-icons/fa6";
 import { PiDotsNineDuotone } from "react-icons/pi";
 import { CiMail } from "react-icons/ci";
@@ -9,13 +13,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MoonIcon, SunIcon } from "../portfolio/icons.js";
 import useThemeSwitcher from "../hooks/useThemeSwitcher.js";
 
-const CustomLink = ({ title, className = "" }) => {
-    return (
-    <div  className={`${className} relative group`}>
+const CustomLink = ({ title, className = "", onClick, isActive }) => {
+  const handleClick = () => {
+    if (onClick) {
+      onClick(title);
+    }
+  };
+
+  return (
+    <div
+      className={`${className} cursor-pointer relative group`}
+      onClick={handleClick}
+    >
       {title}
       <span
-        className={`h-[1px] inline-block  bg-dark  dark:bg-light absolute  left-0 -bottom-0.5 w-0 group-hover:w-full transition-[width] ease duration-300 
-        `}
+        className={`h-[1px] inline-block bg-dark dark:bg-light absolute left-0 -bottom-0.5 ${
+          isActive ? "w-full" : "w-0"
+        } group-hover:w-full transition-[width] ease duration-300`}
       >
         &nbsp;
       </span>
@@ -23,10 +37,10 @@ const CustomLink = ({ title, className = "" }) => {
   );
 };
 
-const NavbarHome = () => {
+const NavbarHome = ({ currentTab }) => {
   const [mode, setMode] = useThemeSwitcher();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [tabs,setTabs]=useState("Posts");
+  const [tabs, setTabs] = useState("Home");
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -37,23 +51,28 @@ const NavbarHome = () => {
   };
 
   const handleTabClick = (tab) => {
-    // Handle tab click logic here
-    console.log(`Clicked on tab: ${tab}`);
     closeDropdown();
   };
-  console.log("current tab : ",tabs);
+  const handleTabClick2 = () => {
+    if (typeof currentTab === 'function') {
+      currentTab(tabs);
+    }
+  };
+  useEffect(() => {
+    handleTabClick2();
+  }, [tabs]);
 
-  const tabsM = ["Portfolios", "Generative AI", "Posts", "Try Now", "Contact"];
+  const tabM = ["Home", "Portfolio", "Gen AI", "Contact"];
 
   return (
     <div className='w-full  min-w-[280px]  sm:px-0 px-10 pt-2 sm:pt-0'>
-      <div className='w-full flex justify-between items-center bg-slate-900 dark:bg-slate-400 bg-opacity-25 dark:bg-opacity-10 sm:rounded-none  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
-        <div className='w-full pl-2 items-center flex'>
-          <div className='p-1 m-1  text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+      <div className='w-full flex  justify-between items-center bg-slate-900 dark:bg-slate-400 bg-opacity-25 dark:bg-opacity-10 sm:rounded-none  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'>
+        <div className='w-full md:w-[25%] pl-2 items-center flex'>
+          <div className='md:hidden p-1 m-1  text-xl rounded-lg  text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
             <FaEquals />
           </div>
           <div
-            className='flex items-center  text-black dark:text-white px-2 font-bold text-2xl'
+            className='flex items-center  text-black dark:text-white sm:p-0 px-2 sm:text-xl font-bold text-2xl'
             style={{ fontFamily: "Black Ops One" }}
           >
             <h1 className='font-shadow-b-3xl '>KWAYS</h1>
@@ -67,28 +86,54 @@ const NavbarHome = () => {
             />
           </div>
         </div>
-        <div className='w-full flex pr-2 justify-end gap-1 items-center '>
+        <div className='w-full md:w-[65%] flex pr-2 justify-between gap-1 items-end '>
+          <div className=' lg:hidden w-full flex pr-2 justify-start gap-1 items-center '>
+            <CustomLink
+              title='Home'
+              className='mx-4'
+              onClick={(tab) => setTabs(tab)}
+              isActive={tabs === "Home"}
+            />
 
-        <CustomLink
-            title='Home'
-            className='mx-4'
-            onClick={(prev)=>setTabs("Posts")}
-          /><CustomLink
-          title='Portfolio'
-          className='mx-4'
-          onClick={(prev)=>setTabs("Portfolio")}
-        /><CustomLink
-        title='Generative AI'
-        className='mx-4'
-        onClick={(prev)=>setTabs("GenAI")}
-      /><CustomLink
-      title='Contact'
-      className='mx-4'
-      onClick={(prev)=>setTabs("COntact")}
-    />
-
+            <CustomLink
+              title='Portfolio'
+              className='mx-4'
+              onClick={(tab) => setTabs(tab)}
+              isActive={tabs === "Portfolio"}
+            />
+            <CustomLink
+              title='GenAI'
+              className='mx-4'
+              onClick={(tab) => setTabs(tab)}
+              isActive={tabs === 'GenAI'}
+            />
+            <CustomLink
+              title='Contact'
+              className='mx-4'
+              onClick={(tab) => setTabs(tab)}
+              isActive={tabs === "Contact"}
+            />
+          </div>
+         
+            <div className='lg:flex hidden p-1 mx-1  text-xl  text-slate-900 dark:text-white '
+            onClick={() => setTabs("Home")}
+            >
+              <TiHome />
+              
+            </div>
+            <div className='lg:flex hidden p-1 mx-1 text-xl   rounded-lg text-slate-900 dark:text-white'
+            onClick={() => setTabs("Portfolio")}>
+              <MdOutlinePortrait />
+            </div>
+            <div className='lg:flex hidden p-1 mx-1  text-xl  text-slate-900 dark:text-white ' 
+            onClick={() => setTabs("GenAI")}
+            >
+              <AiFillRobot />
+            </div>
+            
+        
           <div
-            className={`p-[0.15rem] m-1  rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900  ${
+            className={`p-[0.15rem]  md:my-1     sm:py-0 text-xl  rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900 flex   ${
               mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
             }`}
             onClick={() => {
@@ -96,31 +141,30 @@ const NavbarHome = () => {
             }}
           >
             {mode == "dark" ? (
-              <SunIcon className={"fill-dark"} />
+              <SunIcon className={"fill-dark min-w-[20px]"} />
             ) : (
-              <MoonIcon className={"fill-dark"} />
+              <MoonIcon className={"fill-dark min-w-[20px]"} />
             )}
           </div>
-          <div className='sm:hidden p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
-            <CiMail />
-          </div>
-          <div className='sm:hidden p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+
+          <div className='sm:hidden p-1    mx-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
             <IoNotificationsOutline />
           </div>
-          <div
-            className=' p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900 cursor-pointer'
-            onClick={toggleDropdown}
-          >
-            <PiDotsNineDuotone />
-          </div>
-          <div className='p-[0.10rem] m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
-            <div className=''>
+       
+          <div className='p-[0.10rem] mx-1  sm:p-1 sm:m-1  sm:text-lg  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
+           
               <img
                 src='https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600'
                 alt='dp'
-                className='w-6 h-6 rounded-md'
+                className='w-7 h-6 sm:w-4 sm:h-5 min-w-[16px] rounded-md'
               />
-            </div>
+           
+          </div>
+          <div
+            className=' p-[0.10rem] mx-1 sm:m-1 text-xl  text-slate-900 dark:text-white  cursor-pointer'
+            onClick={toggleDropdown}
+          >
+            < CiMenuKebab />
           </div>
         </div>
       </div>

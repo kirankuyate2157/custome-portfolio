@@ -8,7 +8,11 @@ import { useRouter } from "next/router";
 import ProfileInfo from "./ProfileInfo";
 import PortfolioLists from '../../components/home/PortfolioLists';
 const Home = () => {
-  const [tabs,setTabs]=useState("posts");
+  const [tabs,setTabs]=useState("Home");
+
+  const handleTabClick=(tab)=>{
+      setTabs(tab);
+  }
   return (
     <>
       <Head>
@@ -17,7 +21,7 @@ const Home = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className='min-h-screen w-full' style={{ fontFamily: "Quicksand" }}>
-        <NavbarHome />
+        <NavbarHome currentTab={(tab)=>handleTabClick(tab)} />
         <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '>
           <div
             className='md:hidden max-w-[612px] min-w-[310px]   overflow-y-auto'
@@ -30,7 +34,7 @@ const Home = () => {
             className='flex flex-col max-w-[612px] min-w-[310px] hide-scrollbar  overflow-y-auto'
             style={{ height: "100vh" }}
           >
-            {tabs=="posts"&&(
+            {tabs=="Home"&&(
               <>
               <StartPost/>
               <Post/>
@@ -38,7 +42,7 @@ const Home = () => {
               <Post/>
               </>
             )}
-           {tabs=="portfolios"&&( <PortfolioLists/>)}
+           {tabs=="Portfolio"&&( <PortfolioLists/>)}
            {tabs=="profile"&&( <ProfileInfo/>)}
            
           </div>
