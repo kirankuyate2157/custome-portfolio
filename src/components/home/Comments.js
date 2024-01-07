@@ -1,8 +1,9 @@
 import { useState } from "react";
+import Image from "next/image";
 import { SlLike, SlOptions } from "react-icons/sl";
 import LinesEllipsis from "react-lines-ellipsis";
 
-const Comments = () => {
+const Comments = ({Data}) => {
   const [showFullText, setShowFullText] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -11,6 +12,22 @@ const Comments = () => {
     label: "Like",
   });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ---------------------------new code ---------------------------------
   const [comments, setComments] = useState([
     {
       id: 1,
@@ -27,6 +44,7 @@ const Comments = () => {
         Celebrate: 0,
         Support: 0,
         Insightful: 0,
+        uids:[]
       },
       totalLikes: 2,
       reactionOptionsVisible: false,
@@ -45,6 +63,7 @@ const Comments = () => {
         Celebrate: 0,
         Support: 1,
         Insightful: 0,
+        uids:[]
       },
       totalLikes: 1,
       reactionOptionsVisible: false,
@@ -55,7 +74,7 @@ const Comments = () => {
   const updateTotalLikes = () => {
     setComments((prevComments) =>
       prevComments.map((comment) => {
-        const totalLikes = Object.values(comment.likes).reduce(
+        const totalLikes = Object.values(data.reactions).reduce(
           (total, count) => total + count,
           0
         );
@@ -66,13 +85,13 @@ const Comments = () => {
 
   const handleReactionSelect = (commentId, reaction) => {
     setComments((prevComments) =>
-      prevComments.map((comment) => {
-        if (comment.id === commentId) {
-          const currentLikes = comment.likes[reaction.label];
+      prevComments.map((data) => {
+        if (data?.id === commentId) {
+          const currentLikes = data.reactions[reaction.label];
           const updatedComment = {
             ...comment,
             likes: {
-              ...comment.likes,
+              ...data.reactions,
               [reaction.label]:
                 currentLikes + (selectedReaction === reaction ? -1 : 1),
             },
@@ -93,7 +112,7 @@ const Comments = () => {
   const handleReactionHover = (commentId) => {
     setComments((prevComments) =>
       prevComments.map((comment) =>
-        comment.id === commentId
+        data?.id === commentId
           ? { ...comment, reactionOptionsVisible: true }
           : comment
       )
@@ -104,7 +123,7 @@ const Comments = () => {
     setTimeout(() => {
       setComments((prevComments) =>
         prevComments.map((comment) =>
-          comment.id === commentId
+          data?.id === commentId
             ? { ...comment, reactionOptionsVisible: false }
             : comment
         )
@@ -197,14 +216,22 @@ const Comments = () => {
       setCommentInput("");
     }
   };
+
+
+
+
   return (
     <div>
       <div className='flex gap-3 mx-5 py-2'>
         <div>
-          <img
-            src='https://avatars.githubusercontent.com/u/84271800?v=4'
+          <Image
+            src={'https://avatars.githubusercontent.com/u/84271800?v=4'}
             alt='placeholder'
             className='w-[50px]  rounded-full'
+            priority
+          width={50}
+            height={50}
+          sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
           />
         </div>
         <div className='w-full flex flex-col h-auto hover:bg-gray-100 text-black p-1 rounded-2xl cursor-pointer'>
@@ -224,15 +251,19 @@ const Comments = () => {
           )}
         </div>
       </div>
-      {comments.map((comment) => (
-        <div key={comment.id} className='p-4 mx-1'>
+      {Data.map((data) => (
+        <div key={data?.id} className='p-4 mx-1'>
           <div className='flex flex-col text-sm'>
             <div className='flex items-start text-[9px] ml-1 md:mx-3'>
               <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2'>
-                <img
-                  src={comment.avatar}
+                <Image
+                  src={data?.avatar || 'https://avatars.githubusercontent.com/u/84271800?v=4' }
                   alt='user profile'
                   className='w-full rounded-full'
+                  priority
+                  width={50}
+                    height={50}
+                  sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
                 />
               </div>
               <div className='mr-1 items-center w-[85%] text-gray-700'>
@@ -240,26 +271,26 @@ const Comments = () => {
                   <div className='flex justify-between w-full'>
                     <div className='flex justify-start gap-1 sm:text-[0.6rem] md:text-xs text-sm'>
                       <h1 className='font-semibold text-black'>
-                        {comment.user}
+                        {data?.name}
                       </h1>
-                      <span>(He/Him)</span>
+                      <span>{`${data?.gender?"(He/Him)":"(She/Her)"}`}</span>
                     </div>
                     <div className='flex items-center md:gap-1 gap-2 text-xs md:text-sm mr-1'>
                       <h6 className='sm:text-[0.6rem] md:text-xs '>
-                        {formatTimeDifference(comment.time)}
+                        {formatTimeDifference(data?.time)}
                       </h6>
                       <SlOptions />
                     </div>
                   </div>
                   <div className='flex'>
                     <span className='flex sm:text-[0.5rem] md:text-xs  overflow-hidden whitespace-nowrap overflow-ellipsis sm:max-w-[12rem] max-w-[81%]'>
-                      {comment.handle}
+                      {data?.handle}
                     </span>
                     <span>...</span>
                   </div>
                   <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] '>
                     <LinesEllipsis
-                      text={comment.content}
+                      text={data.text}
                       maxLine={showFullText ? 1000 : 1}
                       ellipsis='.. See more'
                       trimRight
@@ -269,46 +300,46 @@ const Comments = () => {
                   </p>
                 </div>
                 <div className='ml-2 flex gap-1 justify-start items-center relative'>
-                  {comment.reactionOptionsVisible && (
+                  {data && (
                     <ReactionOptions
-                      commentId={comment.id}
+                      commentId={data?.id}
                       onSelectReaction={handleReactionSelect}
                     />
                   )}
                   <span
                     className={`${isLiked ? "text-blue-500" : ""}`}
                     onClick={() =>
-                      handleReactionSelect(comment.id, { label: "Like" })
+                      handleReactionSelect(data?.id, { label: "Like" })
                     }
-                    onMouseEnter={() => handleReactionHover(comment.id)}
-                    onMouseLeave={() => handleReactionLeave(comment.id)}
+                    onMouseEnter={() => handleReactionHover(data?.id)}
+                    onMouseLeave={() => handleReactionLeave(data?.id)}
                   >
                     {react.label}
                   </span>
                   •
                   <span className='p-1'>
                     <span className='text-[0.50rem] rounded-full'>
-                      {comment.likes.Like > 0 && (
+                      {data.reactions.Like > 0 && (
                         <span className='bg-green-300 border rounded-full ml-[-8px] '>
                           👍
                         </span>
                       )}
-                      {comment.likes.Love > 0 && (
+                      {data.reactions.Love > 0 && (
                         <span className='bg-red-700 border rounded-full ml-[-8px]'>
                           ❤️
                         </span>
                       )}
-                      {comment.likes.Celebrate > 0 && (
+                      {data.reactions.Celebrate > 0 && (
                         <span className='bg-yellow-500 border border-gray-300 rounded-full ml-[-8px]'>
                           🎉
                         </span>
                       )}
-                      {comment.likes.Support > 0 && (
+                      {data.reactions.Support > 0 && (
                         <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
                           🤝
                         </span>
                       )}
-                      {comment.likes.Insightful > 0 && (
+                      {data.reactions.Insightful > 0 && (
                         <span className='bg-purple-500 border border-gray-300 rounded-full ml-[-8px]'>
                           💡
                         </span>
@@ -316,7 +347,7 @@ const Comments = () => {
                     </span>
                   </span>
                   <span>
-                    {comment.totalLikes > 0 ? comment.totalLikes : ""}
+                    {data?.reactions?.uids?.length > 0 ? data?.reactions?.uids?.length  : ""}
                   </span>
                 </div>
               </div>

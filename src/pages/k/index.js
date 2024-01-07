@@ -6,7 +6,7 @@ import Post from "@/components/home/Post";
 import Profile from "@/components/home/Profile";
 import { useRouter } from "next/router";
 import ProfileInfo from "./ProfileInfo";
-import PortfolioLists from '../../components/home/PortfolioLists';
+import PortfolioLists from "../../components/home/PortfolioLists";
 import { getUserData } from "@/services/firebaseConfig.js";
 import {
   getFirestore,
@@ -23,35 +23,41 @@ import {
 } from "firebase/firestore";
 
 const Home = () => {
-  const [tabs,setTabs]=useState("Home");
+  const [tabs, setTabs] = useState("Home");
   const [posts, setPosts] = useState([]);
-  const [refresh,setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
-  const handleTabClick=(tab)=>{
-      setTabs(tab);
-  }
+  const handleTabClick = (tab) => {
+    setTabs(tab);
+  };
   const fetchPostData = async () => {
     const db = getFirestore();
     const postsRef = collection(db, "posts"); // Use collection() to reference a collection
     console.log("fetching post from main 📍📍🔥 ..");
     try {
       const postDataSnapshot = await getDocs(postsRef);
-  
+
       if (!postDataSnapshot.empty) {
         const newPostData = postDataSnapshot.docs.map((doc) => doc.data());
-        setPosts([ ...newPostData]);
-        console.log("new data :",newPostData);
+        setPosts([...newPostData]);
+        console.log("new data :", newPostData);
       }
     } catch (error) {
       console.error("Error fetching posts: ", error);
     }
   };
-  
-  useEffect(()=>{
-fetchPostData();
-console.log("posts data :",posts)
-  },[refresh])
-  
+  const updateData=()=>{
+    setRefresh(!refresh);
+  }
+
+  useEffect(() => {
+    const def = async () => {
+      await fetchPostData();
+      console.log("posts data :", posts);
+    };
+    def();
+  }, [refresh]);
+
   return (
     <>
       <Head>
@@ -60,9 +66,9 @@ console.log("posts data :",posts)
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className='min-h-screen w-full' style={{ fontFamily: "Quicksand" }}>
-        <NavbarHome currentTab={(tab)=>handleTabClick(tab)} />
+        <NavbarHome currentTab={(tab) => handleTabClick(tab)} />
         <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '>
-          <button onClick={()=>setRefresh(!refresh)}>refresh</button> 
+          <button onClick={() => setRefresh(!refresh)}>refresh</button>
           <div
             className='md:hidden max-w-[612px] min-w-[310px]   overflow-y-auto'
             style={{ height: "100vh" }}
@@ -70,23 +76,26 @@ console.log("posts data :",posts)
             <Profile />
           </div>
           <div className=' w-full max-w-[612px] min-w-[310px] '>
-          <div
-            className='flex flex-col max-w-[612px] min-w-[310px] hide-scrollbar  overflow-y-auto'
-            style={{ height: "100vh" }}
-          >
-            {tabs=="Home"&&(
-              <>
-              <StartPost/>
-              <Post/>
-              <Post/>
-              <Post/>
-              </>
-            )}
-           {tabs=="Portfolio"&&( <PortfolioLists/>)}
-           {tabs=="Profile"&&( <ProfileInfo/>)}
-           
+            <div
+              className='flex flex-col  max-w-[612px] min-w-[310px] hide-scrollbar  overflow-y-auto'
+              style={{ height: "100vh" }}
+            >
+              {tabs === "Home" && (
+                <>
+                  <StartPost />
+
+                  {posts && posts.length > 0 ? (
+                    posts.map((project,index) => <Post key={index} data={...project} onChanges={()=>updateData()} />)
+                  ) : (
+                    <p className='flex self-center'>No posts available</p>
+                  )}
+                </>
+              )}
+
+              {tabs == "Portfolio" && <PortfolioLists />}
+              {tabs == "Profile" && <ProfileInfo />}
+            </div>
           </div>
-        </div>
         </div>
       </main>
     </>

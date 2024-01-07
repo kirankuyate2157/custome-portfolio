@@ -68,6 +68,7 @@ const WritePost = () => {
   const [fileUrl, setFileUrl] = useState("");
   const [uploadError, setUploadError] = useState(null);
   const [post, setPost] = useState(null);
+  const [update, setUpdate] = useState(false);
 
   const user = getUserData();
   const db = getFirestore();
@@ -180,7 +181,10 @@ const WritePost = () => {
 
   const setPostData = async () => {
     if (user) {
+
+      const docId = nanoid();
       const newData = {
+        id:docId,
         reactions: {
           Celebrate: 0,
           Love: 0,
@@ -225,19 +229,22 @@ const WritePost = () => {
         file: fileUrl,
       };
       const db = getFirestore();
-      const docId = nanoid();
+      
       const accountRef = doc(db, "posts", docId);
       await setDoc(accountRef, newData);
       console.log(" Post created successfully .✔️");
+      router.push("/k");
     } else {
       console.log("auth user id not found till now..");
     }
   };
 
-  // useEffect(() => {
-  //   fetchPostData();
-  //   console.log("post data :", JSON.stringify(post));
-  // }, []);
+  useEffect(() => {
+    if(update){
+      setPostData();
+      setUpdate(false);
+    }
+  }, [fileUrl]);
 
   //  --------------------  Data Updating ----------------------------
   const postData = () => {
@@ -248,7 +255,7 @@ const WritePost = () => {
       console.log("pushing data .. ok..");
       handleImgUpload().then(() => {
         console.log("file upload finished not posting..");
-        setPostData();
+        setUpdate(true);
       });
     }
   };
@@ -617,7 +624,14 @@ const WritePost = () => {
           </div>
 
           <hr className='mt-2 text-black' />
-          <div className='flex justify-end items-center gap-3 my-2'>
+          <div className='flex justify-between items-center gap-3 my-2'>
+          <button
+              className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
+              onClick={() => router.push("/k")}
+            >
+              Back
+            </button>
+          <div className='flex justify-end items-center gap-3'>
             <BiTime className='text-2xl text-gray-400' />
             <button
               className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
@@ -625,7 +639,7 @@ const WritePost = () => {
             >
               Post
             </button>
-          </div>
+          </div></div>
         </div>
       </div>
     </>
