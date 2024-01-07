@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
+import { nanoid } from "nanoid";
 import EditPhoto from "./EditPhoto";
 import Picker from "emoji-picker-react";
 import emojiNameMap from "emoji-name-map";
@@ -72,13 +73,14 @@ const WritePost = () => {
   const db = getFirestore();
 
   const Data = {
+    name: "Kiran Kuyate",
     reactions: {
       Celebrate: 0,
       Love: 3,
       Like: 12,
       Insightful: 2,
       Support: 0,
-      uids:[ "UR93ipCQCcdF7kLF56iloz9ROyp2",]
+      uids: ["UR93ipCQCcdF7kLF56iloz9ROyp2"],
     },
     text: "I'm happy to share that I have obtained a new certification of Advanced Software Engineering Virtual Program of Walmart Global Tech, it was provided by Forage. #walmartglobaltech #theforage #softwareengineer #virtualexperience",
     Time: {
@@ -90,7 +92,7 @@ const WritePost = () => {
     avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
     uid: "UR93ipCQCcdF7kLF56iloz9ROyp2",
     comments: [
-      { 
+      {
         uid: "UR93ipCQCcdF7kLF56iloz9ROyp2",
         name: "rahul jadhav",
         handle: "data scientist | 100k on youtube ",
@@ -105,7 +107,7 @@ const WritePost = () => {
           Love: 5,
           Celebrate: 0,
           Support: 1,
-          uids:[ "UR93ipCQCcdF7kLF56iloz9ROyp2",]
+          uids: ["UR93ipCQCcdF7kLF56iloz9ROyp2"],
         },
         text: "greate share  🔥🙌🏻🙌🏻",
         avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
@@ -113,68 +115,7 @@ const WritePost = () => {
     ],
     fileType: "Image",
     file: "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/kiran%20kuyate%2F2845649e523847ce561a0db1b86addb5.jpg?alt=media&token=a1eb4463-8b8b-479a-a419-dd9c009343fc",
-
-};
-  const newData = {
-      reactions: {
-        Celebrate: 0,
-        Love: 0,
-        Like: 0,
-        Insightful: 0,
-        Support: 0,
-        uids:[ ]
-      },
-      text: articleText,
-      Time: {
-        seconds: getCurrentTimestampInSeconds(),
-        nanoseconds: 0,
-      },
-      handle:"",
-      avatar: "",
-      uid:user?.uid,
-      comments: [
-        { 
-          uid: user?.uid,
-          name: user?.displayName,
-          handle: "data scientist | 100k on youtube ",
-          gender: true,
-          time: {
-            seconds: getCurrentTimestampInSeconds(),
-            nanoseconds:0,
-          },
-          reactions: {
-            Like: 0,
-            Insightful: 0,
-            Love: 0,
-            Celebrate: 0,
-            Support: 0,
-            uids:[]
-          },
-          text: "greate share  🔥🙌🏻🙌🏻",
-          avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
-        },
-      ],
-      fileType: "Image",
-      file: "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/kiran%20kuyate%2F2845649e523847ce561a0db1b86addb5.jpg?alt=media&token=a1eb4463-8b8b-479a-a419-dd9c009343fc",
   };
-
- const addNewPost = async (userUid, postData) => {
-  const db = getFirestore();
-  const userDocRef = doc(db, "posts", userUid);
-
-  try {
-    await updateDoc(userDocRef, {
-      posts: arrayUnion({
-        ...postData,
-        Time: serverTimestamp(),
-      }),
-    });
-
-    console.log("Post added successfully.");
-  } catch (error) {
-    console.error("Error adding post: ", error);
-  }
-};
 
   // ---------------- file upload ------------------
 
@@ -237,36 +178,79 @@ const WritePost = () => {
     }
   };
 
-  const setDummyPostData = async () => {
+  const setPostData = async () => {
     if (user) {
+      const newData = {
+        reactions: {
+          Celebrate: 0,
+          Love: 0,
+          Like: 0,
+          Insightful: 0,
+          Support: 0,
+          uids: [],
+        },
+        text: articleText,
+        Time: {
+          seconds: getCurrentTimestampInSeconds(),
+          nanoseconds: 0,
+        },
+        name: user?.displayName,
+        handle: "account handle",
+        avatar: user?.photoURL,
+        uid: user?.uid,
+        comments: [
+          {
+            id: nanoid(),
+            uid: user?.uid,
+            name: user?.displayName,
+            handle: "data scientist | 100k on youtube ",
+            gender: true,
+            time: {
+              seconds: getCurrentTimestampInSeconds(),
+              nanoseconds: 0,
+            },
+            reactions: {
+              Like: 0,
+              Insightful: 0,
+              Love: 0,
+              Celebrate: 0,
+              Support: 0,
+              uids: [],
+            },
+            text: "great share  🔥🙌🏻🙌🏻",
+            avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
+          },
+        ],
+        fileType: "Image",
+        file: fileUrl,
+      };
       const db = getFirestore();
-      const accountRef = doc(db, "posts", user.uid);
-      let done = await setDoc(accountRef, newData);
-      if (done) {
-        console.log(" account created sucessfully .✔️");
-      }
+      const docId = nanoid();
+      const accountRef = doc(db, "posts", docId);
+      await setDoc(accountRef, newData);
+      console.log(" Post created successfully .✔️");
     } else {
       console.log("auth user id not found till now..");
     }
   };
 
-  useEffect(() => {
-    fetchPostData();
-    console.log("post data :", JSON.stringify(post));
-    setDummyPostData();
-  }, []);
-
-
-
+  // useEffect(() => {
+  //   fetchPostData();
+  //   console.log("post data :", JSON.stringify(post));
+  // }, []);
 
   //  --------------------  Data Updating ----------------------------
   const postData = () => {
     console.log("article text : ", articleText);
     console.log("file name : ", fileName);
     console.log("file type : ", fileType);
-    if(user &&user.uid){
-      console.log("pushing data .. ok..")
-    addNewPost(user.uid,newData);}
+    if (user && user.uid) {
+      console.log("pushing data .. ok..");
+      handleImgUpload().then(() => {
+        console.log("file upload finished not posting..");
+        setPostData();
+      });
+    }
   };
 
   useEffect(() => {
@@ -647,5 +631,4 @@ const WritePost = () => {
     </>
   );
 };
-
 export default WritePost;
