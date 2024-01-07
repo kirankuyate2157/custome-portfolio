@@ -1,16 +1,308 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { SlLike, SlOptions } from "react-icons/sl";
-import LinesEllipsis from "react-lines-ellipsis";
+import { SlOptionsVertical } from "react-icons/sl";
+import { FaRegComment, FaShare, FaHandHoldingHeart } from "react-icons/fa";
+import { BiRepost } from "react-icons/bi";
+import { TbBulbFilled } from "react-icons/tb";
+import { AiFillHeart } from "react-icons/ai";
+import { MdCelebration } from "react-icons/md";
 
-const Comments = ({Data}) => {
-  const [showFullText, setShowFullText] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+import LinesEllipsis from "react-lines-ellipsis";
+import { getUserData } from "@/services/firebaseConfig.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  setDoc,
+  getDoc,
+  arrayUnion,
+  serverTimestamp,
+} from "firebase/firestore";
+
+
+const Icons = [
+  { Icon: SlLike, label: "Like", color: "blue" },
+  { Icon: AiFillHeart, label: "Love", color: "red" },
+  { Icon: MdCelebration, label: "Celebrate", color: "red" },
+  { Icon: FaHandHoldingHeart, label: "Support", color: "green" },
+  { Icon: TbBulbFilled, label: "Insightful", color: "yellow" },
+];
+
+
+const Comment=({data,postId})=>{
+
   const [isLiked, setIsLiked] = useState(false);
+  const [showFullText, setShowFullText] = useState(false);
+
+  const [reactionOptionsVisible, setReactionOptionsVisible] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [selectedReaction, setSelectedReaction] = useState(null);
+
   const [react, setReact] = useState({
     label: "Like",
+    icon: SlLike,
+    color: "blue",
   });
+  const [update, setUpdate] = useState(false);
+  const [uids, setUids] = useState(new Set(data?.reactions?.uids || []));
+  const [reactionCounts, setReactionCounts] = useState(
+    { ...data?.reactions } || {
+      Like: 0,
+      Love: 0,
+      Celebrate: 0,
+      Support: 0,
+      Insightful: 0,
+      uids: [],
+    }
+  );
+
+  const user = getUserData();
+  const db = getFirestore();
+
+  const updateCommentReaction = (postId, commentId) => {
+    const db = getFirestore();
+    const postRef = doc(db, "posts", postId);
+  
+    // Get the post document
+    getDoc(postRef)
+      .then((postDoc) => {
+        if (postDoc.exists()) {
+          // Find the index of the comment within the comments array
+          const commentIndex = postDoc.data().comments.findIndex(
+            (comment) => comment.id === commentId
+          );
+  
+          if (commentIndex !== -1) {
+            // Update reactions within the found comment
+            const updatedComments = [...postDoc.data().comments];
+            updatedComments[commentIndex] = {
+              ...updatedComments[commentIndex],
+              reactions: reactionCounts,
+            };
+  
+            // Update the post document with the modified comments array
+            updateDoc(postRef, { comments: updatedComments })
+              .then(() => {
+                // console.log("Comment reactions updated successfully.");
+              })
+              .catch((error) => {
+                console.error("Error updating comment reactions:", error);
+              });
+          }
+          //  else {
+          //   console.error("Comment not found in the post.");
+          // }
+        } 
+        // else {
+        //   console.error("Post document not found.");
+        // }
+      })
+      .catch((error) => {
+        console.error("Error fetching post document:", error);
+      });
+  };
+
+  useEffect(() => {
+    if (update &&postId&&data.id) {
+      updateCommentReaction(postId, data.id,);
+    }
+    setLikeCount(() => reactionCounts?.uids?.length + 1 || 0);
+  }, [reactionCounts]);
+
+  const prevReactionUpdate = () => {
+    if (react) {
+      uids.delete(user.uid);
+
+      setReactionCounts((prevCounts) => ({
+        ...prevCounts,
+        [react.label]:
+          prevCounts[`${react.label}`] > 0
+            ? prevCounts[`${react.label}`] - 1
+            : 0,
+        uids: Array.from(uids),
+      }));
+    }
+  };
+
+  const handleReactionSelect = (reaction) => {
+    if (isLiked) {
+      prevReactionUpdate();
+      uids.delete(user.uid);
+      setReactionCounts((prevCounts) => ({
+        ...prevCounts,
+        [reaction.label]:
+          prevCounts[`${reaction.label}`] > 0
+            ? prevCounts[`${reaction.label}`] - 1
+            : 0,
+        uids: Array.from(uids),
+      }));
+
+      setReact({
+        label: "Like",
+        icon: SlLike,
+        color: "blue",
+      });
+      setLikeCount((prevLikeCount) => prevLikeCount - 1);
+    } else if (!isLiked) {
+      prevReactionUpdate();
+      uids.add(user?.uid);
+      setReactionCounts((prevCounts) => ({
+        ...prevCounts,
+        [reaction.label]: prevCounts[`${reaction.label}`] + 1,
+        uids: Array.from(uids),
+      }));
+
+      const selectedIcon =
+        Icons.find((icon) => icon.label === reaction.label)?.Icon || SlLike;
+      const selectedColor =
+        Icons.find((icon) => icon.label === reaction.label)?.color || "gray";
+      let label = reaction.label;
+      setReact({ label, icon: selectedIcon, color: selectedColor });
+
+      setLikeCount(
+        (prevLikeCount) => prevLikeCount + (selectedReaction ? 0 : 1)
+      );
+    }
+    setIsLiked((prev) => !prev);
+    setUpdate(!update);
+    setReactionOptionsVisible(false);
+  };
+
+  const handleReactionHover = () => {
+    if (!isLiked) {
+      setReactionOptionsVisible(true);
+    }
+  };
+
+  // const formatTimeDifference = (commentTime) => {
+  //   const currentTime = new Date();
+  //   const commentTimeObj = new Date(commentTime);
+
+  //   const timeDifference = currentTime - commentTimeObj;
+  //   const seconds = Math.floor(timeDifference / 1000);
+  //   const minutes = Math.floor(seconds / 60);
+  //   const hours = Math.floor(minutes / 60);
+  //   const days = Math.floor(hours / 24);
+  //   const months = Math.floor(days / 30);
+  //   const years = Math.floor(months / 12);
+
+  //   if (years > 0) {
+  //     return `${years} ${years === 1 ? "year" : "years"}`;
+  //   } else if (months > 0) {
+  //     return `${months} ${months === 1 ? "month" : "months"}`;
+  //   } else if (days > 0) {
+  //     return `${days} ${days === 1 ? "day" : "days"}`;
+  //   } else if (hours > 0) {
+  //     return `${hours} hr`;
+  //   } else if (minutes > 0) {
+  //     return `${minutes} min`;
+  //   } else {
+  //     return `${seconds} sec`;
+  //   }
+  // };
+  const formatTimeDifference = (commentTime) => {
+    const currentTime = new Date();
+    const commentTimeObj = new Date(commentTime); // Convert Firebase Timestamp to JavaScript Date object
+  
+    const timeDifference = currentTime - commentTimeObj;
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+  
+    if (years > 0) {
+      return `${years} ${years === 1 ? "year" : "years"}`;
+    } else if (months > 0) {
+      return `${months} ${months === 1 ? "month" : "months"}`;
+    } else if (days > 0) {
+      return `${days} ${days === 1 ? "day" : "days"}`;
+    } else if (hours > 0) {
+      return `${hours} hr`;
+    } else if (minutes > 0) {
+      return `${minutes} min`;
+    } else {
+      return `${seconds} sec`;
+    }
+  };
+  
+
+  const handleReactionLeave = () => {
+    if (!isLiked) {
+      setTimeout(() => {
+        setReactionOptionsVisible(false);
+      }, 2000); // 2 seconds delay
+    }
+  };
+
+  const ReactionOptions = ({ onSelectReaction }) => {
+    const reactionOptions = [
+      { label: "Like", emoji: "👍" },
+      { label: "Love", emoji: "❤️" },
+      { label: "Celebrate", emoji: "🎉" },
+      { label: "Support", emoji: "🤝" },
+      { label: "Insightful", emoji: "💡" },
+    ];
+
+    const onReact = (option) => {
+      prevReactionUpdate();
+      onSelectReaction(option);
+    };
+    const [hoveredEmoji, setHoveredEmoji] = useState(null);
+
+    return (
+      <div className='absolute bottom-2 flex bg-white rounded-lg text-xl shadow-2xl p-1 z-10'>
+        {reactionOptions.map((option) => (
+          <div
+            key={option.label}
+            className={`relative cursor-pointer hover:bottom-3 hover:bg-transparent   rounded p-2 transform transition-transform ${
+              hoveredEmoji === option.emoji ? "scale-100 opacity-150" : ""
+            }`}
+            onClick={() => onReact(option)}
+            onMouseEnter={() => setHoveredEmoji(option.emoji)}
+            onMouseLeave={() => setHoveredEmoji(null)}
+          >
+            {option.emoji}
+            {hoveredEmoji === option.emoji && (
+              <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-lg'>
+                {option.label}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const Reaction = ({
+    Icons,
+    title,
+    onClick,
+    isActive,
+    color,
+    onMouseLeave,
+    onMouseEnter,
+  }) => {
+    return (
+      <div
+        className={`flex w-full justify-center sm:p-2 p-4 my-2  hover:bg-gray-100 cursor-pointer md:gap-1 gap-2 items-center md:text-sm text-md font-bold rounded-lg ${
+          isActive ? `text-red-500` : "text-gray-600"
+        }`}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        <Icons className={`sm:w-[20px] md:w-[25px]  w-[30px] h-auto`} />
+        <span className='sm:hidden flex'>{title}</span>
+      </div>
+    );
+  };
 
 
 
@@ -18,15 +310,124 @@ const Comments = ({Data}) => {
 
 
 
+  return <>
+    <div key={data?.id} className='p-4 mx-1'>
+          <div className='flex flex-col text-sm'>
+            <div className='flex items-start text-[9px] ml-1 md:mx-3'>
+              <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2'>
+                <Image
+                  src={
+                    data?.avatar ||
+                    "https://avatars.githubusercontent.com/u/84271800?v=4"
+                  }
+                  alt='user profile'
+                  className='w-full rounded-full'
+                  priority
+                  width={50}
+                  height={50}
+                  sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
+                />
+              </div>
+              <div className='mr-1 items-center w-[85%] text-gray-700'>
+                <div className='bg-slate-100 rounded-b rounded-r-lg  p-1'>
+                  <div className='flex justify-between w-full'>
+                    <div className='flex justify-start gap-1 sm:text-[0.6rem] md:text-xs text-sm'>
+                      <h1 className='font-semibold text-black'>{data?.name}</h1>
+                      <span>{`${
+                        data?.gender ? "(He/Him)" : "(She/Her)"
+                      }`}</span>
+                    </div>
+                    <div className='flex items-center md:gap-1 gap-2 text-xs md:text-sm mr-1'>
+                      <h6 className='sm:text-[0.6rem] md:text-xs '>
+                        {formatTimeDifference(data?.time)}
+                      </h6>
+                      <SlOptions />
+                    </div>
+                  </div>
+                  <div className='flex'>
+                    <span className='flex sm:text-[0.5rem] md:text-xs  overflow-hidden whitespace-nowrap overflow-ellipsis sm:max-w-[12rem] max-w-[81%]'>
+                      {data?.handle}
+                    </span>
+                    <span>...</span>
+                  </div>
+                  <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] '>
+                    <LinesEllipsis
+                      text={data.text}
+                      maxLine={showFullText ? 1000 : 1}
+                      ellipsis='.. See more'
+                      trimRight
+                      basedOn='words'
+                      onClick={() => setShowFullText(!showFullText)}
+                    />
+                  </p>
+                </div>
+                <div className='ml-2 flex gap-1 justify-start items-center relative'>
+                  {data && reactionOptionsVisible && (
+                    <ReactionOptions
+                      onSelectReaction={(option) =>
+                        handleReactionSelect(option)
+                      }
+                    />
+                  )}
+                  <span
+                    className={`${isLiked ? "text-red-500" : ""}`}
+                    onClick={() => {
+                      handleReactionSelect({
+                        label: "Like",
+                        emoji: SlLike,
+                      }),
+                        setIsLiked(!isLiked);
+                    }}
+                    onMouseEnter={() => handleReactionHover(data?.id)}
+                    onMouseLeave={() => handleReactionLeave(data?.id)}
+                  >
+                    {react.label}
+                  </span>
+                  •
+                  <span className='p-1'>
+                    <span className='text-[0.50rem] rounded-full'>
+                      {reactionCounts.Like > 0 && (
+                        <span className='bg-green-300 border rounded-full ml-[-8px] '>
+                          👍
+                        </span>
+                      )}
+                      {reactionCounts.Love > 0 && (
+                        <span className='bg-red-700 border rounded-full ml-[-8px]'>
+                          ❤️
+                        </span>
+                      )}
+                      {reactionCounts.Celebrate > 0 && (
+                        <span className='bg-yellow-500 border border-gray-300 rounded-full ml-[-8px]'>
+                          🎉
+                        </span>
+                      )}
+                      {reactionCounts.Support > 0 && (
+                        <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
+                          🤝
+                        </span>
+                      )}
+                      {reactionCounts.Insightful > 0 && (
+                        <span className='bg-purple-500 border border-gray-300 rounded-full ml-[-8px]'>
+                          💡
+                        </span>
+                      )}
+                    </span>
+                  </span>
+                  <span>
+                  {likeCount} {likeCount === 1 ? "like" : "likes"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  </>
+}
 
 
 
-
-
-
-
-
-
+const Comments = ({ Data,postId }) => {
+ 
   // ---------------------------new code ---------------------------------
   const [comments, setComments] = useState([
     {
@@ -44,7 +445,7 @@ const Comments = ({Data}) => {
         Celebrate: 0,
         Support: 0,
         Insightful: 0,
-        uids:[]
+        uids: [],
       },
       totalLikes: 2,
       reactionOptionsVisible: false,
@@ -63,7 +464,7 @@ const Comments = ({Data}) => {
         Celebrate: 0,
         Support: 1,
         Insightful: 0,
-        uids:[]
+        uids: [],
       },
       totalLikes: 1,
       reactionOptionsVisible: false,
@@ -83,53 +484,53 @@ const Comments = ({Data}) => {
     );
   };
 
-  const handleReactionSelect = (commentId, reaction) => {
-    setComments((prevComments) =>
-      prevComments.map((data) => {
-        if (data?.id === commentId) {
-          const currentLikes = data.reactions[reaction.label];
-          const updatedComment = {
-            ...comment,
-            likes: {
-              ...data.reactions,
-              [reaction.label]:
-                currentLikes + (selectedReaction === reaction ? -1 : 1),
-            },
-          };
-          return updatedComment;
-        }
-        return comment;
-      })
-    );
+  // const handleReactionSelect = (commentId, reaction) => {
+  //   setComments((prevComments) =>
+  //     prevComments.map((data) => {
+  //       if (data?.id === commentId) {
+  //         const currentLikes = data.reactions[reaction.label];
+  //         const updatedComment = {
+  //           ...comment,
+  //           likes: {
+  //             ...data.reactions,
+  //             [reaction.label]:
+  //               currentLikes + (selectedReaction === reaction ? -1 : 1),
+  //           },
+  //         };
+  //         return updatedComment;
+  //       }
+  //       return comment;
+  //     })
+  //   );
 
-    setSelectedReaction((prevReaction) =>
-      prevReaction === reaction ? null : reaction
-    );
+  //   setSelectedReaction((prevReaction) =>
+  //     prevReaction === reaction ? null : reaction
+  //   );
 
-    updateTotalLikes(); // Recalculate and update totalLikes for each comment
-  };
+  //   updateTotalLikes(); // Recalculate and update totalLikes for each comment
+  // };
 
-  const handleReactionHover = (commentId) => {
-    setComments((prevComments) =>
-      prevComments.map((comment) =>
-        data?.id === commentId
-          ? { ...comment, reactionOptionsVisible: true }
-          : comment
-      )
-    );
-  };
+  // const handleReactionHover = (commentId) => {
+  //   setComments((prevComments) =>
+  //     prevComments.map((comment) =>
+  //       data?.id === commentId
+  //         ? { ...comment, reactionOptionsVisible: true }
+  //         : comment
+  //     )
+  //   );
+  // };
 
-  const handleReactionLeave = (commentId) => {
-    setTimeout(() => {
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          data?.id === commentId
-            ? { ...comment, reactionOptionsVisible: false }
-            : comment
-        )
-      );
-    }, 2000); // 2 seconds delay
-  };
+  // const handleReactionLeave = (commentId) => {
+  //   setTimeout(() => {
+  //     setComments((prevComments) =>
+  //       prevComments.map((comment) =>
+  //         data?.id === commentId
+  //           ? { ...comment, reactionOptionsVisible: false }
+  //           : comment
+  //       )
+  //     );
+  //   }, 2000); // 2 seconds delay
+  // };
   const formatTimeDifference = (commentTime) => {
     const currentTime = new Date();
     const commentTimeObj = new Date(commentTime);
@@ -157,40 +558,40 @@ const Comments = ({Data}) => {
     }
   };
 
-  const ReactionOptions = ({ commentId, onSelectReaction }) => {
-    const reactionOptions = [
-      { label: "Like", emoji: "👍" },
-      { label: "Love", emoji: "❤️" },
-      { label: "Celebrate", emoji: "🎉" },
-      { label: "Support", emoji: "🤝" },
-      { label: "Insightful", emoji: "💡" },
-    ];
+  // const ReactionOptions = ({ commentId, onSelectReaction }) => {
+  //   const reactionOptions = [
+  //     { label: "Like", emoji: "👍" },
+  //     { label: "Love", emoji: "❤️" },
+  //     { label: "Celebrate", emoji: "🎉" },
+  //     { label: "Support", emoji: "🤝" },
+  //     { label: "Insightful", emoji: "💡" },
+  //   ];
 
-    const [hoveredEmoji, setHoveredEmoji] = useState(null);
+  //   const [hoveredEmoji, setHoveredEmoji] = useState(null);
 
-    return (
-      <div className='absolute bottom-5 flex bg-white rounded-lg text-lg shadow-2xl  z-10'>
-        {reactionOptions.map((option) => (
-          <div
-            key={option.label}
-            className={`relative cursor-pointer hover:bottom-3 hover:bg-transparent   rounded p-2 transform transition-transform ${
-              hoveredEmoji === option.emoji ? "scale-100 opacity-150" : ""
-            }`}
-            onClick={() => onSelectReaction(commentId, option)}
-            onMouseEnter={() => setHoveredEmoji(option.emoji)}
-            onMouseLeave={() => setHoveredEmoji(null)}
-          >
-            {option.emoji}
-            {hoveredEmoji === option.emoji && (
-              <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-lg'>
-                {option.label}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
+  //   return (
+  //     <div className='absolute bottom-5 flex bg-white rounded-lg text-lg shadow-2xl  z-10'>
+  //       {reactionOptions.map((option) => (
+  //         <div
+  //           key={option.label}
+  //           className={`relative cursor-pointer hover:bottom-3 hover:bg-transparent   rounded p-2 transform transition-transform ${
+  //             hoveredEmoji === option.emoji ? "scale-100 opacity-150" : ""
+  //           }`}
+  //           onClick={() => onSelectReaction(commentId, option)}
+  //           onMouseEnter={() => setHoveredEmoji(option.emoji)}
+  //           onMouseLeave={() => setHoveredEmoji(null)}
+  //         >
+  //           {option.emoji}
+  //           {hoveredEmoji === option.emoji && (
+  //             <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-lg'>
+  //               {option.label}
+  //             </div>
+  //           )}
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // };
 
   const [commentInput, setCommentInput] = useState("");
 
@@ -217,21 +618,18 @@ const Comments = ({Data}) => {
     }
   };
 
-
-
-
   return (
     <div>
       <div className='flex gap-3 mx-5 py-2'>
         <div>
           <Image
-            src={'https://avatars.githubusercontent.com/u/84271800?v=4'}
+            src={"https://avatars.githubusercontent.com/u/84271800?v=4"}
             alt='placeholder'
             className='w-[50px]  rounded-full'
             priority
-          width={50}
+            width={50}
             height={50}
-          sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
+            sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
           />
         </div>
         <div className='w-full flex flex-col h-auto hover:bg-gray-100 text-black p-1 rounded-2xl cursor-pointer'>
@@ -251,109 +649,8 @@ const Comments = ({Data}) => {
           )}
         </div>
       </div>
-      {Data.map((data) => (
-        <div key={data?.id} className='p-4 mx-1'>
-          <div className='flex flex-col text-sm'>
-            <div className='flex items-start text-[9px] ml-1 md:mx-3'>
-              <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2'>
-                <Image
-                  src={data?.avatar || 'https://avatars.githubusercontent.com/u/84271800?v=4' }
-                  alt='user profile'
-                  className='w-full rounded-full'
-                  priority
-                  width={50}
-                    height={50}
-                  sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
-                />
-              </div>
-              <div className='mr-1 items-center w-[85%] text-gray-700'>
-                <div className='bg-slate-100 rounded-b rounded-r-lg  p-1'>
-                  <div className='flex justify-between w-full'>
-                    <div className='flex justify-start gap-1 sm:text-[0.6rem] md:text-xs text-sm'>
-                      <h1 className='font-semibold text-black'>
-                        {data?.name}
-                      </h1>
-                      <span>{`${data?.gender?"(He/Him)":"(She/Her)"}`}</span>
-                    </div>
-                    <div className='flex items-center md:gap-1 gap-2 text-xs md:text-sm mr-1'>
-                      <h6 className='sm:text-[0.6rem] md:text-xs '>
-                        {formatTimeDifference(data?.time)}
-                      </h6>
-                      <SlOptions />
-                    </div>
-                  </div>
-                  <div className='flex'>
-                    <span className='flex sm:text-[0.5rem] md:text-xs  overflow-hidden whitespace-nowrap overflow-ellipsis sm:max-w-[12rem] max-w-[81%]'>
-                      {data?.handle}
-                    </span>
-                    <span>...</span>
-                  </div>
-                  <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] '>
-                    <LinesEllipsis
-                      text={data.text}
-                      maxLine={showFullText ? 1000 : 1}
-                      ellipsis='.. See more'
-                      trimRight
-                      basedOn='words'
-                      onClick={() => setShowFullText(!showFullText)}
-                    />
-                  </p>
-                </div>
-                <div className='ml-2 flex gap-1 justify-start items-center relative'>
-                  {data && (
-                    <ReactionOptions
-                      commentId={data?.id}
-                      onSelectReaction={handleReactionSelect}
-                    />
-                  )}
-                  <span
-                    className={`${isLiked ? "text-blue-500" : ""}`}
-                    onClick={() =>
-                      handleReactionSelect(data?.id, { label: "Like" })
-                    }
-                    onMouseEnter={() => handleReactionHover(data?.id)}
-                    onMouseLeave={() => handleReactionLeave(data?.id)}
-                  >
-                    {react.label}
-                  </span>
-                  •
-                  <span className='p-1'>
-                    <span className='text-[0.50rem] rounded-full'>
-                      {data.reactions.Like > 0 && (
-                        <span className='bg-green-300 border rounded-full ml-[-8px] '>
-                          👍
-                        </span>
-                      )}
-                      {data.reactions.Love > 0 && (
-                        <span className='bg-red-700 border rounded-full ml-[-8px]'>
-                          ❤️
-                        </span>
-                      )}
-                      {data.reactions.Celebrate > 0 && (
-                        <span className='bg-yellow-500 border border-gray-300 rounded-full ml-[-8px]'>
-                          🎉
-                        </span>
-                      )}
-                      {data.reactions.Support > 0 && (
-                        <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
-                          🤝
-                        </span>
-                      )}
-                      {data.reactions.Insightful > 0 && (
-                        <span className='bg-purple-500 border border-gray-300 rounded-full ml-[-8px]'>
-                          💡
-                        </span>
-                      )}
-                    </span>
-                  </span>
-                  <span>
-                    {data?.reactions?.uids?.length > 0 ? data?.reactions?.uids?.length  : ""}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {Data.map((data,index) => (
+      <Comment key={index} postId={postId} data={...data}/>
       ))}
     </div>
   );

@@ -41,6 +41,16 @@ const useOutsideClick = (ref, callback) => {
   }, [ref, callback]);
 };
 
+const generateDateString = () => {
+  const currentDate = new Date();
+  const dateString = currentDate.toISOString(); // Outputs in the format "yyyy-mm-ddThh:mm:ss.sssZ"
+  
+  // Remove milliseconds and the "Z" (which indicates UTC)
+  return dateString.slice(0, -5);
+};
+
+const generatedString = generateDateString();
+
 const getCurrentTimestampInSeconds = () => {
   return Math.floor(Date.now() / 1000);
 };
@@ -84,10 +94,7 @@ const WritePost = () => {
       uids: ["UR93ipCQCcdF7kLF56iloz9ROyp2"],
     },
     text: "I'm happy to share that I have obtained a new certification of Advanced Software Engineering Virtual Program of Walmart Global Tech, it was provided by Forage. #walmartglobaltech #theforage #softwareengineer #virtualexperience",
-    Time: {
-      seconds: 1704534141,
-      nanoseconds: 126000000,
-    },
+    Time:generateDateString(),
     handle:
       "SDE aspirants 💫 | final yr | web dev (MERN) | DS | DSA | AI enthusiast | 2x100DaysO",
     avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
@@ -98,10 +105,7 @@ const WritePost = () => {
         name: "rahul jadhav",
         handle: "data scientist | 100k on youtube ",
         gender: true,
-        time: {
-          seconds: 1704537946,
-          nanoseconds: 840000000,
-        },
+        time: generateDateString(),
         reactions: {
           Like: 2,
           Insightful: 0,

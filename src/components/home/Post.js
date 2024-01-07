@@ -59,8 +59,6 @@ const Post = ({data,onChanges}) => {
   const db = getFirestore();
 
   const updateLikeData = () => {
-    
-   
 
       const updatedData = { ...data, reactions: {...reactionCounts}  };
       
@@ -68,10 +66,10 @@ const Post = ({data,onChanges}) => {
       if(data?.id){
       // Update the document in Firestore
       const postRef = doc(db, "posts", data?.id);
-      console.log("cloud data 🌧️🌧️",updatedData);
+      // console.log("cloud data 🌧️🌧️",updatedData);
       updateDoc(postRef, updatedData)
         .then(() => {
-          console.log("Likes data updated successfully.");
+          // console.log("Likes data updated successfully.");
         })
         .catch((error) => {
           console.error("Error updating Home data :", error);
@@ -107,7 +105,6 @@ const prevReactionUpdate=()=>{
         [reaction.label]: prevCounts[`${reaction.label}`]>0?prevCounts[`${reaction.label}`]-1:0,
         uids: Array.from(uids),
       }));
-      console.log('Reaction removed ..')
       setReact({
         label: "Like",
         icon: SlLike,
@@ -118,7 +115,6 @@ const prevReactionUpdate=()=>{
     } else if (!isLiked) {
       prevReactionUpdate();
       uids.add(user?.uid);
-      console.log('Reaction added ..')
       setReactionCounts((prevCounts) => ({
         ...prevCounts,
         [reaction.label]: prevCounts[`${reaction.label}`]+1,
@@ -142,7 +138,6 @@ const prevReactionUpdate=()=>{
   };
 
   const handleReactionHover = () => {
-    console.log("📍📍");
     if (!isLiked) {
       setReactionOptionsVisible(true);
     }
@@ -167,9 +162,7 @@ const prevReactionUpdate=()=>{
 
     const onReact=(option)=>{
       prevReactionUpdate();
-    onSelectReaction(option);
-      console.log('Reaction removed popup ..')
-      
+    onSelectReaction(option); 
     }
     const [hoveredEmoji, setHoveredEmoji] = useState(null);
 
@@ -336,7 +329,7 @@ const prevReactionUpdate=()=>{
           <Reaction Icons={FaShare} title={"Send"} />
         </div>
       </div>
-      {showComments && <Comments Data={[...data?.comments]} />}
+      {showComments && <Comments  postId={data?.id}Data={[...data?.comments]} />}
     </div>
   );
 };
