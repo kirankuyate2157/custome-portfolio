@@ -4,15 +4,15 @@ import Head from "next/head";
 import Script from "next/script";
 import type { AppProps } from "next/app";
 // import { Montserrat } from "next/font/google";
-import Navbar from "@/components/portfolio/Navbar";
+// import Navbar from "@/components/portfolio/Navbar";
 import Footer from "@/components/portfolio/Footer";
 import { HomeDataProvider } from "@/context/DataProvider";
 import KiranPortfolioData from "@/assets/portfolioData";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "framer-motion";
 import Notification from "@/components/portfolio/Notification";
-import { getUserPortfolioData } from "@/services/dataCRUD.js";
-import { getCurrentUserId } from "@/services/firebaseConfig.js";
+// import { getUserPortfolioData } from "@/services/dataCRUD.js";
+// import { getCurrentUserId } from "@/services/firebaseConfig.js";
 import {
   getFirestore,
   collection,
