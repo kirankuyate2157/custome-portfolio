@@ -506,7 +506,7 @@ const Comments = ({ Data, postId }) => {
         </div>
       </div>
       {Data.map((data, index) => (
-        <Comment key={index} postId={postId} data={...data}/>
+        <Comment key={index} postId={postId} data={{...data}}/>
       ))}
     </div>
   );

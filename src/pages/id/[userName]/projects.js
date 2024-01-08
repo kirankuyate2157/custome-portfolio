@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import TransitionEffect from "@/components/portfolio/TransitionEffect";
 import Navbar from "@/components/portfolio/Navbar"
 const FramerImage = motion(Image);
-import { useProjectData } from "@/context/DataProvider";
+import { ProjectData } from "@/context/DataProvider";
 
 const FeaturedPrject = ({ type, title, summary, img, link, github }) => {
   return (
@@ -117,7 +117,7 @@ const Project = ({ type, title, img, link, github }) => {
   );
 };
 const projects = () => {
-  const portfolioData = useProjectData();
+  const portfolioData = ProjectData();
   return (
     <>
       <Head>

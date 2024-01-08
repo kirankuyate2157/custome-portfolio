@@ -284,8 +284,8 @@ export default function Hero() {
                 <p
                   className={`font-poppins font-normal text-gray-300 text-[18px] leading-[28.8px] max-w-[470px] mt-5`}
                 >
-                  Learn about upcoming updates, scalability plans, and AI-driven
-                  features to boost your portfolio's impact.
+                  {`Learn about upcoming updates, scalability plans, and AI-driven
+                  features to boost your portfolio's impact.`}
                 </p>
                 <button
                   type='button'

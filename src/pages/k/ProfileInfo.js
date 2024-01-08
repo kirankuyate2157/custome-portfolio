@@ -42,7 +42,7 @@ const RecentIntraction = () => {
         <div class=' w-[70%]flex flex-col'>
           <p className='pb-1'>recently liked post </p>
           <p className='flex flex-wrap'>
-            I'm happy to share that Advanced Software{" "}
+           {` I'm happy to share that Advanced Software`}
           </p>
           <p className='py-1 flex gap-2 items-center'>
             <span className='relative'>
@@ -296,7 +296,7 @@ const ProfileInfo = () => {
               <h1 className='font-bold px-4'>Posts</h1>
             </div>
             {posts && posts.length > 0 && (
-              posts.map((data, index) => <Post key={index} data={...data} />
+              posts.map((data, index) => <Post key={index} data={{...data}} />
                     ))}
           </div>
           </div>

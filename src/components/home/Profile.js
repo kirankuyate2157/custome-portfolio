@@ -28,7 +28,7 @@ const RecentIntraction = () => {
         <div class=' w-[70%]flex flex-col'>
           <p className='pb-1'>recently liked post </p>
           <p className='flex flex-wrap'>
-            I'm happy to share that Advanced Software{" "}
+            {`I'm happy to share that Advanced Software`}
           </p>
           <p className='py-1 flex gap-2 items-center'>
             <span className='relative'>
@@ -93,7 +93,7 @@ useEffect(()=>{
   fetchAccountData();
   fetchPortfolioData();
   console.log("user port ",userPortfolio);
-},[]);
+});
 
   return (
     <div className='flex flex-col gap-2 my-4  text-black dark:text-white '>
@@ -176,8 +176,8 @@ useEffect(()=>{
         <div class=' w-[70%] flex flex-col z-10'>
           <h2 className='pb-1 text-lg'>{userPortfolio.name} Portfolio </h2>
           <p className='flex flex-wrap'>
-            I'm happy to share that Advanced Software Engineering Virtual
-            Program of Walmart Global
+            {`I'm happy to share that Advanced Software Engineering Virtual
+            Program of Walmart Global`}
           </p>
           <a href={userPortfolio.profileLink} className='py-1 mt-1 flex gap-2 items-center'>
             visit <FaChevronRight className='animation-pulse' />

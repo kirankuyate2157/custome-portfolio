@@ -17,9 +17,9 @@ export const useHomeData = () => {
 export const useAboutData = () => {
   return useContext(HomeDataContext).About.aboutPageData;
 };
-export const useProjectData = () => {
+export const ProjectData = () => {
   return useContext(HomeDataContext).Projects.projectData;
 };
-export const useArticleData = () => {
+export const ArticleData = () => {
   return useContext(HomeDataContext).Articles;
 };

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import type { AppProps } from "next/app";
-import { Montserrat } from "next/font/google";
+// import { Montserrat } from "next/font/google";
 import Navbar from "@/components/portfolio/Navbar";
 import Footer from "@/components/portfolio/Footer";
 import { HomeDataProvider } from "@/context/DataProvider";
@@ -23,15 +23,86 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-mont",
-});
+
+interface SocialLinks {
+  Twitter: string;
+  LinkedIn: string;
+  GitHub: string;
+}
+
+interface HomeData {
+  name: string;
+  profileImg: string;
+  title: string;
+  description: string;
+  resumeLink: string;
+  email: string;
+}
+
+interface AboutData {
+  title: string;
+  profileImg: string;
+  bio: string[];
+  skills: { name: string; x: string; y: string }[];
+  statistics: { label: string; value: number }[];
+}
+
+interface ExperienceData {
+  position: string;
+  company: string;
+  companyLink: string;
+  time: string;
+  address: string;
+  work: string;
+}
+
+interface EducationData {
+  type: string;
+  time: string;
+  place: string;
+  info: string;
+}
+
+interface ProjectData {
+  type: string;
+  title: string;
+  img: string;
+  link: string;
+  github: string;
+  summary: string;
+}
+
+interface ArticleData {
+  title: string;
+  summary: string;
+  time: string;
+  img: string;
+  link: string;
+}
+interface allArticleData {
+  title: string;
+  date: string;
+  img: string;
+  link: string;
+}
+
+interface PortfolioDataType {
+  SocialLinks: SocialLinks;
+  Home: { homeData: HomeData };
+  About: { aboutPageData: { aboutData: AboutData; experienceData: ExperienceData[]; educationData: EducationData[] } };
+  Projects: { projectData: ProjectData[] };
+  Articles: { articlesData: ArticleData[]; allArticlesData: allArticleData[] };
+}
+
+// const montserrat = Montserrat({
+//   subsets: ["latin"],
+//   variable: "--font-mont",
+// });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [PortfolioData, setPortfolioData] = useState(KiranPortfolioData);
-  const [showNotification, setShowNotification] = useState(false);
-  const [noteMsg, setNoteMsg] = useState({
+  const [PortfolioData, setPortfolioData] = useState<PortfolioDataType>(KiranPortfolioData);
+  const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [noteMsg, setNoteMsg] = useState<{ message: string; type: string }>({
     message: "some action done 😕 ",
     type: "warn",
   });
@@ -41,12 +112,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const loginRoute = router.asPath.startsWith('/k/login');
 
   if (typeof localStorage !== 'undefined') {
-    if(!loginRoute && secureRoute){
+    if (!loginRoute && secureRoute) {
       const storedUserData = localStorage.getItem("userDataP");
       const user = storedUserData ? JSON.parse(storedUserData) : null;
-
-      if(!user?.uid){
-       router.push("/k/login")
+      const userId = user?.uid ?? null;
+      if (!userId) {
+        router.push("/k/login")
       }
     }
   }
@@ -59,17 +130,17 @@ export default function App({ Component, pageProps }: AppProps) {
 
 
   const showNotificationMsg = () => {
-  if(hasIdParameter)
-    setShowNotification(true);
+    if (hasIdParameter)
+      setShowNotification(true);
   };
   const showNotificationMsgDelay = () => {
-    if(hasIdParameter){
-    setTimeout(() => {
-      setShowNotification(true);
-    }, 2000);}
+    if (hasIdParameter) {
+      setTimeout(() => {
+        setShowNotification(true);
+      }, 2000);
+    }
   };
-
-  const searchUserByUsername = async (username) => {
+  const searchUserByUsername = async (username: string): Promise<string | void> => {
     const db = getFirestore();
     const usersCollection = collection(db, "Users");
 
@@ -79,20 +150,21 @@ export default function App({ Component, pageProps }: AppProps) {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        return null;
+        return; // No user found with the given username
       }
 
       // Assuming there is only one user with a unique username
       const userDoc = querySnapshot.docs[0];
       const userId = userDoc.id;
-
       return userId;
+
     } catch (error) {
-      return null;
+      console.error(error);
+      return ""; // Return an empty string in case of an error
     }
   };
 
-  const fetchUserPortfolioData = async (userId) => {
+  const fetchUserPortfolioData = async (userId: string): Promise<void> => {
     const db = getFirestore();
     const userPortfolioDataRef = doc(db, "User_portfolio_data", userId);
 
@@ -101,24 +173,32 @@ export default function App({ Component, pageProps }: AppProps) {
 
       if (userPortfolioDataSnapshot.exists()) {
         const userPortfolioData = userPortfolioDataSnapshot.data();
-
-        // Update the state with the fetched user portfolio data
-        setPortfolioData(userPortfolioData);
+        const mappedPortfolioData: PortfolioDataType = {
+          SocialLinks: userPortfolioData.SocialLinks,
+          Home: userPortfolioData.Home,
+          About: userPortfolioData.About,
+          Projects: userPortfolioData.Projects,
+          Articles: userPortfolioData.Articles,
+        };
+        // Set the mapped data as the state
+        setPortfolioData(mappedPortfolioData);
       }
     } catch (error) {
-      return null;
+      console.error(error);
     }
   };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       const { userName } = router.query;
-
+  
       if (userName) {
+        const username = Array.isArray(userName) ? userName[0] : userName;
         try {
           // Fetch user data based on the userName
-          const searchedUserId = await searchUserByUsername(userName);
-          if (searchedUserId) {
+          const searchedUserId = await searchUserByUsername(username);
+  
+          if (typeof searchedUserId === 'string') {
             // Now fetch the user portfolio data using the user ID
             setNoteMsg({
               message: "Awesome background 🙌🏻 🔥",
@@ -127,12 +207,13 @@ export default function App({ Component, pageProps }: AppProps) {
             await fetchUserPortfolioData(searchedUserId);
             showNotificationMsg();
           } else {
-            if(userName!=="demo")
-               router.push("/");
+            if (userName !== "demo") {
+              router.push("/");
+            }
           }
         } catch (error) {
           setNoteMsg({
-            message: " Error fetching user 😕 ",
+            message: "Error fetching user 😕 ",
             type: "warn",
           });
         }
@@ -142,11 +223,12 @@ export default function App({ Component, pageProps }: AppProps) {
           type: "warn",
         });
       }
-      showNotificationMsgDelay();
     };
-
+  
     fetchUserProfile();
-  }, [router.query.userName]);
+  }, [router.query]);
+  
+
 
   return (
     <>
@@ -156,7 +238,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main
-        className={`${montserrat.variable} font-mont bg-light dark:bg-dark w-full min-h-screen`}
+        className={`font-mont bg-light dark:bg-dark w-full min-h-screen`}
       >
         <HomeDataProvider data={PortfolioData}>
           <AnimatePresence mode='wait'>

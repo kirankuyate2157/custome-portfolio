@@ -62,9 +62,9 @@ const AddSkill = ({ addNewSkill, isOpen, closeModal }) => {
     >
       <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg'>
         <h2 className='text-2xl font-semibold mb-4'>Add Skill</h2>
-        <p className='text-[0.7rem] text-orange-400'>
+        <p className='text-[0.7rem] text-orange-400'>{`
           please put value in proper formate so it will visible accordingly on
-          skill spiral "value vw"
+          skill spiral "value vw"`}
         </p>
         <div className='space-y-4'>
           <div>
@@ -238,9 +238,9 @@ const EditSkills = ({ skillsData, onSave, onDelete }) => {
       >
         <div className=' bg-white dark:bg-[#1b1f30] text-black dark:text-gray-300 w-full sm:w-96 p-6 px-8 max-w-[530px] mx-10 rounded-lg shadow-lg'>
           <h2 className='text-2xl font-semibold mb-4'>Edit Skill</h2>
-          <p className='text-[0.7rem] text-orange-400'>
+          <p className='text-[0.7rem] text-orange-400'>{`
             please put value in proper formate so it will visible accordingly on
-            skill spiral "value vw"{" "}
+            skill spiral "value vw"`}
           </p>
           <div className='space-y-4'>
             <div>

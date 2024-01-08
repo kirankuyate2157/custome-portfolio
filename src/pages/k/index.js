@@ -112,9 +112,9 @@ const Home = () => {
                   <StartPost />
 
                   {posts && posts.length > 0 ? (
-                    posts.map((data,index) => <Post key={index}  data={...data} onChanges={()=>updateData()} />)
+                    posts.map((data,index) => <Post key={index}  data={{...data}} onChanges={()=>updateData()} />)
                   ) : (
-                    <p className='flex self-center'>Loading...</p>
+                    <p className='flex self-center'>{`Loading...`}</p>
                   )}
                 </>
               )}

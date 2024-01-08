@@ -7,7 +7,7 @@ import AnimatedText from "@/components/portfolio/AnimatedText";
 import { motion, useMotionValue } from "framer-motion";
 import TransitionEffect from "@/components/portfolio/TransitionEffect";
 import Navbar from "@/components/portfolio/Navbar";
-import { useArticleData } from "@/context/DataProvider";
+import { ArticleData } from "@/context/DataProvider";
 
 const FramerImage = motion(Image);
 
@@ -106,7 +106,7 @@ const FeaturedArticle = ({ img, title, time, summary, link }) => {
 };
 
 const articles = () => {
-  const articles = useArticleData();
+  const articles = ArticleData();
   return (
     <>
       <Head>

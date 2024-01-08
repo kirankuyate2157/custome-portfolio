@@ -276,7 +276,7 @@ const ProfileDropdown = ({ profile }) => {
               <h4 className='font-semibold'>
                 edit Limit
                 <span className='text-[0.5rem] pl-1 text-orange-600 items-center'>
-                  (want to increase limit ? "Say hello 👋🏻" in footer)
+                  {`(want to increase limit ? "Say hello 👋🏻" in footer)`}
                 </span>
               </h4>
               <p className='text-indigo-600 hover:underline'>
