@@ -230,17 +230,17 @@ const prevReactionUpdate=()=>{
         </div>
         <div className='mr-1 my-2 flex flex-col sm:w-[76%] w-[85%] text-gray-700'>
           <div className='flex justify-between items-center w-full'>
-            <div className='flex justify-start  gap-1 md:text-sm text-lg'>
+            <div className='flex justify-start items-center  gap-1 md:text-sm text-lg'>
               <h1 className='font-semibold  text-black'>Kiran Kuyate</h1>
-              <span>{`${data?.gender?"(He/Him)":"(She/Her)"}`}</span>
+              <span className="md:text-xs text-sm">{`${data?.gender=="M"?"(He/Him)":data?.gender=="F"?"(She/Her)":""}`}</span>
             </div>
             <SlOptionsVertical />
           </div>
           <div className='flex items-center'>
             <p className='flex md:text-[0.6rem] text-xs overflow-hidden whitespace-nowrap overflow-ellipsis  w-[80%] max-w-lg'>
-             {data?.handle}
+             {data?.handle}  <span>...</span>
             </p>
-            <span>...</span>
+          
           </div>
           <h6 className='md:text-[0.6rem] text-sm'>13hr 🌏</h6>
         </div>
@@ -309,7 +309,7 @@ const prevReactionUpdate=()=>{
           </div>
         </div>
         <hr className='mt-1' />
-        <div className='flex w-full mb-2 '>
+        <div className='flex w-full mb-2 overflow-hidden '>
           <Reaction
             Icons={react.icon}
             title={react.label}

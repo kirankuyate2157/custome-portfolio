@@ -7,7 +7,7 @@ import { BiRepost } from "react-icons/bi";
 import { TbBulbFilled } from "react-icons/tb";
 import { AiFillHeart } from "react-icons/ai";
 import { MdCelebration } from "react-icons/md";
-
+import { useAccount } from "../../context/AccoundData";
 import LinesEllipsis from "react-lines-ellipsis";
 import { getUserData } from "@/services/firebaseConfig.js";
 import {
@@ -23,8 +23,14 @@ import {
   arrayUnion,
   serverTimestamp,
 } from "firebase/firestore";
+import { nanoid } from "nanoid";
 
+const generateDateString = () => {
+  const currentDate = new Date();
+  const dateString = currentDate.toString(); // Outputs in the format "yyyy-mm-ddThh:mm:ss.sssZ"
 
+return dateString;
+};
 const Icons = [
   { Icon: SlLike, label: "Like", color: "blue" },
   { Icon: AiFillHeart, label: "Love", color: "red" },
@@ -34,7 +40,7 @@ const Icons = [
 ];
 
 
-const Comment=({data,postId})=>{
+const Comment = ({ data, postId }) => {
 
   const [isLiked, setIsLiked] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
@@ -67,7 +73,7 @@ const Comment=({data,postId})=>{
   const updateCommentReaction = (postId, commentId) => {
     const db = getFirestore();
     const postRef = doc(db, "posts", postId);
-  
+
     // Get the post document
     getDoc(postRef)
       .then((postDoc) => {
@@ -76,7 +82,7 @@ const Comment=({data,postId})=>{
           const commentIndex = postDoc.data().comments.findIndex(
             (comment) => comment.id === commentId
           );
-  
+
           if (commentIndex !== -1) {
             // Update reactions within the found comment
             const updatedComments = [...postDoc.data().comments];
@@ -84,7 +90,7 @@ const Comment=({data,postId})=>{
               ...updatedComments[commentIndex],
               reactions: reactionCounts,
             };
-  
+
             // Update the post document with the modified comments array
             updateDoc(postRef, { comments: updatedComments })
               .then(() => {
@@ -97,7 +103,7 @@ const Comment=({data,postId})=>{
           //  else {
           //   console.error("Comment not found in the post.");
           // }
-        } 
+        }
         // else {
         //   console.error("Post document not found.");
         // }
@@ -108,7 +114,7 @@ const Comment=({data,postId})=>{
   };
 
   useEffect(() => {
-    if (update &&postId&&data.id) {
+    if (update && postId && data.id) {
       updateCommentReaction(postId, data.id,);
     }
     setLikeCount(() => reactionCounts?.uids?.length + 1 || 0);
@@ -179,36 +185,11 @@ const Comment=({data,postId})=>{
     }
   };
 
-  // const formatTimeDifference = (commentTime) => {
-  //   const currentTime = new Date();
-  //   const commentTimeObj = new Date(commentTime);
 
-  //   const timeDifference = currentTime - commentTimeObj;
-  //   const seconds = Math.floor(timeDifference / 1000);
-  //   const minutes = Math.floor(seconds / 60);
-  //   const hours = Math.floor(minutes / 60);
-  //   const days = Math.floor(hours / 24);
-  //   const months = Math.floor(days / 30);
-  //   const years = Math.floor(months / 12);
-
-  //   if (years > 0) {
-  //     return `${years} ${years === 1 ? "year" : "years"}`;
-  //   } else if (months > 0) {
-  //     return `${months} ${months === 1 ? "month" : "months"}`;
-  //   } else if (days > 0) {
-  //     return `${days} ${days === 1 ? "day" : "days"}`;
-  //   } else if (hours > 0) {
-  //     return `${hours} hr`;
-  //   } else if (minutes > 0) {
-  //     return `${minutes} min`;
-  //   } else {
-  //     return `${seconds} sec`;
-  //   }
-  // };
   const formatTimeDifference = (commentTime) => {
     const currentTime = new Date();
     const commentTimeObj = new Date(commentTime); // Convert Firebase Timestamp to JavaScript Date object
-  
+
     const timeDifference = currentTime - commentTimeObj;
     const seconds = Math.floor(timeDifference / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -216,7 +197,7 @@ const Comment=({data,postId})=>{
     const days = Math.floor(hours / 24);
     const months = Math.floor(days / 30);
     const years = Math.floor(months / 12);
-  
+
     if (years > 0) {
       return `${years} ${years === 1 ? "year" : "years"}`;
     } else if (months > 0) {
@@ -231,7 +212,7 @@ const Comment=({data,postId})=>{
       return `${seconds} sec`;
     }
   };
-  
+
 
   const handleReactionLeave = () => {
     if (!isLiked) {
@@ -261,9 +242,8 @@ const Comment=({data,postId})=>{
         {reactionOptions.map((option) => (
           <div
             key={option.label}
-            className={`relative cursor-pointer hover:bottom-3 hover:bg-transparent   rounded p-2 transform transition-transform ${
-              hoveredEmoji === option.emoji ? "scale-100 opacity-150" : ""
-            }`}
+            className={`relative cursor-pointer hover:bottom-3 hover:bg-transparent   rounded p-2 transform transition-transform ${hoveredEmoji === option.emoji ? "scale-100 opacity-150" : ""
+              }`}
             onClick={() => onReact(option)}
             onMouseEnter={() => setHoveredEmoji(option.emoji)}
             onMouseLeave={() => setHoveredEmoji(null)}
@@ -291,9 +271,8 @@ const Comment=({data,postId})=>{
   }) => {
     return (
       <div
-        className={`flex w-full justify-center sm:p-2 p-4 my-2  hover:bg-gray-100 cursor-pointer md:gap-1 gap-2 items-center md:text-sm text-md font-bold rounded-lg ${
-          isActive ? `text-red-500` : "text-gray-600"
-        }`}
+        className={`flex w-full justify-center sm:p-2 p-4 my-2  hover:bg-gray-100 cursor-pointer md:gap-1 gap-2 items-center md:text-sm text-md font-bold rounded-lg ${isActive ? `text-red-500` : "text-gray-600"
+          }`}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -312,318 +291,189 @@ const Comment=({data,postId})=>{
 
   return <>
     <div key={data?.id} className='p-4 mx-1'>
-          <div className='flex flex-col text-sm'>
-            <div className='flex items-start text-[9px] ml-1 md:mx-3'>
-              <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2'>
-                <Image
-                  src={
-                    data?.avatar ||
-                    "https://avatars.githubusercontent.com/u/84271800?v=4"
-                  }
-                  alt='user profile'
-                  className='w-full rounded-full'
-                  priority
-                  width={50}
-                  height={50}
-                  sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
+      <div className='flex flex-col text-sm'>
+        <div className='flex items-start text-[9px] ml-1 md:mx-3'>
+          <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2'>
+            <Image
+              src={
+                data?.avatar ||
+                "https://avatars.githubusercontent.com/u/84271800?v=4"
+              }
+              alt='user profile'
+              className='w-full rounded-full'
+              priority
+              width={50}
+              height={50}
+              sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
+            />
+          </div>
+          <div className='mr-1 items-center w-[85%] text-gray-700'>
+            <div className='bg-slate-100 rounded-b rounded-r-lg  p-1'>
+              <div className='flex justify-between w-full'>
+                <div className='flex justify-start gap-1 sm:text-[0.6rem] md:text-xs text-sm'>
+                  <h1 className='font-semibold text-black'>{data?.name}</h1>
+                  <span className="md:text-[0.5rem] text-xs">{`${data?.gender=="M"?"(He/Him)":data?.gender=="F"?"(She/Her)":""}`}</span>
+                </div>
+                <div className='flex items-center md:gap-1 gap-2 text-xs md:text-sm mr-1'>
+                  <h6 className='sm:text-[0.6rem] md:text-xs '>
+                    {formatTimeDifference(data?.time)}
+                  </h6>
+                  <SlOptions />
+                </div>
+              </div>
+              <div className='flex'>
+                <span className='flex sm:text-[0.5rem] md:text-xs  overflow-hidden whitespace-nowrap overflow-ellipsis sm:max-w-[12rem] max-w-[81%]'>
+                  {data?.handle}
+                </span>
+                <span>...</span>
+              </div>
+              <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] '>
+                <LinesEllipsis
+                  text={data.text}
+                  maxLine={showFullText ? 1000 : 1}
+                  ellipsis='.. See more'
+                  trimRight
+                  basedOn='words'
+                  onClick={() => setShowFullText(!showFullText)}
                 />
-              </div>
-              <div className='mr-1 items-center w-[85%] text-gray-700'>
-                <div className='bg-slate-100 rounded-b rounded-r-lg  p-1'>
-                  <div className='flex justify-between w-full'>
-                    <div className='flex justify-start gap-1 sm:text-[0.6rem] md:text-xs text-sm'>
-                      <h1 className='font-semibold text-black'>{data?.name}</h1>
-                      <span>{`${
-                        data?.gender ? "(He/Him)" : "(She/Her)"
-                      }`}</span>
-                    </div>
-                    <div className='flex items-center md:gap-1 gap-2 text-xs md:text-sm mr-1'>
-                      <h6 className='sm:text-[0.6rem] md:text-xs '>
-                        {formatTimeDifference(data?.time)}
-                      </h6>
-                      <SlOptions />
-                    </div>
-                  </div>
-                  <div className='flex'>
-                    <span className='flex sm:text-[0.5rem] md:text-xs  overflow-hidden whitespace-nowrap overflow-ellipsis sm:max-w-[12rem] max-w-[81%]'>
-                      {data?.handle}
+              </p>
+            </div>
+            <div className='ml-2 flex gap-1 justify-start items-center relative'>
+              {data && reactionOptionsVisible && (
+                <ReactionOptions
+                  onSelectReaction={(option) =>
+                    handleReactionSelect(option)
+                  }
+                />
+              )}
+              <span
+                className={`${isLiked ? "text-red-500" : ""}`}
+                onClick={() => {
+                  handleReactionSelect({
+                    label: "Like",
+                    emoji: SlLike,
+                  }),
+                    setIsLiked(!isLiked);
+                }}
+                onMouseEnter={() => handleReactionHover(data?.id)}
+                onMouseLeave={() => handleReactionLeave(data?.id)}
+              >
+                {react.label}
+              </span>
+              •
+              <span className='p-1'>
+                <span className='text-[0.50rem] rounded-full'>
+                  {reactionCounts.Like > 0 && (
+                    <span className='bg-green-300 border rounded-full ml-[-8px] '>
+                      👍
                     </span>
-                    <span>...</span>
-                  </div>
-                  <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] '>
-                    <LinesEllipsis
-                      text={data.text}
-                      maxLine={showFullText ? 1000 : 1}
-                      ellipsis='.. See more'
-                      trimRight
-                      basedOn='words'
-                      onClick={() => setShowFullText(!showFullText)}
-                    />
-                  </p>
-                </div>
-                <div className='ml-2 flex gap-1 justify-start items-center relative'>
-                  {data && reactionOptionsVisible && (
-                    <ReactionOptions
-                      onSelectReaction={(option) =>
-                        handleReactionSelect(option)
-                      }
-                    />
                   )}
-                  <span
-                    className={`${isLiked ? "text-red-500" : ""}`}
-                    onClick={() => {
-                      handleReactionSelect({
-                        label: "Like",
-                        emoji: SlLike,
-                      }),
-                        setIsLiked(!isLiked);
-                    }}
-                    onMouseEnter={() => handleReactionHover(data?.id)}
-                    onMouseLeave={() => handleReactionLeave(data?.id)}
-                  >
-                    {react.label}
-                  </span>
-                  •
-                  <span className='p-1'>
-                    <span className='text-[0.50rem] rounded-full'>
-                      {reactionCounts.Like > 0 && (
-                        <span className='bg-green-300 border rounded-full ml-[-8px] '>
-                          👍
-                        </span>
-                      )}
-                      {reactionCounts.Love > 0 && (
-                        <span className='bg-red-700 border rounded-full ml-[-8px]'>
-                          ❤️
-                        </span>
-                      )}
-                      {reactionCounts.Celebrate > 0 && (
-                        <span className='bg-yellow-500 border border-gray-300 rounded-full ml-[-8px]'>
-                          🎉
-                        </span>
-                      )}
-                      {reactionCounts.Support > 0 && (
-                        <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
-                          🤝
-                        </span>
-                      )}
-                      {reactionCounts.Insightful > 0 && (
-                        <span className='bg-purple-500 border border-gray-300 rounded-full ml-[-8px]'>
-                          💡
-                        </span>
-                      )}
+                  {reactionCounts.Love > 0 && (
+                    <span className='bg-red-700 border rounded-full ml-[-8px]'>
+                      ❤️
                     </span>
-                  </span>
-                  <span>
-                  {likeCount} {likeCount === 1 ? "like" : "likes"}
-                  </span>
-                </div>
-              </div>
+                  )}
+                  {reactionCounts.Celebrate > 0 && (
+                    <span className='bg-yellow-500 border border-gray-300 rounded-full ml-[-8px]'>
+                      🎉
+                    </span>
+                  )}
+                  {reactionCounts.Support > 0 && (
+                    <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
+                      🤝
+                    </span>
+                  )}
+                  {reactionCounts.Insightful > 0 && (
+                    <span className='bg-purple-500 border border-gray-300 rounded-full ml-[-8px]'>
+                      💡
+                    </span>
+                  )}
+                </span>
+              </span>
+              <span>
+                {likeCount} {likeCount === 1 ? "like" : "likes"}
+              </span>
             </div>
           </div>
         </div>
+      </div>
+    </div>
   </>
 }
 
 
 
-const Comments = ({ Data,postId }) => {
- 
+const Comments = ({ Data, postId }) => {
+
   // ---------------------------new code ---------------------------------
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      user: "Kiran Kuyate",
-      handle: `SDE aspirants 💫 | final yr | web dev (MERN) | DS | DSA | AI
-      enthusiast | 2x100DaysOfCode`,
-      avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
-      time: new Date("2023-07-20T10:13:00"),
-      content:
-        "I'm happy to share that I have obtained a new certification of Advanced Software Engineering Virtual Program of Walmart Global Tech, it was provided by Forage. #walmartglobaltech #theforage #softwareengineer #virtualexperience",
-      likes: {
-        Like: 2,
-        Love: 0,
-        Celebrate: 0,
-        Support: 0,
-        Insightful: 0,
-        uids: [],
-      },
-      totalLikes: 2,
-      reactionOptionsVisible: false,
-    },
-    {
-      id: 2,
-      user: "Jane Smith",
-      handle: `SDE aspirants 💫 | final yr | web dev (MERN) | DS | DSA | AI
-      enthusiast | 2x100DaysOfCode`,
-      avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
-      time: new Date("2023-07-28T12:34:56"),
-      content: "Congratulations! That's amazing!",
-      likes: {
-        Like: 0,
-        Love: 0,
-        Celebrate: 0,
-        Support: 1,
-        Insightful: 0,
-        uids: [],
-      },
-      totalLikes: 1,
-      reactionOptionsVisible: false,
-    },
-    // Add more sample comments here...
-  ]);
-
-  const updateTotalLikes = () => {
-    setComments((prevComments) =>
-      prevComments.map((comment) => {
-        const totalLikes = Object.values(data.reactions).reduce(
-          (total, count) => total + count,
-          0
-        );
-        return { ...comment, totalLikes };
-      })
-    );
-  };
-
-  // const handleReactionSelect = (commentId, reaction) => {
-  //   setComments((prevComments) =>
-  //     prevComments.map((data) => {
-  //       if (data?.id === commentId) {
-  //         const currentLikes = data.reactions[reaction.label];
-  //         const updatedComment = {
-  //           ...comment,
-  //           likes: {
-  //             ...data.reactions,
-  //             [reaction.label]:
-  //               currentLikes + (selectedReaction === reaction ? -1 : 1),
-  //           },
-  //         };
-  //         return updatedComment;
-  //       }
-  //       return comment;
-  //     })
-  //   );
-
-  //   setSelectedReaction((prevReaction) =>
-  //     prevReaction === reaction ? null : reaction
-  //   );
-
-  //   updateTotalLikes(); // Recalculate and update totalLikes for each comment
-  // };
-
-  // const handleReactionHover = (commentId) => {
-  //   setComments((prevComments) =>
-  //     prevComments.map((comment) =>
-  //       data?.id === commentId
-  //         ? { ...comment, reactionOptionsVisible: true }
-  //         : comment
-  //     )
-  //   );
-  // };
-
-  // const handleReactionLeave = (commentId) => {
-  //   setTimeout(() => {
-  //     setComments((prevComments) =>
-  //       prevComments.map((comment) =>
-  //         data?.id === commentId
-  //           ? { ...comment, reactionOptionsVisible: false }
-  //           : comment
-  //       )
-  //     );
-  //   }, 2000); // 2 seconds delay
-  // };
-  const formatTimeDifference = (commentTime) => {
-    const currentTime = new Date();
-    const commentTimeObj = new Date(commentTime);
-
-    const timeDifference = currentTime - commentTimeObj;
-    const seconds = Math.floor(timeDifference / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const months = Math.floor(days / 30);
-    const years = Math.floor(months / 12);
-
-    if (years > 0) {
-      return `${years} ${years === 1 ? "year" : "years"}`;
-    } else if (months > 0) {
-      return `${months} ${months === 1 ? "month" : "months"}`;
-    } else if (days > 0) {
-      return `${days} ${days === 1 ? "day" : "days"}`;
-    } else if (hours > 0) {
-      return `${hours} hr`;
-    } else if (minutes > 0) {
-      return `${minutes} min`;
-    } else {
-      return `${seconds} sec`;
-    }
-  };
-
-  // const ReactionOptions = ({ commentId, onSelectReaction }) => {
-  //   const reactionOptions = [
-  //     { label: "Like", emoji: "👍" },
-  //     { label: "Love", emoji: "❤️" },
-  //     { label: "Celebrate", emoji: "🎉" },
-  //     { label: "Support", emoji: "🤝" },
-  //     { label: "Insightful", emoji: "💡" },
-  //   ];
-
-  //   const [hoveredEmoji, setHoveredEmoji] = useState(null);
-
-  //   return (
-  //     <div className='absolute bottom-5 flex bg-white rounded-lg text-lg shadow-2xl  z-10'>
-  //       {reactionOptions.map((option) => (
-  //         <div
-  //           key={option.label}
-  //           className={`relative cursor-pointer hover:bottom-3 hover:bg-transparent   rounded p-2 transform transition-transform ${
-  //             hoveredEmoji === option.emoji ? "scale-100 opacity-150" : ""
-  //           }`}
-  //           onClick={() => onSelectReaction(commentId, option)}
-  //           onMouseEnter={() => setHoveredEmoji(option.emoji)}
-  //           onMouseLeave={() => setHoveredEmoji(null)}
-  //         >
-  //           {option.emoji}
-  //           {hoveredEmoji === option.emoji && (
-  //             <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-lg'>
-  //               {option.label}
-  //             </div>
-  //           )}
-  //         </div>
-  //       ))}
-  //     </div>
-  //   );
-  // };
-
+  const [comments, setComments] = useState([...Data]||[])
   const [commentInput, setCommentInput] = useState("");
 
-  const handlePostComment = () => {
-    if (commentInput.trim() !== "") {
-      const newComment = {
-        id: comments.length + 1,
-        user: "John Doe", // Replace with the actual user name
-        handle: `SDE aspirants 💫 | final yr | web dev (MERN) | DS | DSA | AI\nenthusiast | 2x100DaysOfCode`, // Replace with the actual user handle
-        avatar: "https://avatars.githubusercontent.com/u/12345678?v=4", // Replace with the actual user avatar URL
-        time: new Date(), // Replace with the actual timestamp
-        content: commentInput,
-        likes: {
-          Like: 0,
-          Love: 0,
-          Celebrate: 0,
-          Support: 0,
-          Insightful: 0,
-        },
-        reactionOptionsVisible: false,
-      };
-      setComments((prevComments) => [newComment, ...prevComments]);
-      setCommentInput("");
+  // ---------------------------new comment ---------------------------
+  const user = getUserData();
+  const ac=useAccount();
+  const addNewComment = async(postId, newComment) => {
+    const db = getFirestore();
+    const postRef = doc(db, "posts", postId);
+
+    // Get the post document
+    if (commentInput && postId && user && user.uid) {
+      getDoc(postRef)
+        .then((postDoc) => {
+          if (postDoc.exists()) {
+            // Add the new comment to the comments array
+            const updatedComments = [...postDoc.data().comments, newComment];
+
+            // Update the post document with the modified comments array
+             updateDoc(postRef, { comments: updatedComments })
+              .then((resp) => {
+                console.log("New comment added successfully.");
+                setCommentInput("");
+              })
+              .catch((error) => {
+                console.error("Error updating post with new comment:", error);
+              });
+          } else {
+            console.error("Post document not found.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching post document:", error);
+        });
     }
   };
+
+  const newCommentData = {
+    id:nanoid(),
+    uid: user?.uid,
+    name: ac?.name ||user?.displayName,
+    handle:ac?.handle,
+    gender: ac?.gender || "",
+    time: generateDateString(),
+    reactions: {
+      Like: 0,
+      Insightful: 0,
+      Love: 0,
+      Celebrate: 0,
+      Support: 0,
+      uids: [],
+    },
+    text: commentInput,
+    avatar: ac?.avatar || user?.photoURL,
+  };
+
+
+  const handlePostComment = () => {
+    if(postId&&commentInput&&user)
+    addNewComment(postId, newCommentData);
+ };
 
   return (
     <div>
       <div className='flex gap-3 mx-5 py-2'>
         <div>
           <Image
-            src={"https://avatars.githubusercontent.com/u/84271800?v=4"}
+            src= {ac?.avatar || user?.photoURL}
             alt='placeholder'
             className='w-[50px]  rounded-full'
             priority
@@ -649,8 +499,8 @@ const Comments = ({ Data,postId }) => {
           )}
         </div>
       </div>
-      {Data.map((data,index) => (
-      <Comment key={index} postId={postId} data={...data}/>
+      {Data.map((data, index) => (
+        <Comment key={index} postId={postId} data={...data}/>
       ))}
     </div>
   );

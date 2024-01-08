@@ -43,10 +43,9 @@ const useOutsideClick = (ref, callback) => {
 
 const generateDateString = () => {
   const currentDate = new Date();
-  const dateString = currentDate.toISOString(); // Outputs in the format "yyyy-mm-ddThh:mm:ss.sssZ"
-  
-  // Remove milliseconds and the "Z" (which indicates UTC)
-  return dateString.slice(0, -5);
+  const dateString = currentDate.toString(); // Outputs in the format "yyyy-mm-ddThh:mm:ss.sssZ"
+
+  return dateString;
 };
 
 const generatedString = generateDateString();
@@ -104,7 +103,7 @@ const WritePost = () => {
         uid: "UR93ipCQCcdF7kLF56iloz9ROyp2",
         name: "rahul jadhav",
         handle: "data scientist | 100k on youtube ",
-        gender: true,
+        gender: "",
         time: generateDateString(),
         reactions: {
           Like: 2,

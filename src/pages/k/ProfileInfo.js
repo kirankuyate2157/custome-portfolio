@@ -3,7 +3,7 @@ import Image from "next/image";
 import LinesEllipsis from "react-lines-ellipsis";
 import blankProf from "../../../public/images/profile/blankProf.png";
 import Post from "../../components/home/Post";
-import { getCurrentUserId } from "@/services/firebaseConfig.js";
+import { getUserData } from "@/services/firebaseConfig.js";
 import {
   getFirestore,
   collection,
@@ -23,7 +23,7 @@ const getBanner = () => {
     "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/template%2FblueSky.png?alt=media&token=98496973-a34e-4225-9581-468effb18ca9",
     "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/template%2FblueMenifest3.png?alt=media&token=30cb3328-0578-4a5d-9984-7366a7b0b945",
   ];
-  
+
   const idx = Math.floor(Math.random() * banners.length);
   console.log(" index : " + idx);
   return banners[idx];
@@ -61,7 +61,8 @@ const RecentIntraction = () => {
 const ProfileInfo = () => {
   const [showFullText, setShowFullText] = useState(false);
   const [accountData, setAccountData] = useState(null);
-  const userId = getCurrentUserId();
+  const [posts, setPosts] = useState([]);
+  const user = getUserData();
 
   const data = {
     TotalPosts: 6,
@@ -86,30 +87,32 @@ const ProfileInfo = () => {
   };
 
   const newData = {
-    TotalPosts: 10,
+    id: user?.uid,
+    TotalPosts: 0,
     about:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
+      "Add about here",
+    avatar: user?.photoURL,
     contact: {
       phone: "1234567890",
-      profileUrl: "localhost:3000/k/exampleuser",
-      email: "exampleuser@example.com",
+      profileUrl: `localhost:3000/k/${user?.displayName.split(' ').join('')}`,
+      email: user?.email,
     },
-    email: "exampleuser@example.com",
+    email: user?.email,
     phone: "1234567890",
     profileUrl: "localhost:3000/k/exampleuser",
-    coverImg:getBanner(),
-       handle: "Lorem ipsum",
-    name: "John Doe",
-    profileViews: 123,
-    username: "exampleuser",
+    coverImg: getBanner(),
+    handle: "new user",
+    name: user?.displayName,
+    profileViews: 3,
+    gender: "",
+    username: user?.displayName.split(' ').join(''),
   };
 
   const fetchAccountData = async () => {
     const db = getFirestore();
-    if (userId) {
-      const accountRef = doc(db, "accounts", userId);
-        console.log("fetching  data ..");
+    if (user && user.uid) {
+      const accountRef = doc(db, "accounts", user.uid);
+      console.log("fetching  data ..");
       try {
         const accountDataSnapshot = await getDoc(accountRef);
 
@@ -124,11 +127,37 @@ const ProfileInfo = () => {
       }
     }
   };
+  const fetchUserPosts = async (userId) => {
+    const db = getFirestore();
+    const postsRef = collection(db, "posts");
+    if (user && user.uid) {
+      try {
+        const postDataSnapshot = await getDocs(postsRef);
+
+        if (!postDataSnapshot.empty) {
+          const userPostsData = postDataSnapshot.docs
+            .map((doc) => doc.data())
+            .filter((post) => post.uid === user.uid);
+
+          console.log("User's posts:", userPostsData);
+          setPosts([...userPostsData])
+          // Set state or perform other actions with user's posts data
+        } else {
+          console.log("No posts found.");
+          // Handle case where there are no posts
+        }
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+    }
+  };
+
+
 
   const setDummyAccountData = async () => {
-    if (userId) {
+    if (user && user.uid) {
       const db = getFirestore();
-      const accountRef = doc(db, "accounts", userId);
+      const accountRef = doc(db, "accounts", user?.uid);
       let done = await setDoc(accountRef, newData);
       if (done) {
         console.log(" account created sucessfully .✔️");
@@ -140,16 +169,19 @@ const ProfileInfo = () => {
 
   useEffect(() => {
 
-    const fetchData =async()=>{
-    let daf= await fetchAccountData();
-    if(daf ===undefined){
-      console.log("set  data")
-      setDummyAccountData();
-      await fetchAccountData();
+    const fetchData = async () => {
+      let daf = await fetchAccountData();
+      if (daf === undefined) {
+        console.log("set  data")
+        setDummyAccountData();
+        await fetchAccountData();
+        if(!posts){
+          fetchUserPosts();
+        }
+      }
+    }
+    fetchData();
 
-   }}
-   fetchData();
-    
   }, []);
 
   return (
@@ -257,9 +289,9 @@ const ProfileInfo = () => {
             <div className='flex flex-col justify-start py-4 '>
               <h1 className='font-bold px-4'>Posts</h1>
             </div>
-            <Post />
-            <Post />
-            <Post />
+            {posts && posts.length > 0 && (
+              posts.map((data, index) => <Post key={index} data={...data} />
+                    ))}
           </div>
         </div>
       </div>
