@@ -156,7 +156,7 @@ const AddArticle = ({ isOpen, articleData, onSave, closeModal }) => {
                 <div className='flex-shrink-0 flex items-center px-1 gap-2 space-x-2'>
                   <label
                     htmlFor='fileInput'
-                    className='cursor-pointer text-blue-500 hover:bg-blue-200 dark:hover:bg-blue-900 rounded p-1'
+                    className='cursor-pointer text-red-500 hover:bg-red-200 dark:hover:bg-red-900 rounded p-1'
                     onClick={handleImgUpload}
                   >
                     {imageUrl ? <TbCloudCheck /> : <FiUpload />}

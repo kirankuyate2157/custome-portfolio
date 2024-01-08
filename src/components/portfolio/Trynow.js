@@ -153,7 +153,7 @@ const Trynow = () => {
           }`}
         >
           <motion.div
-            className={`bg-blue-700 px-4 hover:bg-primary cursor-pointer rounded-md py-1 sm:ml-0 ml-5 text-sm text-center items-center text-white `}
+            className={`bg-red-700 px-4 hover:bg-primary cursor-pointer rounded-md py-1 sm:ml-0 ml-5 text-sm text-center items-center text-white `}
             onClick={() => {
               setShowLogoutDropdown(!showLogoutDropdown),
                 setTimeout(() => {
@@ -174,7 +174,7 @@ const Trynow = () => {
         </div>
       ) : (
         <motion.div
-          className='bg-blue-700 px-4 hover:bg-primary cursor-pointer rounded-md py-1 sm:ml-0 ml-5 text-sm text-center items-center text-white'
+          className='bg-red-700 px-4 hover:bg-primary cursor-pointer rounded-md py-1 sm:ml-0 ml-5 text-sm text-center items-center text-white'
           whileInView={{
             backgroundColor: [
               "#121212",

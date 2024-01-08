@@ -96,14 +96,18 @@ useEffect(()=>{
 },[]);
 
   return (
-    <div className='flex flex-col gap-2 my-4'>
+    <div className='flex flex-col gap-2 my-4  text-black dark:text-white '>
       <div
-        className='  rounded overflow-hidden max-w-[440px]'
-        style={{
-          backgroundImage:
-            "linear-gradient(to bottom, #960443, #7c134d, #601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
-        }}
+        className='  rounded  max-w-[440px]  dark:bg-[#151829]  bg-[#FFFFFF] relative relative overflow-hidden'
+        
       >
+          <div
+              className='absolute z-[0] w-[80%] h-[60%] right-[40%] rounded-full  opacity-40 bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
         <div className='relative items-center mb-5   w-full'>
           {/* Cover Image */}
           <Image
@@ -149,22 +153,27 @@ useEffect(()=>{
         </div>
       </div>
       {userPortfolio&&(<div
-        className=' text-xs w-full p-2 flex gap-2 rounded max-w-[440px]'
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #960443, #7c134d, #601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
-        }}
+        className=' text-xs overflow-hidden w-full p-2 flex gap-2 rounded max-w-[440px]  text-black dark:text-white dark:bg-[#151829]  bg-[#FFFFFF] relative'
+        
       >
+       <div
+              className='absolute z-[0] w-[90%] h-[60%] right-[40%] rounded-full  opacity-40 bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            /> 
+
         <Image
           src={userPortfolio?.portfolioImg ||accountData?.avatar || blankProf }
           alt='portfolio profile'
-          className='min-w-[80px] w-[20%] h-auto rounded'
+          className='min-w-[80px] w-[20%] h-auto rounded z-10'
           priority
           width={900}
           height={400}
           sizes='(max-width:768px) 100vw,(max-width:1200px) 50vw,50vw'
         />
-        <div class=' w-[70%] flex flex-col'>
+        <div class=' w-[70%] flex flex-col z-10'>
           <h2 className='pb-1 text-lg'>{userPortfolio.name} Portfolio </h2>
           <p className='flex flex-wrap'>
             I'm happy to share that Advanced Software Engineering Virtual
@@ -176,12 +185,17 @@ useEffect(()=>{
         </div>
       </div>)}
       <div
-        className='text-[0.5rem] text-gray-300 text-xs w-full p-2 flex flex-col gap-2 rounded max-w-[440px]'
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #960443, #7c134d, #601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
-        }}
+        className='text-[0.5rem] text-xs w-full p-2 flex flex-col gap-2 rounded max-w-[440px]  text-black dark:text-white dark:bg-[#151829]  bg-[#FFFFFF] relative'
+       
       >
+        <div
+              className='absolute z-[0] w-[80%] h-[80%] right-[40%] rounded-full  opacity-30 bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
+
         <RecentIntraction />
         <hr className=' border-gray-400 self-center w-[80%]' />
         <RecentIntraction />

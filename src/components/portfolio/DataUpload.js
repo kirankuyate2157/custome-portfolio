@@ -61,7 +61,7 @@
 //     <div className="relative">
 //       <button
 //         onClick={openUploadForm}
-//         className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-700"
+//         className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-700"
 //       >
 //         Upload Data
 //       </button>
@@ -96,7 +96,7 @@
 //                 <div className="text-center">
 //                   <button
 //                     type="submit"
-//                     className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-700"
+//                     className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-700"
 //                   >
 //                     Upload
 //                   </button>

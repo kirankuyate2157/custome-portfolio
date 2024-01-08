@@ -7,6 +7,7 @@ import { BiRepost } from "react-icons/bi";
 import { TbBulbFilled } from "react-icons/tb";
 import { AiFillHeart } from "react-icons/ai";
 import { MdCelebration } from "react-icons/md";
+import {blankProf} from "./../../../public/images/profile/blankProf.png"
 import { useAccount } from "../../context/AccoundData";
 import LinesEllipsis from "react-lines-ellipsis";
 import { getUserData } from "@/services/firebaseConfig.js";
@@ -32,7 +33,7 @@ const generateDateString = () => {
 return dateString;
 };
 const Icons = [
-  { Icon: SlLike, label: "Like", color: "blue" },
+  { Icon: SlLike, label: "Like", color: "red" },
   { Icon: AiFillHeart, label: "Love", color: "red" },
   { Icon: MdCelebration, label: "Celebrate", color: "red" },
   { Icon: FaHandHoldingHeart, label: "Support", color: "green" },
@@ -52,7 +53,7 @@ const Comment = ({ data, postId }) => {
   const [react, setReact] = useState({
     label: "Like",
     icon: SlLike,
-    color: "blue",
+    color: "red",
   });
   const [update, setUpdate] = useState(false);
   const [uids, setUids] = useState(new Set(data?.reactions?.uids || []));
@@ -151,7 +152,7 @@ const Comment = ({ data, postId }) => {
       setReact({
         label: "Like",
         icon: SlLike,
-        color: "blue",
+        color: "red",
       });
       setLikeCount((prevLikeCount) => prevLikeCount - 1);
     } else if (!isLiked) {
@@ -238,7 +239,7 @@ const Comment = ({ data, postId }) => {
     const [hoveredEmoji, setHoveredEmoji] = useState(null);
 
     return (
-      <div className='absolute bottom-2 flex bg-white rounded-lg text-xl shadow-2xl p-1 z-10'>
+      <div className='absolute bottom-2 flex bg-white dark:bg-[#151829] rounded-lg text-xl shadow-2xl p-1 z-10'>
         {reactionOptions.map((option) => (
           <div
             key={option.label}
@@ -293,25 +294,30 @@ const Comment = ({ data, postId }) => {
     <div key={data?.id} className='p-4 mx-1'>
       <div className='flex flex-col text-sm'>
         <div className='flex items-start text-[9px] ml-1 md:mx-3'>
-          <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2'>
+          
+          <div className='md:w-8 sm:w-[3rem] w-12 rounded m-2 relative'>
+          <div
+              className='absolute z-[0] w-[80%] h-[60%] right-[40%] rounded-full  opacity-20 shadow shadow-b-lg bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
             <Image
-              src={
-                data?.avatar ||
-                "https://avatars.githubusercontent.com/u/84271800?v=4"
-              }
+              src={data?.avatar || blankProf}
               alt='user profile'
-              className='w-full rounded-full'
+              className='w-full rounded-full z-10'
               priority
               width={50}
               height={50}
               sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
             />
           </div>
-          <div className='mr-1 items-center w-[85%] text-gray-700'>
-            <div className='bg-slate-100 rounded-b rounded-r-lg  p-1'>
+          <div className='mr-1 z-10 items-center w-[85%] text-gray-700 dark:text-gray-400 '>
+            <div className='bg-slate-100 dark:bg-[#231e39] rounded-b rounded-r-lg  p-1'>
               <div className='flex justify-between w-full'>
                 <div className='flex justify-start gap-1 sm:text-[0.6rem] md:text-xs text-sm'>
-                  <h1 className='font-semibold text-black'>{data?.name}</h1>
+                  <h1 className='font-semibold text-black dark:text-gray-200'>{data?.name}</h1>
                   <span className="md:text-[0.5rem] text-xs">{`${data?.gender=="M"?"(He/Him)":data?.gender=="F"?"(She/Her)":""}`}</span>
                 </div>
                 <div className='flex items-center md:gap-1 gap-2 text-xs md:text-sm mr-1'>
@@ -327,7 +333,7 @@ const Comment = ({ data, postId }) => {
                 </span>
                 <span>...</span>
               </div>
-              <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] '>
+              <p className='p-2 sm:text-[0.7rem] md:text-xs text-[0.77rem] dark:text-gray-100  '>
                 <LinesEllipsis
                   text={data.text}
                   maxLine={showFullText ? 1000 : 1}
@@ -379,7 +385,7 @@ const Comment = ({ data, postId }) => {
                     </span>
                   )}
                   {reactionCounts.Support > 0 && (
-                    <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
+                    <span className='bg-red-500 border border-gray-300 rounded-full ml-[-8px]'>
                       🤝
                     </span>
                   )}
@@ -473,7 +479,7 @@ const Comments = ({ Data, postId }) => {
       <div className='flex gap-3 mx-5 py-2'>
         <div>
           <Image
-            src= {ac?.avatar || user?.photoURL}
+            src= {ac?.avatar || user?.photoURL ||blankProf }
             alt='placeholder'
             className='w-[50px]  rounded-full'
             priority
@@ -482,16 +488,16 @@ const Comments = ({ Data, postId }) => {
             sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
           />
         </div>
-        <div className='w-full flex flex-col h-auto hover:bg-gray-100 text-black p-1 rounded-2xl cursor-pointer'>
+        <div className='w-full flex flex-col h-auto hover:bg-gray-100  dark:hover:bg-[#231e39] text-black dark:text-white p-1 rounded-2xl cursor-pointer'>
           <input
-            className='w-full rounded-full items-center p-1 flex h-full sm:text-[0.6rem] md:text-xs  border-[1px] input-none focus:outline-none border-gray-300 px-5'
+            className='w-full rounded-full items-center p-1 flex h-full sm:text-[0.6rem] md:text-xs  border-[1px] input-none focus:outline-none border-gray-300 dark:border-gray-400 dark:bg-[#151829] px-5'
             placeholder='add comments..'
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
           />
           {commentInput.trim() !== "" && (
             <button
-              className='self-end bg-blue-500 text-white px-3 rounded-xl mt-2'
+              className='self-end bg-pink-500 text-white px-3 rounded-xl mt-2'
               onClick={handlePostComment}
             >
               Post

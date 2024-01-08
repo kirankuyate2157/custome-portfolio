@@ -25,7 +25,7 @@ import {
 } from "firebase/firestore";
 
 const Icons = [
-  { Icon: SlLike, label: "Like", color: "blue" },
+  { Icon: SlLike, label: "Like", color: "red" },
   { Icon: AiFillHeart, label: "Love", color: "red" },
   { Icon: MdCelebration, label: "Celebrate", color: "red" },
   { Icon: FaHandHoldingHeart, label: "Support", color: "green" },
@@ -42,7 +42,7 @@ const Post = ({data,onChanges}) => {
   const [react, setReact] = useState({
     label: "Like",
     icon: SlLike,
-    color: "blue",
+    color: "red",
   });
   const [update,setUpdate] = useState(false);
   const [uids, setUids] = useState(new Set(data?.reactions?.uids || []));
@@ -108,7 +108,7 @@ const prevReactionUpdate=()=>{
       setReact({
         label: "Like",
         icon: SlLike,
-        color: "blue",
+        color: "red",
       });
       setLikeCount((prevLikeCount) => prevLikeCount - 1);
 
@@ -167,7 +167,7 @@ const prevReactionUpdate=()=>{
     const [hoveredEmoji, setHoveredEmoji] = useState(null);
 
     return (
-      <div className='absolute bottom-2 flex bg-white rounded-lg text-xl shadow-2xl p-1 z-10'>
+      <div className='absolute bottom-2 flex bg-white dark:bg-[#151829] rounded-lg text-xl shadow-2xl p-1 z-10'>
         {reactionOptions.map((option) => (
           <div
             key={option.label}
@@ -201,7 +201,7 @@ const prevReactionUpdate=()=>{
   }) => {
     return (
       <div
-        className={`flex w-full justify-center sm:p-2 p-4 my-2  hover:bg-gray-100 cursor-pointer md:gap-1 gap-2 items-center md:text-sm text-md font-bold rounded-lg ${
+        className={`flex w-full justify-center sm:p-2 p-4 my-2  hover:bg-gray-100 dark:hover:bg-[#231e39] cursor-pointer md:gap-1 gap-2 items-center md:text-sm text-md font-bold rounded-lg ${
           isActive ? `text-red-500` : "text-gray-600"
         }`}
         onClick={onClick}
@@ -215,8 +215,16 @@ const prevReactionUpdate=()=>{
   };
 
   return (
-    <div className='max-w-[612px] min-w-[310px] text-black  m-2 rounded-lg bg-white'>
-      <div className='flex items-center  text-sm md:mx-2 mx-5'>
+    <div className='max-w-[612px] z-50 min-w-[310px]   m-2 rounded-lg   text-black dark:text-white dark:bg-[#151829]  bg-[#FFFFFF] relative'>
+      <div className='flex items-center  text-sm md:mx-2 px-5 rounded overflow-hidden relative'>
+       
+      <div
+              className='absolute z-[0] w-[80%] h-[60%] right-[40%] rounded-full  opacity-20 shadow shadow-b-lg bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
         <div className='sm:w-14 md:w-[4rem] w-16 rounded  m-2'>
           <Image
             src={data?.avatar || "https://lh3.googleusercontent.com/a/AAcHTteViK4iyFuRAycZL9F16vca-LMEqOfcEW5Z4o64JDLlDFo=s96-c"}
@@ -228,25 +236,25 @@ const prevReactionUpdate=()=>{
             sizes='(max-width:768px) 100vw,(max-width:1200px) 50vw,50vw'
           />
         </div>
-        <div className='mr-1 my-2 flex flex-col sm:w-[76%] w-[85%] text-gray-700'>
+        <div className='mr-1 my-2 flex flex-col sm:w-[76%] w-[85%] text-gray-700 dark:text-gray-300 '>
           <div className='flex justify-between items-center w-full'>
             <div className='flex justify-start items-center  gap-1 md:text-sm text-lg'>
-              <h1 className='font-semibold  text-black'>Kiran Kuyate</h1>
-              <span className="md:text-xs text-sm">{`${data?.gender=="M"?"(He/Him)":data?.gender=="F"?"(She/Her)":""}`}</span>
+              <h1 className='font-semibold'>{data?.name}</h1>
+              <span className="md:text-xs text-sm ">{`${data?.gender=="M"?"(He/Him)":data?.gender=="F"?"(She/Her)":""}`}</span>
             </div>
             <SlOptionsVertical />
           </div>
           <div className='flex items-center'>
-            <p className='flex md:text-[0.6rem] text-xs overflow-hidden whitespace-nowrap overflow-ellipsis  w-[80%] max-w-lg'>
+            <p className='flex md:text-[0.6rem] text-xs overflow-hidden whitespace-nowrap overflow-ellipsis  w-[80%] max-w-lg  dark:text-gray-400'>
              {data?.handle}  <span>...</span>
             </p>
           
           </div>
-          <h6 className='md:text-[0.6rem] text-sm'>13hr 🌏</h6>
+          <h6 className='md:text-[0.6rem] text-sm  dark:text-gray-400'>13hr 🌏</h6>
         </div>
         <div></div>
       </div>
-      <div className='sm:text-xs text-black text-sm md:mx-3 mx-5 mb-3'>
+      <div className='sm:text-xs  text-sm md:mx-3 mx-5 mb-3'>
         <LinesEllipsis
           text={data?.text}
           maxLine={showFullText ? 1000 : 3}
@@ -287,7 +295,7 @@ const prevReactionUpdate=()=>{
                 </span>
               )}
               {reactionCounts.Support > 0 && (
-                <span className='bg-blue-500 border border-gray-300 rounded-full ml-[-8px]'>
+                <span className='bg-red-500 border border-gray-300 rounded-full ml-[-8px]'>
                   🤝
                 </span>
               )}
@@ -308,7 +316,8 @@ const prevReactionUpdate=()=>{
             <h6> 3 comments • 2 reposts </h6>
           </div>
         </div>
-        <hr className='mt-1' />
+        {/* <hr className='mt-1' /> */}
+        <hr className=' border-gray-400  mt-1 self-center' />
         <div className='flex w-full mb-2 overflow-hidden '>
           <Reaction
             Icons={react.icon}

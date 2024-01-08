@@ -127,28 +127,21 @@ const ProfileInfo = () => {
       }
     }
   };
-  const fetchUserPosts = async (userId) => {
+  const fetchPostData = async () => {
     const db = getFirestore();
-    const postsRef = collection(db, "posts");
-    if (user && user.uid) {
-      try {
-        const postDataSnapshot = await getDocs(postsRef);
-
-        if (!postDataSnapshot.empty) {
-          const userPostsData = postDataSnapshot.docs
-            .map((doc) => doc.data())
-            .filter((post) => post.uid === user.uid);
-
-          console.log("User's posts:", userPostsData);
-          setPosts([...userPostsData])
-          // Set state or perform other actions with user's posts data
-        } else {
-          console.log("No posts found.");
-          // Handle case where there are no posts
-        }
-      } catch (error) {
-        console.error("Error fetching posts: ", error);
+    const postsRef = collection(db, "posts"); // Use collection() to reference a collection
+    // console.log("fetching post 📍📍🔥 ..");
+    try {
+      const postDataSnapshot = await getDocs(postsRef);
+      // console.log(" 📍📍🔥 ..");
+      if (!postDataSnapshot.empty) {
+        const newPostData = postDataSnapshot.docs.map((doc) => doc.data()).filter((post) => post.uid===user.uid );
+        setPosts([...newPostData]);
+        // console.log("🔥 ..");
+        // console.log("new data :", newPostData);
       }
+    } catch (error) {
+      console.error("Error fetching posts: ", error);
     }
   };
 
@@ -175,8 +168,9 @@ const ProfileInfo = () => {
         console.log("set  data")
         setDummyAccountData();
         await fetchAccountData();
-        if(!posts){
-          fetchUserPosts();
+        if(posts.length<=0){
+        await fetchPostData();
+        console.log(posts)
         }
       }
     }
@@ -186,15 +180,19 @@ const ProfileInfo = () => {
 
   return (
     <div>
-      <div className='max-w-[612px] min-w-[360px] text-white my-4 m-2 rounded-lg '>
+      <div className='max-w-[612px] min-w-[360px] text-black dark:text-white my-4 m-2 rounded-lg '>
         <div className='flex items-center  flex-col  text-sm '>
           <div
-            className='rounded w-full overflow-hidden '
-            style={{
-              backgroundImage:
-                "linear-gradient(to bottom, #960443, #7c134d, #601d50, #601d50,#44214b,#44214b,#601d50,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a )",
-            }}
+            className='rounded w-full overflow-hidden relative 
+            text-black dark:text-white dark:bg-[#151829]  bg-[#FFFFFF] '
           >
+            <div
+              className='absolute z-[0] w-[70%] h-[60%] right-[40%] rounded-full opacity-60 bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
             <div className='relative items-center mb-5   w-full'>
               {/* Cover Image */}
               <Image
@@ -227,15 +225,18 @@ const ProfileInfo = () => {
             </div>
           </div>
           <div
-            className='w-full mt-2 rounded-md px-4'
-            style={{
-              backgroundImage:
-                "linear-gradient(to right ,#44214b ,#601d50,#601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
-            }}
+            className='w-full mt-2 rounded-md px-4 overflow-hidden text-black dark:text-white dark:bg-[#151829]  bg-[#FFFFFF] relative  '
           >
+             <div
+              className='absolute z-[0] w-[80%] h-[60%] right-[40%] rounded-full  opacity-40 bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
             <div className='flex flex-col justify-start py-4'>
               <h1 className='font-bold'>About</h1>
-              <div className='text-xs rounded p-2 border border-[#2c2040]'>
+              <div className='text-xs rounded p-2 border border-gray-300 dark:border-[#2c2040]'>
                 <LinesEllipsis
                   text={accountData?.about}
                   maxLine={showFullText ? 1000 : 3}
@@ -246,7 +247,7 @@ const ProfileInfo = () => {
                 />
               </div>
             </div>
-            <hr className='border-gray-500 py-2' />
+            <hr className='border-gray-400 dark:border-gray-500 py-2' />
             <div className='flex flex-col '>
               <h1 className='font-bold'>Contact</h1>
               <div className='flex flex-col gap-2 py-2 text-xs px-2'>
@@ -266,7 +267,7 @@ const ProfileInfo = () => {
                 </div>
               </div>
             </div>
-            <hr className='border-gray-500 py-2' />
+            <hr className='border-gray-400 dark:border-gray-500 py-2' />
 
             <div className='flex flex-col'>
               <div className='flex gap-2 py-2 justify-between'>
@@ -280,18 +281,24 @@ const ProfileInfo = () => {
             </div>
           </div>
           <div
-            className='w-full mt-2 rounded-md py-2 sm:px-0 px-4'
-            style={{
-              backgroundImage:
-                "linear-gradient(to right ,#44214b ,#601d50,#601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
-            }}
+            className='w-full mt-2 rounded-md py-2 sm:px-0 px-4 text-black dark:text-white dark:bg-[#151829] relative overflow-hidden bg-[#FFFFFF] '
+         
           >
-            <div className='flex flex-col justify-start py-4 '>
+              <div
+              className='absolute z-[0] w-[80%] h-[90%] right-[40%] rounded-full  opacity-40 top-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 20%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
+            <div className="flex flex-col z-[10]">
+            <div className='flex flex-col justify-start py-4 z-10 '>
               <h1 className='font-bold px-4'>Posts</h1>
             </div>
             {posts && posts.length > 0 && (
               posts.map((data, index) => <Post key={index} data={...data} />
                     ))}
+          </div>
           </div>
         </div>
       </div>

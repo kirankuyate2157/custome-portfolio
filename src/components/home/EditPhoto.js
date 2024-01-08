@@ -20,7 +20,7 @@ const EditPhoto = ({ onClose, onFileSelect, fileType }) => {
       <h1 className='px-3'>Select {fileType}</h1>
       <hr className='mt-2 text-black' />
       <label
-        className={`flex text-blue-500 font-bold justify-center items-center ${
+        className={`flex text-red-500 font-bold justify-center items-center ${
           selectedFile ? "" : "py-10"
         } hover:bg-gray-200 cursor-pointer bg-slate-100`}
       >
@@ -77,7 +77,7 @@ const EditPhoto = ({ onClose, onFileSelect, fileType }) => {
       <hr className='mb-2 text-black' />
       <div className='flex justify-end items-center gap-3 m-2'>
         <button
-          className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
+          className='px-4 py-1 bg-red-400 rounded-2xl hover:bg-red-500 items-center'
           onClick={onClose}
         >
           Back
@@ -85,7 +85,7 @@ const EditPhoto = ({ onClose, onFileSelect, fileType }) => {
         <button
           className={`px-4 py-1 rounded-2xl items-center ${
             selectedFile
-              ? "bg-blue-400 hover:bg-blue-500"
+              ? "bg-red-400 hover:bg-red-500"
               : "bg-gray-200 hover:shadow-xl pointer-events-none"
           }`}
           onClick={handleDone}

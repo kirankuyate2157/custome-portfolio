@@ -251,13 +251,12 @@ const WritePost = () => {
 
   //  --------------------  Data Updating ----------------------------
   const postData = () => {
-    console.log("article text : ", articleText);
-    console.log("file name : ", fileName);
-    console.log("file type : ", fileType);
+    // console.log("article text : ", articleText);
+    // console.log("file name : ", fileName);
+    // console.log("file type : ", fileType);
     if (user && user.uid) {
-      console.log("pushing data .. ok..");
       handleImgUpload().then(() => {
-        console.log("file upload finished not posting..");
+        // console.log("file upload finished not posting..");
         setUpdate(true);
       });
     }
@@ -629,7 +628,7 @@ const WritePost = () => {
           <hr className='mt-2 text-black' />
           <div className='flex justify-between items-center gap-3 my-2'>
           <button
-              className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
+              className='px-4 py-1 bg-pink-400 rounded-2xl hover:bg-pink-500 items-center'
               onClick={() => router.push("/k")}
             >
               Back
@@ -637,7 +636,7 @@ const WritePost = () => {
           <div className='flex justify-end items-center gap-3'>
             <BiTime className='text-2xl text-gray-400' />
             <button
-              className='px-4 py-1 bg-blue-400 rounded-2xl hover:bg-blue-500 items-center'
+              className='px-4 py-1 bg-pink-400 rounded-2xl hover:bg-pink-500 items-center'
               onClick={() => postData()}
             >
               Post

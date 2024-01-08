@@ -6,18 +6,22 @@ import StartPortfolio from "./StartPortfolio";
 const Preview=()=>{
   return <>
     <div
-        className=' text-xs w-full p-2 flex gap-2 rounded'
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #960443, #7c134d, #601d50, #601d50,#44214b,#44214b, #2c2040, #231e39, #1c1c32, #16192a, #16192a, #161829, #151829)",
-        }}
+        className=' text-xs w-full p-2 flex gap-2 rounded overflow-hidden  text-black dark:text-gray-100 bg-white dark:bg-[#151829] border dark:border-[#231e39] relative'
+       
       >
+        <div
+              className='absolute z-[0] w-[80%] h-[80%] right-[40%] rounded-full  opacity-30 bottom-4'
+              style={{
+                background: "linear-gradient(90deg, #6A15DA 40%, #960443 100%)",
+                filter: "blur(900px)",
+              }}
+            />
         <img
           src='https://avatars.githubusercontent.com/u/84271800?v=4'
           alt='user profile'
-          className='min-w-[80px] w-[20%] h-auto rounded'
+          className='min-w-[80px] w-[20%] h-auto rounded z-10'
         />
-        <div class=' w-[70%] gap-2 flex flex-col'>
+        <div class=' w-[70%] gap-2 flex flex-col z-10'>
           <h2 className='pb-1 text-lg'>Kiran Kuyate </h2>
           <p className='flex flex-wrap'>
           <LinesEllipsis
@@ -29,7 +33,7 @@ const Preview=()=>{
         />
           </p>
           <div className='py-1 flex gap-2 justify-start items-center'>
-            <button className="flex  gap-2 p-1 border border-pink-200 rounded items-center">
+            <button className="flex  gap-2 p-1 border border-pink-600 dark:border-pink-200  rounded items-center">
             visit <FaChevronRight className='animate-pulse text-pink-200' />
             </button>
           </div>

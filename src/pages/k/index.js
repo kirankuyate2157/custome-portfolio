@@ -63,8 +63,9 @@ const Home = () => {
 
       if (!postDataSnapshot.empty) {
         const newPostData = postDataSnapshot.docs.map((doc) => doc.data());
+        newPostData.reverse();
         setPosts([...newPostData]);
-        console.log("new data :", newPostData);
+        // console.log("new data :", newPostData);
       }
     } catch (error) {
       console.error("Error fetching posts: ", error);
@@ -85,7 +86,6 @@ const Home = () => {
     def();
   }, [refresh]);
 
-  console.log(JSON.stringify(posts[0]));
   return (
     <>
       <Head>
@@ -95,8 +95,7 @@ const Home = () => {
       </Head>
       <AccountDataProvider data={accountData} className='min-h-screen w-full' style={{ fontFamily: "Quicksand" }}>
         <NavbarHome currentTab={(tab) => handleTabClick(tab)} />
-        <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '>
-          <button onClick={() => setRefresh(!refresh)}>refresh</button>
+        <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '> 
           <div
             className='md:hidden max-w-[612px] min-w-[310px]   overflow-y-auto'
             style={{ height: "100vh" }}
@@ -115,7 +114,7 @@ const Home = () => {
                   {posts && posts.length > 0 ? (
                     posts.map((data,index) => <Post key={index}  data={...data} onChanges={()=>updateData()} />)
                   ) : (
-                    <p className='flex self-center'>No posts available</p>
+                    <p className='flex self-center'>Loading...</p>
                   )}
                 </>
               )}
