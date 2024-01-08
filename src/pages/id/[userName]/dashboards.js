@@ -14,7 +14,7 @@ import {
   getCurrentUserId,
 } from "@/services/firebaseConfig.js"; // Replace with your Firebase configuration import
 import { useRouter } from "next/router";
-import { getUserPortfolioData } from "@/services/dataCRUD.js";
+import { getUserPortfolioData } from "./../../../services/dataCRUD.js";
 import { DashboardDataProvider } from "@/context/DashboardDataProvider.js";
 import EditProfile from "../../../components/portfolio/EditProfile";
 
