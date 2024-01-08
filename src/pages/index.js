@@ -11,8 +11,8 @@ import { FaChevronCircleRight } from "react-icons/fa";
 import { MdOutlineWifiCalling } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { SiSpinrilla } from "react-icons/si";
-import Navbar from "./../components/main/Navbar";
-import Carousal from "./../components/main/ScrollBar";
+import Navbar from "@/components/main/Navbar.js";
+import Carousal from "@/components/main/ScrollBar.js";
 
 const sendMail = (toMail, data) => {
   const greeting = "Dear Kiran K. ";
