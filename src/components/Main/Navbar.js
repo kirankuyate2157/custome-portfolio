@@ -25,7 +25,7 @@ const Navbar = () => {
 
   const handleTabClick = (tab) => {
     // Handle tab click logic here
-    console.log(`Clicked on tab: ${tab}`);
+    // console.log(`Clicked on tab: ${tab}`);
     closeDropdown();
   };
 
