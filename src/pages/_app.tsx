@@ -11,8 +11,7 @@ import KiranPortfolioData from "@/assets/portfolioData";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "framer-motion";
 import Notification from "@/components/portfolio/Notification";
-// import { getUserPortfolioData } from "@/services/dataCRUD.js";
-// import { getCurrentUserId } from "@/services/firebaseConfig.js";
+
 import {
   getFirestore,
   collection,
