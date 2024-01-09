@@ -62,7 +62,7 @@ const NavbarHome = ({ currentTab }) => {
     handleTabClick2();
   }, [tabs]);
 
-  const tabM = ["Home", "Portfolio", "Gen AI", "Contact","Profile"];
+  const tabM = ["Home", "Portfolio", "GenAI", "Contact","Profile"];
 
   return (
     <div className='w-full  min-w-[280px]  sm:px-0 px-10 pt-2 sm:pt-0'>

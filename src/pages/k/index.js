@@ -23,6 +23,7 @@ import {
   arrayUnion,
   serverTimestamp,
 } from "firebase/firestore";
+import Ai from "../../components/home/Ai";
 
 const Home = () => {
   const [tabs, setTabs] = useState("Home");
@@ -30,15 +31,15 @@ const Home = () => {
   const [accountData, setAccountData] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
-  const user=getUserData();
+  const user = getUserData();
   const handleTabClick = (tab) => {
     setTabs(tab);
   };
   const fetchAccountData = async () => {
     const db = getFirestore();
-    if (user&&user.uid) {
+    if (user && user.uid) {
       const accountRef = doc(db, "accounts", user.uid);
-        console.log("fetching  data ..");
+      console.log("fetching  data ..");
       try {
         const accountDataSnapshot = await getDoc(accountRef);
 
@@ -71,7 +72,7 @@ const Home = () => {
       console.error("Error fetching posts: ", error);
     }
   };
-  const updateData=()=>{
+  const updateData = () => {
     setRefresh(!refresh);
   }
 
@@ -79,7 +80,7 @@ const Home = () => {
     const def = async () => {
       await fetchPostData();
       console.log("posts data :", posts);
-      if(!accountData){
+      if (!accountData) {
         await fetchAccountData();
       }
     };
@@ -95,7 +96,7 @@ const Home = () => {
       </Head>
       <AccountDataProvider data={accountData} className='min-h-screen w-full' style={{ fontFamily: "Quicksand" }}>
         <NavbarHome currentTab={(tab) => handleTabClick(tab)} />
-        <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '> 
+        <div className='sm:p-0 px-10  flex flex-row justify-start gap-2 '>
           <div
             className='md:hidden max-w-[612px] min-w-[310px]   overflow-y-auto'
             style={{ height: "100vh" }}
@@ -112,13 +113,13 @@ const Home = () => {
                   <StartPost />
 
                   {posts && posts.length > 0 ? (
-                    posts.map((data,index) => <Post key={index}  data={{...data}} onChanges={()=>updateData()} />)
+                    posts.map((data, index) => <Post key={index} data={{ ...data }} onChanges={() => updateData()} />)
                   ) : (
                     <p className='flex self-center'>{`Loading...`}</p>
                   )}
                 </>
               )}
-
+              {tabs == "GenAI" && <Ai />}
               {tabs == "Portfolio" && <PortfolioLists />}
               {tabs == "Profile" && <ProfileInfo />}
             </div>
