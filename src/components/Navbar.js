@@ -7,8 +7,8 @@ import { FaLinesLeaning } from "react-icons/fa6";
 import { PiDotsNineDuotone } from "react-icons/pi";
 import { CiMail } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
-import { MoonIcon, SunIcon } from "../portfolio/icons";
-import useThemeSwitcher from "../hooks/useThemeSwitcher";
+import { MoonIcon, SunIcon } from "./portfolio/icons";
+import useThemeSwitcher from "./hooks/useThemeSwitcher";
 
 
 const Navbar = () => {

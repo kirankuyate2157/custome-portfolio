@@ -1,8 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { FaQuoteLeft } from "react-icons/fa6";
-
-import quotes from "../../../public/images/svgs/quotes.svg";
 const FeedbackCard = ({ ans, question }) => {
   return (
     <>
