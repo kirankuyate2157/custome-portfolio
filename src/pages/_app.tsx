@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { useState, useEffect } from "react";
+import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
 import Script from "next/script";
 import type { AppProps } from "next/app";
@@ -242,6 +243,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <HomeDataProvider data={PortfolioData}>
           <AnimatePresence mode='wait'>
             <Component key={router.asPath} {...pageProps} />
+            <Analytics />
           </AnimatePresence>
           <Footer />
         </HomeDataProvider>
