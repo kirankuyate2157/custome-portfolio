@@ -207,15 +207,15 @@ const WritePost = () => {
           nanoseconds: 0,
         },
         name: user?.displayName,
-        handle: ac?.handle,
-        avatar: user?.photoURL,
+        handle: ac?.handle || "new",
+        avatar: user?.photoURL || "",
         uid: user?.uid,
         comments: [
           {
             id: nanoid(),
             uid: user?.uid,
             name: user?.displayName,
-            handle: ac?.handle,
+            handle: ac?.handle || "new",
             gender: "",
             time: {
               seconds: getCurrentTimestampInSeconds(),
@@ -230,7 +230,7 @@ const WritePost = () => {
               uids: [],
             },
             text: "look into my post 📍😁",
-            avatar: ac?.avatar,
+            avatar: ac?.avatar || user?.photoURL,
           },
         ],
         fileType: "Image",
@@ -241,7 +241,6 @@ const WritePost = () => {
       const accountRef = doc(db, "posts", docId);
       await setDoc(accountRef, newData);
       console.log(" Post created successfully .✔️");
-      setUploading(false);
       router.push("/k");
     } else {
       console.log("auth user id not found till now..");
