@@ -27,12 +27,12 @@ const Media = ({ Icons, title, colors = "red", onClick }) => {
 };
 
 const StartPortfolio = () => {
-  const [documentType, setDocumentType] = useState("");
-  const router = useRouter()
-  const handleDocumentClick = (type) => {
-    setDocumentType(type);
-    router.push(`/id/demo`); // Use route parameters format
-  };
+  // const [documentType, setDocumentType] = useState("");
+  // const router = useRouter()
+  // const handleDocumentClick = (type) => {
+  //   setDocumentType(type);
+  //   router.push(`/id/demo/dashboards`); // Use route parameters format
+  // };
   const ac=useAccount();
 
   return (
@@ -54,7 +54,7 @@ const StartPortfolio = () => {
             />
           </div>
           <Link
-            href='/id/demo'
+            href='/id/demo/dashboards'
             className='w-full h-auto  hover:bg-gray-200 dark:hover:bg-[#231e39] p-1 rounded-full cursor-pointer'
           >
             <h5 className='w-full rounded-full items-center flex h-full text-lg border-[1px] input-none focus:outline-none border-gray-500 px-5'>

@@ -238,10 +238,10 @@ const ProfileDropdown = ({ profile }) => {
               <p className='text-black dark:text-gray-300'>{profile.email}</p>
             </div>
             <div className='mb-2'>
-              <h4 className='font-semibold'>portfolio URL</h4>
-              <p className='text-black dark:text-gray-300'>
-                {profile.profileLink}
-              </p>
+              <h4 className='font-semibold'>Your portfolio URL</h4>
+              <a href={profile?.profileLink} className=' sm:text-[0.6rem] text-sm text-indigo-500'>
+                {profile?.profileLink}
+              </a>
             </div>
             <div className='hidden sm:flex flex-col'>
               <h4 className='font-semibold'>portfolio Image</h4>
@@ -299,6 +299,11 @@ const ProfileDropdown = ({ profile }) => {
             </a>
           </div>
         </motion.div>
+      )}
+      {(!profile||!profile.email)&&(
+        <div className="flex flex-col justify-center">
+          <p>please refresh to see your data !</p>
+        </div>
       )}
     </AnimatePresence>
   );

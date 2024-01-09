@@ -4,6 +4,7 @@ import EditProject from "@/components/portfolio/EditProjects.js";
 import EditAbout from "@/components/portfolio/EditAbout.js";
 // import EditSkills from '../components/portfolio/EditSkills';
 import EditHome from "@/components/portfolio/EditHome.js";
+import Guid from "@/components/portfolio/Guid.js";
 import EditArticles from "@/components/portfolio/EditArticles.js";
 import EditSocial from "@/components/portfolio/EditSocial.js";
 import { addDataToFirebase } from "@/services/useFirebase.js";
@@ -70,12 +71,23 @@ const Dashboard = () => {
         {!isdata && (
           <div className='flex flex-col justify-start items-center w-full my-10'>
             <p>Loading Data ...</p>
-            <p>In case it not load within 10 sec please refresh..</p>
+            <p className="px-2">In case it not load within 10 sec please refresh..</p>
           </div>
         )}
         {isdata && (
           <>
+          <Guid/>
             <EditProfile />
+            <div className="px-5 text-sm  text-black  dark:text-white my-4 font-mono flex flex-col items-start w-full relative ">
+            <div
+                  className='absolute z-[1] w-[90%]  h-[60%]   rounded-full opacity-80 '
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 60%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
+              <p className="pl-2 py-2 border-l-4 border-red-600">Now edit Data as per the Your personal data and that will be appear to yor portfolio at all..💖</p></div>
             <EditSocial />
             <EditHome />
             <EditAbout />
