@@ -31,6 +31,35 @@ const Icons = [
   { Icon: FaHandHoldingHeart, label: "Support", color: "green" },
   { Icon: TbBulbFilled, label: "Insightful", color: "yellow" },
 ];
+
+const formatTimeDifference = (commentTime) => {
+  const currentTime = new Date();
+  const commentTimeObj = new Date(commentTime); // Convert Firebase Timestamp to JavaScript Date object
+
+  const timeDifference = currentTime - commentTimeObj;
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(months / 12);
+
+  if (years > 0) {
+    return `${years} ${years === 1 ? "year" : "years"}`;
+  } else if (months > 0) {
+    return `${months} ${months === 1 ? "month" : "months"}`;
+  } else if (days > 0) {
+    return `${days} ${days === 1 ? "day" : "days"}`;
+  } else if (hours > 0) {
+    return `${hours} hr`;
+  } else if (minutes > 0) {
+    return `${minutes} min`;
+  } else {
+    return `just now `;
+  }
+};
+
+
 const Post = ({data,onChanges}) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
@@ -250,7 +279,7 @@ const prevReactionUpdate=()=>{
             </p>
           
           </div>
-          <h6 className='md:text-[0.6rem] text-sm  dark:text-gray-400'>13hr 🌏</h6>
+          <h6 className='md:text-[0.6rem] text-sm  dark:text-gray-400'>{formatTimeDifference(data?.Time)}🌏</h6>
         </div>
         <div></div>
       </div>

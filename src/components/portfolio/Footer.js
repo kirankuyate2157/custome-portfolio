@@ -3,8 +3,16 @@ import Layout from "./Layout";
 import Link from "next/link";
 const Footer = () => {
   return (
-    <footer className='w-full border-t-2  text-dark dark:text-light border-solid border-dark dark:border-light font-medium text-lg md:text-base'>
+    <footer className='w-full border-t-2  text-dark dark:text-light border-solid border-dark dark:border-light font-medium text-lg md:text-base overflow-hidden relative'>
       <Layout className='py-8 flex items-center justify-between text-sm md:flex-col lg:py-6'>
+      <div
+                  className='absolute z-[1] w-[80%] h-[60%] right-[40%] rounded-full opacity-70 '
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #601d50 40%, #960443 100%)",
+                    filter: "blur(900px)",
+                  }}
+                />
         <span>{new Date().getFullYear()} &copy; All Rights Reserved.</span>
         <div className=' flex items-center lg:py-2'>
           Devloped by &nbsp;

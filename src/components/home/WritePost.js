@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { nanoid } from "nanoid";
 import EditPhoto from "./EditPhoto";
 import Picker from "emoji-picker-react";
@@ -12,6 +13,8 @@ import { FaCertificate } from "react-icons/fa";
 import { MdWork, MdEdit, MdDone } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
 import { uploadFile, getUserData } from "@/services/firebaseConfig.js";
+import blankProf from "./../../../public/images/profile/blankProf.png"
+import { useAccount } from "../../context/AccoundData";
 import {
   getFirestore,
   collection,
@@ -76,12 +79,13 @@ const WritePost = () => {
 
   const [fileUrl, setFileUrl] = useState("");
   const [uploadError, setUploadError] = useState(null);
+  const [ uploading,setUploading]=useState(false);
   const [post, setPost] = useState(null);
   const [update, setUpdate] = useState(false);
 
   const user = getUserData();
   const db = getFirestore();
-
+  const ac=useAccount();
   const Data = {
     name: "Kiran Kuyate",
     reactions: {
@@ -183,6 +187,7 @@ const WritePost = () => {
   };
 
   const setPostData = async () => {
+    
     if (user) {
 
       const docId = nanoid();
@@ -202,7 +207,7 @@ const WritePost = () => {
           nanoseconds: 0,
         },
         name: user?.displayName,
-        handle: "account handle",
+        handle: ac?.handle,
         avatar: user?.photoURL,
         uid: user?.uid,
         comments: [
@@ -210,8 +215,8 @@ const WritePost = () => {
             id: nanoid(),
             uid: user?.uid,
             name: user?.displayName,
-            handle: "data scientist | 100k on youtube ",
-            gender: true,
+            handle: ac?.handle,
+            gender: M,
             time: {
               seconds: getCurrentTimestampInSeconds(),
               nanoseconds: 0,
@@ -224,8 +229,8 @@ const WritePost = () => {
               Support: 0,
               uids: [],
             },
-            text: "great share  🔥🙌🏻🙌🏻",
-            avatar: "https://avatars.githubusercontent.com/u/84271800?v=4",
+            text: "look into my post 📍😁",
+            avatar: ac?.avatar,
           },
         ],
         fileType: "Image",
@@ -236,6 +241,7 @@ const WritePost = () => {
       const accountRef = doc(db, "posts", docId);
       await setDoc(accountRef, newData);
       console.log(" Post created successfully .✔️");
+      setUploading(false);
       router.push("/k");
     } else {
       console.log("auth user id not found till now..");
@@ -254,7 +260,9 @@ const WritePost = () => {
     // console.log("article text : ", articleText);
     // console.log("file name : ", fileName);
     // console.log("file type : ", fileType);
+    
     if (user && user.uid) {
+      setUploading(true);
       handleImgUpload().then(() => {
         // console.log("file upload finished not posting..");
         setUpdate(true);
@@ -349,11 +357,16 @@ const WritePost = () => {
           <div className='flex gap-1 justify-start items-center'>
             <div className='flex items-center hover:bg-gray-100 rounded-lg p-1 gap-2'>
               <div className='p-1'>
-                <img
-                  src='https://avatars.githubusercontent.com/u/84271800?v=4'
-                  alt='placeholder'
-                  className='w-[50px] md:w-[40px] rounded-full' // Adjust the image size for mobile and larger screens
-                />
+                <Image
+              src={ac?.avatar || blankProf }
+              alt='user'
+              className='w-[50px] md:w-[40px] rounded-full'
+              priority
+              width={50}
+              height={50}
+              sizes='(max-width:768px) 100vw,(max-width:1200px) 70vw,50vw'
+           
+            />
               </div>
               <div
                 className='flex flex-col'
@@ -638,8 +651,9 @@ const WritePost = () => {
             <button
               className='px-4 py-1 bg-pink-400 rounded-2xl hover:bg-pink-500 items-center'
               onClick={() => postData()}
+              disabled={uploading}
             >
-              Post
+               {uploading ? 'Posting...' : 'Post'}
             </button>
           </div></div>
         </div>

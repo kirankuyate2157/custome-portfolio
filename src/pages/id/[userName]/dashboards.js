@@ -68,7 +68,10 @@ const Dashboard = () => {
       <Navbar/>
       <div className='mb-20  w-full min-h-[70vh] '>
         {!isdata && (
-          <div className='flex justify-center my-10'>Loading Data ...</div>
+          <div className='flex flex-col justify-start items-center w-full my-10'>
+            <p>Loading Data ...</p>
+            <p>In case it not load within 10 sec please refresh..</p>
+          </div>
         )}
         {isdata && (
           <>

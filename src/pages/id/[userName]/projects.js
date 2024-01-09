@@ -121,7 +121,7 @@ const projects = () => {
   return (
     <>
       <Head>
-        <title>Kiran Kuyate | Projects | kiran.dev</title>
+        <title>Projects | kiran.dev</title>
         <meta name='description' content='my description' />
       </Head>
       <main>

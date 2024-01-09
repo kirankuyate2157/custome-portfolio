@@ -50,7 +50,7 @@ const About = () => {
   return (
     <>
       <Head>
-        <title>Kiran | About Page | kiran.dev </title>
+        <title>About Page | kiran.dev </title>
         <meta name='description' content='any description' />
       </Head>
       <main>

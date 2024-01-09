@@ -13,6 +13,9 @@ import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { SiSpinrilla } from "react-icons/si";
 import Navbar from "@/components/Navbar";
 import Carousal from "@/components/Carousal";
+import { useRouter } from "next/router";
+
+
 
 const sendMail = (toMail, data) => {
   const greeting = "Dear Kiran K. ";
@@ -144,6 +147,7 @@ export default function Hero() {
     message: "",
   });
 
+  const router=useRouter();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -175,7 +179,7 @@ export default function Hero() {
   return (
     <>
       <Head>
-        <title> Kways | kiran2157.dev</title>
+        <title> Kways </title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
@@ -221,7 +225,9 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className=' w-full my-10  flex justify-center'>
-                  <button className='bg-[#151829] border border-1 z-20 hover:bg-[#2c2040] text-primary border-gray-400 p-2 px-5 rounded-xl flex  items-center gap-5'>
+                  <button className='bg-[#151829] border border-1 z-20 hover:bg-[#2c2040] text-primary border-gray-400 p-2 px-5 rounded-xl flex  items-center gap-5'
+                  
+                  onClick={()=>router.push("/k")}>
                     Explore Now
                     <FaChevronCircleRight className='animate-pulse' />
                   </button>
@@ -290,6 +296,7 @@ export default function Hero() {
                 <button
                   type='button'
                   className=' flex items-center gap-2 text-md hover:bg-pink-400 bg-transparent border border-gray-100 text-red-600 hover:text-black hover:ease-in hover:duration-300 p-2 px-4 my-5 rounded-lg text-poppins text-normal'
+                onClick={()=>router.push("/k")}
                 >
                   Get Started <FaChevronCircleRight className='animate-pulse' />
                 </button>
@@ -353,7 +360,7 @@ export default function Hero() {
                 <button
                   type='button'
                   className=' flex items-center gap-3 text-md hover:bg-pink-400 bg-transparent border border-gray-100 text-red-600 hover:text-black hover:ease-in hover:duration-300 p-2 px-4 my-5 rounded-lg text-poppins text-normal'
-                >
+              >
                   Comming Soon.. <SiSpinrilla className='animate-spin' />
                 </button>
               </div>
@@ -381,6 +388,7 @@ export default function Hero() {
                 <button
                   type='button'
                   className=' flex items-center gap-2 text-md hover:bg-pink-400 bg-transparent border border-gray-100 text-red-600 hover:text-black hover:ease-in hover:duration-300 p-2 px-4 my-5 rounded-lg text-poppins text-normal'
+                  onClick={()=>router.push("/k")}
                 >
                   Get Started <FaChevronCircleRight className='animate-pulse' />
                 </button>
@@ -474,8 +482,9 @@ export default function Hero() {
                 <button
                   type='button'
                   className=' flex items-center gap-2 text-md hover:bg-pink-400 bg-transparent border border-gray-100 text-red-600 hover:text-black hover:ease-in hover:duration-300 p-2 px-4 my-5 rounded-lg text-poppins text-normal'
+                  onClick={()=>router.push("/k")}
                 >
-                  Got to Careers{" "}
+                  Got to Careers
                   <FaChevronCircleRight className='animate-pulse' />
                 </button>
               </div>

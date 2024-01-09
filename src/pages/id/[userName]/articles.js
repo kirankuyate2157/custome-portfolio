@@ -110,7 +110,7 @@ const articles = () => {
   return (
     <>
       <Head>
-        <title>kiran kuyate | Article | kiran.dev</title>
+        <title>Article | kiran.dev</title>
         <meta name='description' content='any description..' />
       </Head>
 

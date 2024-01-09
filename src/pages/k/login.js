@@ -63,7 +63,7 @@ export default function Login() {
   return (
     <>
     <Head>
-    <title> portfolio | kiran.dev</title>
+    <title> Kways</title>
     <meta name='viewport' content='width=device-width, initial-scale=1' />
     <link rel='icon' href='/favicon.ico' />
   </Head>
@@ -96,6 +96,7 @@ export default function Login() {
 
             <form className='flex flex-col gap-3'>
               <div className=' w-full flex flex-col gap-2'>
+                
                 <input
                   type='text'
                   id='email'
@@ -132,6 +133,8 @@ export default function Login() {
                 <FcGoogle className='bg-transparent' />
                 Login With Google
               </button>
+              <p className='py-2 justify-center   bg-bcc-500 text-white rounded-xl flex items-center gap-2 w-full border border-bcc-500  hover:bg-bcc-700'
+        >please use google auth email,password disabled for testing purposes</p>
             </form>
           </div>
         </div>
