@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
+import { collection, onSnapshot, query, where, doc, getDoc, getDocs, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -110,6 +110,117 @@ const GoogleAuth = () => {
   return signInWithPopup(auth, provider);
 };
 
+// -------------------- updation of data ------------------------------------
+
+
+// Function to listen for real-time updates of user portfolio data
+const listenToUserPortfolioData = (userId, onDataReceived) => {
+  const userPortfolioRef = collection(db, "User_portfolio_data");
+  const query = userPortfolioRef.where("userId", "==", userId);
+
+  const unsubscribe = onSnapshot(query, (querySnapshot) => {
+      const portfolioData = [];
+      querySnapshot.forEach((doc) => {
+          portfolioData.push({ id: doc.id, ...doc.data() });
+      });
+
+      onDataReceived(portfolioData);
+  });
+
+  return unsubscribe;
+};
+
+// Function to get user portfolio data
+const getUserPortfolioData = async (userId) => {
+  try {
+      const querySnapshot = await getDocs(collection(db, 'User_portfolio_data'));
+      let userData = null;
+
+      querySnapshot.forEach((doc) => {
+          if (doc.id === userId) {
+              userData = doc.data();
+          }
+      });
+
+      return userData;
+  } catch (error) {
+      console.error("Error getting user portfolio data:", error);
+      return null;
+  }
+};
+
+// Function to update user portfolio data
+const updatePortfolioData = async (userId, updatedData) => {
+  const userPortfolioRef = collection(db, 'User_portfolio_data');
+  const query = userPortfolioRef.where('userId', '==', userId);
+
+  try {
+      const querySnapshot = await getDocs(query);
+      if (!querySnapshot.empty) {
+          // Assuming there's only one matching document per user
+          const docSnapshot = querySnapshot.docs[0];
+          const docRef = doc(userPortfolioRef, docSnapshot.id);
+          await updateDoc(docRef, updatedData);
+          console.log('User portfolio data updated successfully');
+          return true;
+      }
+      return false; // No matching user found
+  } catch (error) {
+      console.error('Error updating user portfolio data:', error);
+      return false;
+  }
+};
+
+// Function to add a new user portfolio data
+const addNewPortfolioData = async (userId, newUserData) => {
+  const userPortfolioRef = collection(db, 'User_portfolio_data');
+  try {
+      const docRef = await addDoc(userPortfolioRef, {
+          userId,
+          ...newUserData,
+      });
+      console.log('User portfolio data added successfully with ID: ', docRef.id);
+      return docRef.id;
+  } catch (error) {
+      console.error('Error adding user portfolio data:', error);
+      return null;
+  }
+};
+
+// Function to delete user portfolio data
+const deletePortfolioData = async (userId) => {
+  const userPortfolioRef = collection(db, 'User_portfolio_data');
+  const query = userPortfolioRef.where('userId', '==', userId);
+
+  try {
+      const querySnapshot = await getDocs(query);
+      if (!querySnapshot.empty) {
+          const docSnapshot = querySnapshot.docs[0];
+          const docRef = doc(userPortfolioRef, docSnapshot.id);
+          await deleteDoc(docRef);
+          console.log('User portfolio data deleted successfully');
+          return true;
+      }
+      return false; // No matching user found
+  } catch (error) {
+      console.error('Error deleting user portfolio data:', error);
+      return false;
+  }
+};
+/* ----------------------------------------------------------------------*/
+// Update socialLinks data in Firebase Firestore
+const updateSocialLinks = async (userId, updatedSocialLinks) => {
+  const socialLinksRef = doc(db, 'User_portfolio_data', userId); // Replace "users" with your Firestore collection name
+  try {
+      await updateDoc(socialLinksRef, { socialLinks: updatedSocialLinks });
+      console.log("Social links updated successfully");
+  } catch (error) {
+      console.error("Error updating social links:", error);
+      throw new Error("Failed to update social links");
+  }
+};
+// ------------------ ok -------------------------
+
 export {
   auth,
   db,
@@ -121,4 +232,10 @@ export {
   login,
   logout,
   GoogleAuth,
+  listenToUserPortfolioData,
+  getUserPortfolioData,
+  updatePortfolioData,
+  addNewPortfolioData,
+  deletePortfolioData,
+  updateSocialLinks
 };

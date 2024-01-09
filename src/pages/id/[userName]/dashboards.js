@@ -12,10 +12,11 @@ import {
   auth,
   getUserData,
   getCurrentUserId,
+  getUserPortfolioData 
 } from "@/services/firebaseConfig.js"; // Replace with your Firebase configuration import
 // D:\Kways_Project\customize Portfolio\src\services\dataCRUD.js
 // Update the import path for getUserPortfolioData
-import { getUserPortfolioData } from  "@/services/dataCRUD.js";
+// import { getUserPortfolioData } from  "@/services/dataCRUD.js";
 
 import { DashboardDataProvider } from "@/context/DashboardDataProvider.js";
 import EditProfile from "@/components/portfolio/EditProfile";
