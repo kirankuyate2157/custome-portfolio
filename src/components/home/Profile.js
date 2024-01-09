@@ -93,7 +93,7 @@ useEffect(()=>{
   fetchAccountData();
   fetchPortfolioData();
   console.log("user port ",userPortfolio);
-});
+},[]);
 
   return (
     <div className='flex flex-col gap-2 my-4  text-black dark:text-white '>
