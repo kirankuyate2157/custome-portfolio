@@ -216,7 +216,7 @@ const WritePost = () => {
             uid: user?.uid,
             name: user?.displayName,
             handle: ac?.handle,
-            gender: M,
+            gender: "",
             time: {
               seconds: getCurrentTimestampInSeconds(),
               nanoseconds: 0,
@@ -651,7 +651,7 @@ const WritePost = () => {
             <button
               className='px-4 py-1 bg-pink-400 rounded-2xl hover:bg-pink-500 items-center'
               onClick={() => postData()}
-              disabled={uploading}
+              // disabled={uploading}
             >
                {uploading ? 'Posting...' : 'Post'}
             </button>

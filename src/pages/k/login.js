@@ -119,9 +119,6 @@ export default function Login() {
                 />
               </div>
               <div
-                onClick={(e) => {
-                  Submit(e);
-                }}
                 className='w-full  text-center bg-bcc-500 text-white border border-gray-500  hover:bg-bcc-700 py-2 rounded-xl'
               >
                 Sign In
@@ -133,8 +130,8 @@ export default function Login() {
                 <FcGoogle className='bg-transparent' />
                 Login With Google
               </button>
-              <p className='py-2 justify-center   bg-bcc-500 text-white rounded-xl flex items-center gap-2 w-full border border-bcc-500  hover:bg-bcc-700'
-        >please use google auth email,password disabled for testing purposes</p>
+              <p className='py-1 flex justify-center  items-center gap-2 w-full md:text-[0.6rem] text-xs text-pink-200'
+        >please use Google auth email,password disabled for testing purposes</p>
             </form>
           </div>
         </div>
