@@ -86,7 +86,7 @@ const Navbar = () => {
       </div>
 
       {/* Dropdown Modal */}
-      {isDropdownOpen && (
+      {/* {isDropdownOpen && (
         <AnimatePresence>
      <motion.div 
       initial={{ opacity: 0, height: 0 }}
@@ -113,7 +113,7 @@ const Navbar = () => {
           </ul>
         </motion.div >
         </AnimatePresence>
-        )}
+        )} */}
     
     </div>
   );
