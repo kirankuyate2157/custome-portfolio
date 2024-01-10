@@ -9,12 +9,14 @@ import { CiMail } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 import { MoonIcon, SunIcon } from "./portfolio/icons";
 import useThemeSwitcher from "./hooks/useThemeSwitcher";
+import { useRouter } from "next/router";
 
 
 const Navbar = () => {
   const [mode, setMode] = useThemeSwitcher();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
+  const router=useRouter();
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
@@ -24,12 +26,11 @@ const Navbar = () => {
   };
 
   const handleTabClick = (tab) => {
-    // Handle tab click logic here
-    // console.log(`Clicked on tab: ${tab}`);
+ router.push("/k");
     closeDropdown();
   };
 
-  const tabs = ["Portfolio", "Generate Context", "Socials", "Try Now", "Contact"];
+  const tabs = [ "Try Now","Portfolio", "Generative AI", "Socials", "Contact"];
 
   return (
     <div className='w-full min-w-[280px] sm:px-0 px-10 pt-2 sm:pt-0'>
@@ -102,7 +103,7 @@ const Navbar = () => {
                 onClick={() => handleTabClick(tab)}
                 className='px-1  w-full items-center justify-start flex py-2'
               >
-                <a href="http://localhost:3001/id/demo" className='px-1  w-full items-center justify-start flex'>
+                <a href="https://custome-portfolio.vercel.app/k" className='px-1  w-full items-center justify-start flex'>
                 <FaLinesLeaning className="text-xs mr-2" />
                 {tab}
                 </a>
