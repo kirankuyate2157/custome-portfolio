@@ -75,12 +75,12 @@ const Navbar = () => {
           <div className='sm:hidden p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900'>
             <IoNotificationsOutline />
           </div>
-          <div
+          {/* <div
             className=' p-1 m-1  text-xl rounded-lg text-slate-900 dark:text-white bg-gray-300 dark:bg-slate-900 cursor-pointer'
             onClick={toggleDropdown}
           >
             <PiDotsNineDuotone />
-          </div>
+          </div> */}
          
         </div>
       </div>
