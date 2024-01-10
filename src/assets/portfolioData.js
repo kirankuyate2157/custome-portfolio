@@ -8,8 +8,8 @@ const KiranPortfolioData = {
     homeData: {
       name: "kiran Kuyate",
       profileImg:
-        "https://firebasestorage.googleapis.com/v0/b/portfolio-6ffeb.appspot.com/o/Picsart_23-08-20_13-04-44-225.png?alt=media&token=0301d4a6-26d3-45b7-a112-c9c97a853425",
-      title: "Half will be some day full.. remeber",
+        "https://firebasestorage.googleapis.com/v0/b/nari-376818.appspot.com/o/template%2Fbest.png?alt=media&token=3bbe03bc-94e1-4bad-80a7-23edd418e933",
+      title: "Here some Good quotes",
       description:
         "I love unraveling complex code challenges. Explore my projects, from diving into data intricacies to crafting user-friendly web, software experiences. With Javascript, Java, C++, Python, and a deep commitment to growth, I'm actively shaping the future of software engineering.",
       resumeLink: "./kiran_kuyate_2024.pdf",

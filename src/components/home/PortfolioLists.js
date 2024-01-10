@@ -62,15 +62,15 @@ const PortfolioLists = () => {
   const fetchPortfoliosData = async () => {
     const db = getFirestore();
     const usersRef = collection(db, "Users"); // Use collection() to reference a collection
-    // console.log("fetching pusers 📍📍🔥 ..");
+    // // console.log("fetching pusers 📍📍🔥 ..");
     try {
       const userDataSnapshot = await getDocs(usersRef);
-      // console.log(" 📍📍🔥 users ..");
+      // // console.log(" 📍📍🔥 users ..");
       if (!userDataSnapshot.empty) {
         const newUserData = userDataSnapshot.docs.map((doc) => doc.data().profileData).filter((data) => data.visibility === true);
         setUsers([...newUserData]);
-        // console.log("🔥 ..");
-        // console.log("new data :", newUserData);
+        // // console.log("🔥 ..");
+        // // console.log("new data :", newUserData);
       }
     } catch (error) {
       console.error("Error fetching users: ", error);
@@ -80,7 +80,7 @@ const PortfolioLists = () => {
   useEffect(() => {
     const fetchData = async () => {
       await fetchPortfoliosData();
-      // console.log("User public portfolio fetched done ✅");
+      // // console.log("User public portfolio fetched done ✅");
     }
     fetchData();
   }, []);

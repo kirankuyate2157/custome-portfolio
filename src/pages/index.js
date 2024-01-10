@@ -125,9 +125,9 @@ const sendMail = (toMail, data) => {
   })
     .then((response) => {
       if (response.ok) {
-        console.log("Email sent successfully!");
+        // console.log("Email sent successfully!");
       } else {
-        console.log("Failed to send email.");
+        // console.log("Failed to send email.");
       }
     })
     .catch((error) => {
@@ -158,7 +158,7 @@ export default function Hero() {
 
     // Validate required fields (e.g., email, message, subject)
     if (!formData.email || !formData.subject || !formData.message) {
-      console.log("Please fill in the required fields.");
+      // console.log("Please fill in the required fields.");
       return;
     }
     const res = sendMail("kiranrkuyate2021@gmail.com", formData);

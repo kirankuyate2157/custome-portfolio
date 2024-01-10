@@ -39,7 +39,7 @@ const Home = () => {
     const db = getFirestore();
     if (user && user.uid) {
       const accountRef = doc(db, "accounts", user.uid);
-      console.log("fetching  data ..");
+      // console.log("fetching  data ..");
       try {
         const accountDataSnapshot = await getDoc(accountRef);
 
@@ -58,7 +58,7 @@ const Home = () => {
   const fetchPostData = async () => {
     const db = getFirestore();
     const postsRef = collection(db, "posts"); // Use collection() to reference a collection
-    console.log("fetching post from main 📍📍🔥 ..");
+    // console.log("fetching post from main 📍📍🔥 ..");
     try {
       const postDataSnapshot = await getDocs(postsRef);
 
@@ -79,7 +79,6 @@ const Home = () => {
   useEffect(() => {
     const def = async () => {
       await fetchPostData();
-      console.log("posts data :", posts);
       if (!accountData) {
         await fetchAccountData();
       }
@@ -115,7 +114,10 @@ const Home = () => {
                   {posts && posts.length > 0 ? (
                     posts.map((data, index) => <Post key={index} data={{ ...data }} onChanges={() => updateData()} />)
                   ) : (
+                    <div className="flex w-full flex-col items-center bg-transparent ">
                     <p className='flex self-center'>{`Loading...`}</p>
+                    <button className=" p-1 text-sm flex rounded mt-10 text-black dark:text-white dark:bg-[#151829]  bg-[#FFFFFF]" onClick={()=>setRefresh(!refresh)}>refresh</button>
+                    </div>
                   )}
                 </>
               )}

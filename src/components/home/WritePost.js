@@ -46,12 +46,26 @@ const useOutsideClick = (ref, callback) => {
 
 const generateDateString = () => {
   const currentDate = new Date();
-  const dateString = currentDate.toString(); // Outputs in the format "yyyy-mm-ddThh:mm:ss.sssZ"
+
+  // Extract date components
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  // Extract time components
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+  // Generate the formatted date string
+  const dateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
   return dateString;
 };
 
+
 const generatedString = generateDateString();
+// console.log("time of post : ",generatedString);
 
 const getCurrentTimestampInSeconds = () => {
   return Math.floor(Date.now() / 1000);
@@ -143,11 +157,11 @@ const WritePost = () => {
         file = selectedDocument;
         break;
       default:
-        console.log(" file not selected ..,please try again .. ", file);
+        // console.log(" file not selected ..,please try again .. ", file);
         break;
     }
     if (user) {
-      console.log(user);
+      // console.log(user);
       const path = user.displayName;
       const imageName = fileName;
 
@@ -157,20 +171,21 @@ const WritePost = () => {
         setFileUrl(() => url); // Update using previous state
         setUploadError(null);
       } catch (error) {
-        console.log("Error uploading ", error);
+        // console.log("Error uploading ", error);
         setUploadError("File upload failed. Please try again.");
+        setUploading(false);
       }
     } else {
-      console.log(" user not found .. can`t upload file..");
+      // console.log(" user not found .. can`t upload file..");
     }
   };
 
   const fetchPostData = async () => {
     const db = getFirestore();
-    console.log(user);
+    // console.log(user);
     if (user) {
       const postRef = doc(db, "posts", user.uid);
-      console.log("fetching post data ..");
+      // console.log("fetching post data ..");
       try {
         const postDataSnapshot = await getDoc(postRef);
 
@@ -202,10 +217,7 @@ const WritePost = () => {
           uids: [],
         },
         text: articleText,
-        Time: {
-          seconds: getCurrentTimestampInSeconds(),
-          nanoseconds: 0,
-        },
+        Time: generateDateString(),
         name: user?.displayName,
         handle: ac?.handle || "new",
         avatar: user?.photoURL || "",
@@ -217,10 +229,7 @@ const WritePost = () => {
             name: user?.displayName,
             handle: ac?.handle || "new",
             gender: "",
-            time: {
-              seconds: getCurrentTimestampInSeconds(),
-              nanoseconds: 0,
-            },
+            time: generateDateString(),
             reactions: {
               Like: 0,
               Insightful: 0,
@@ -240,10 +249,11 @@ const WritePost = () => {
       
       const accountRef = doc(db, "posts", docId);
       await setDoc(accountRef, newData);
-      console.log(" Post created successfully .✔️");
+      // console.log(" Post created successfully .✔️");
       router.push("/k");
     } else {
-      console.log("auth user id not found till now..");
+      setUploading(false);
+      // console.log("auth user id not found till now..");
     }
   };
 
@@ -256,14 +266,14 @@ const WritePost = () => {
 
   //  --------------------  Data Updating ----------------------------
   const postData = () => {
-    // console.log("article text : ", articleText);
-    // console.log("file name : ", fileName);
-    // console.log("file type : ", fileType);
+    // // console.log("article text : ", articleText);
+    // // console.log("file name : ", fileName);
+    // // console.log("file type : ", fileType);
     
     if (user && user.uid) {
       setUploading(true);
       handleImgUpload().then(() => {
-        // console.log("file upload finished not posting..");
+        // // console.log("file upload finished not posting..");
         setUpdate(true);
       });
     }
@@ -273,7 +283,7 @@ const WritePost = () => {
     if (documentType && showPopup3) {
       setShowPopup2(true);
       setFileType(documentType);
-      console.log("Parameters from routes: ", documentType);
+      // console.log("Parameters from routes: ", documentType);
     }
   }, [documentType, showPopup3]); // Update the dependency array
   const handleDocumentClick = (type) => {
@@ -329,7 +339,7 @@ const WritePost = () => {
     // Access the alt attribute
     const emojiName = imgElement.getAttribute("alt");
 
-    console.log(`Alt attribute: ${emojiName}`);
+    // console.log(`Alt attribute: ${emojiName}`);
     const unicode = emojiNameMap.get(emojiName);
 
     if (unicode) {
@@ -650,7 +660,7 @@ const WritePost = () => {
             <button
               className='px-4 py-1 bg-pink-400 rounded-2xl hover:bg-pink-500 items-center'
               onClick={() => postData()}
-              // disabled={uploading}
+              disabled={uploading}
             >
                {uploading ? 'Posting...' : 'Post'}
             </button>

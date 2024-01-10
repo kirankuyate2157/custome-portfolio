@@ -28,10 +28,24 @@ import { nanoid } from "nanoid";
 
 const generateDateString = () => {
   const currentDate = new Date();
-  const dateString = currentDate.toString(); // Outputs in the format "yyyy-mm-ddThh:mm:ss.sssZ"
 
-return dateString;
+  // Extract date components
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  // Extract time components
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+  // Generate the formatted date string
+  const dateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+  return dateString;
 };
+
+// console.log("comenet data ",generateDateString());
 const Icons = [
   { Icon: SlLike, label: "Like", color: "red" },
   { Icon: AiFillHeart, label: "Love", color: "red" },
@@ -95,7 +109,7 @@ const Comment = ({ data, postId }) => {
             // Update the post document with the modified comments array
             updateDoc(postRef, { comments: updatedComments })
               .then(() => {
-                // console.log("Comment reactions updated successfully.");
+                // // console.log("Comment reactions updated successfully.");
               })
               .catch((error) => {
                 console.error("Error updating comment reactions:", error);
@@ -433,7 +447,7 @@ const Comments = ({ Data, postId }) => {
             // Update the post document with the modified comments array
              updateDoc(postRef, { comments: updatedComments })
               .then((resp) => {
-                console.log("New comment added successfully.");
+                // console.log("New comment added successfully.");
                 setCommentInput("");
               })
               .catch((error) => {

@@ -54,7 +54,7 @@ const Profile = () => {
     
     if (userId) {
       const accountRef = doc(db, "accounts", userId);
-        console.log("fetching  data ..");
+        // console.log("fetching  data ..");
       try {
         const accountDataSnapshot = await getDoc(accountRef);
 
@@ -73,7 +73,7 @@ const Profile = () => {
     
     if (userId) {
       const PortfolioRef = doc(db, "Users", userId);
-        console.log("fetching  data ..");
+        // console.log("fetching  data ..");
       try {
         const PortfolioDataSnapshot = await getDoc(PortfolioRef);
 
@@ -92,7 +92,7 @@ const Profile = () => {
 useEffect(()=>{
   fetchAccountData();
   fetchPortfolioData();
-  console.log("user port ",userPortfolio);
+  // console.log("user port ",userPortfolio);
 },[]);
 
   return (

@@ -30,7 +30,7 @@ const StartPost = () => {
   const router = useRouter()
   const handleDocumentClick = (type) => {
     setDocumentType(type);
-    router.push(`/write-post/${type}/true`); // Use route parameters format
+    router.push(`/k/write-post/${type}/true`); // Use route parameters format
   };
   const ac=useAccount();
 

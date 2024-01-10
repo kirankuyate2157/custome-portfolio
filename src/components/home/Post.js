@@ -95,10 +95,10 @@ const Post = ({data,onChanges}) => {
       if(data?.id){
       // Update the document in Firestore
       const postRef = doc(db, "posts", data?.id);
-      // console.log("cloud data 🌧️🌧️",updatedData);
+      // // console.log("cloud data 🌧️🌧️",updatedData);
       updateDoc(postRef, updatedData)
         .then(() => {
-          // console.log("Likes data updated successfully.");
+          // // console.log("Likes data updated successfully.");
         })
         .catch((error) => {
           console.error("Error updating Home data :", error);

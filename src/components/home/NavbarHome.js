@@ -179,17 +179,17 @@ const NavbarHome = ({ currentTab }) => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.7 }}
-            className='absolute font-mono right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden text-white   border border-gray-300 dark:border-gray-700  shadow-lg bg-slate-900  bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'
+            className='absolute font-mono z-[80] right-6 top-14 mt-1 w-48 text-sm sm:text-xs overflow-hidden text-white   border border-gray-300 dark:border-gray-700  shadow-lg bg-slate-900  bg-opacity-25 dark:bg-opacity-10  bg-blur rounded p-2 backdrop-filter backdrop-blur-lg'
           >
             <ul>
               {tabM.map((tab, index) => (
                 <li
                   key={index}
                   onClick={() => handleTabClick(tab)}
-                  className='px-1  w-full items-center justify-start flex py-2'
+                  className='px-1  w-full items-center z-[50] justify-start flex py-2'
                 >
                   <a
-                    href='http://localhost:3001/id/demo'
+                    href='https://custome-portfolio.vercel.app/k'
                     className='px-1  w-full items-center justify-start flex'
                   >
                     <FaLinesLeaning className='text-xs mr-2' />
